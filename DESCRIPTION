@@ -21,3 +21,5 @@ Description: The atlantisom package develops data sets for use in other modellin
   be helpful for users of Atlantis wishing to look at model output as well.
 License: What license is it under?
 LazyData: TRUE
+Imports: RNetCDF
+Suggests: knitr
