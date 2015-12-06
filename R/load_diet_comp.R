@@ -12,7 +12,7 @@
 #'@import data.table
 #'@export
 load_diet_comp <- function(dietfile){
-  diet <- as.data.table(read.table(dietfile), header = TRUE)
+  diet <- as.data.table(read.table(dietfile, header = TRUE))
 
   #remove unnessesary columns and add ones that aren't present in the data
   diet[, Stock   := NULL]
