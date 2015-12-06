@@ -39,7 +39,7 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
     data$atlantisversion <- gsub("#", "", data$atlantisversion)
   }
 
-  # Get number of years and timestep
+  # Get number of years, timestep, and output interval
   file.prm <- dir(dir, pattern = "\\.prm", full.names = TRUE)
   if (!file.exists(file.prm)) {
     warning(paste("The .prm file does not exist in\n", dir, "\n",
@@ -48,18 +48,34 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
     data$nyears <- NA
     data$timestep <- NA
     data$timestepunit <- NA
-  } else {
+    data$outputstep <- NA
+    data$outputstepunit <- NA
+    data$hemisphere <- NA
+  } else { # Only go here if the prm file is available
     prm <- readLines(file.prm)
     data$nyears <- grep("tstop", prm, value = TRUE)
     data$nyears <- strsplit(data$nyears, "\\t")[[1]][2]
     data$nyears <- strsplit(data$nyears, "[[:space:]]+")[[1]][1]
     data$nyears <- as.numeric(data$nyears) / 365
+
     data$timestep <- grep("^dt", prm, value = TRUE)
     data$timestep <- strsplit(data$timestep, "\\t")[[1]][2]
     data$timestep <- strsplit(data$timestep, "[[:space:]]+")[[1]]
     data$timestepunit <- data$timestep[2]
     data$timestep <- as.numeric(data$timestep[1])
-  }
+
+    data$outputstep <- grep("toutinc", prm, value = TRUE)
+    data$outputstep <- strsplit(data$outputstep, "\\t")[[1]][2]
+    data$outputstep <- strsplit(data$outputstep, "[[:space:]]+")[[1]]
+    data$outputstepunit <- data$outputstep[2]
+    data$outputstep <- data$outputstep[1]
+
+    data$hemisphere <- grep("flaghemisphere", prm, value = TRUE)
+    data$hemisphere <- strsplit(data$hemisphere, "[[:space:]]+")[[1]]
+    data$hemisphere <- data$hemisphere[
+      which(data$hemisphere == data$hemisphere[2])[2] + 2]
+    data$hemisphere <- gsub("[[:punct:]]", "", data$hemisphere)
+  } # Close if for prm file
 
   # Get box number information
   file.bgm <- dir(dir, pattern = "\\.bgm", full.names = TRUE)
@@ -69,7 +85,7 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
       "of boxes and\n maximum depth as NA."))
     data$nbox <- NA
     data$depthmax <- NA
-  } else {
+  } else { # Only go here if the bgm file is available
     bgm <- readLines(file.bgm)
     data$nbox <- grep("nbox", bgm, value = TRUE)
     data$nbox <- gsub("nbox|[[:space:]]+", "", data$nbox)
@@ -79,7 +95,7 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
     data$depthmax <- grep("maxwcbotz", bgm, value = TRUE)
     data$depthmax <- gsub("maxwcbotz|[[:space:]]+", "", data$depthmax)
     data$depthmax <- as.numeric(data$depthmax)
-  }
+  } # Close if for bgm file
 
   # Get the size of the study area in kilometers^2
   # Assuming that dz (height) of lowest box is 1 m, one can assume that
