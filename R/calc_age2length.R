@@ -1,18 +1,5 @@
 #' Code to get size at age and plot
 #' @author Gavin Fay
-#' Dec 4 2015
-#' 
-#set working directory and specify the files needed
-# .nc
-# biol.prm
-# groups.csv
-setwd("~/Atlantis/Summit/PoseidonAdventureCalCurrentINPUTdraft1/")
-scenario.name <- "CalCurrent65YearsCurrentFishingRates"
-run.string <- "outputCCV3"
-ncfile <- paste(scenario.name,"/",run.string,".nc",sep="")
-groupfile <- "CalCurrentV3Groups.csv"
-biolfile <- "CalCurrentV3_Biol.prm"
-
 #' calculate length composition from Atlantis output (st)age data
 #' Uses numbers at age, plus weight at age, and weight-length relationships to 
 #' generate size comps
