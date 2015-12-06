@@ -12,7 +12,7 @@ Authors@R: c(
   person("Kelli", "Johnson", email = "kellifayejohnson@gmail.com", role = "aut"),
   person("Isaac", "Kaplan", email = "isaac.kaplan@noaa.gov", role = "aut"),
   person("Alexander", "Keth", email = "alexander.keth@uni-hamburg.de", role = "aut"),
-  person("Sean", "Lucey", email = "sean.lucey@noaa.gov", role = "aut"),
+  person("Sean", "Lucey", email = "sean.lucey@noaa.gov", role = c("aut", "cre"))y,
   person("Matteo", "Sinerchia", email = "matteo.sinerchia@iamc.cnr.it", role = "aut"),
   person("Howard", "Townsend", email = "howard.townsend@noaa.gov", role = "aut")
   )
@@ -21,3 +21,5 @@ Description: The atlantisom package develops data sets for use in other modellin
   be helpful for users of Atlantis wishing to look at model output as well.
 License: What license is it under?
 LazyData: TRUE
+Imports: data.table,
+         ncdf4
