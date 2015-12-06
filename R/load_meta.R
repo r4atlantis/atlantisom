@@ -14,6 +14,14 @@
 #'
 load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
   verbose = FALSE) {
+
+  # Functions used inside load_meta
+  getsplit <- function(get, split = "[[:space:]]+", data) {
+    info <- grep(get, data, value = TRUE)
+    info <- strsplit(info, split)[[1]][-1]
+    return(info)
+  }
+
   data <- list()
 
   # Main nc file
@@ -39,8 +47,9 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
     data$atlantisversion <- gsub("#", "", data$atlantisversion)
   }
 
-  # Get number of years, timestep, and output interval
-  file.prm <- dir(dir, pattern = "\\.prm", full.names = TRUE)
+  # Get number of years, timestep, output interval,
+  # number of species, and number of fleets
+  file.prm <- dir(dir, pattern = "run\\.prm", full.names = TRUE)
   if (!file.exists(file.prm)) {
     warning(paste("The .prm file does not exist in\n", dir, "\n",
       "and consequently the metadata will list the number of years,",
@@ -51,22 +60,19 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
     data$outputstep <- NA
     data$outputstepunit <- NA
     data$hemisphere <- NA
+    data$nspp <- NA
+    data$nfleet <- NA
   } else { # Only go here if the prm file is available
     prm <- readLines(file.prm)
-    data$nyears <- grep("tstop", prm, value = TRUE)
-    data$nyears <- strsplit(data$nyears, "\\t")[[1]][2]
-    data$nyears <- strsplit(data$nyears, "[[:space:]]+")[[1]][1]
+
+    data$nyears <- getsplit("tstop", "[[:space:]]+", prm)[1]
     data$nyears <- as.numeric(data$nyears) / 365
 
-    data$timestep <- grep("^dt", prm, value = TRUE)
-    data$timestep <- strsplit(data$timestep, "\\t")[[1]][2]
-    data$timestep <- strsplit(data$timestep, "[[:space:]]+")[[1]]
+    data$timestep <- getsplit("^dt", "[[:space:]]+", prm)
     data$timestepunit <- data$timestep[2]
     data$timestep <- as.numeric(data$timestep[1])
 
-    data$outputstep <- grep("toutinc", prm, value = TRUE)
-    data$outputstep <- strsplit(data$outputstep, "\\t")[[1]][2]
-    data$outputstep <- strsplit(data$outputstep, "[[:space:]]+")[[1]]
+    data$outputstep <- getsplit("toutinc", "[[:space:]]+", prm)
     data$outputstepunit <- data$outputstep[2]
     data$outputstep <- data$outputstep[1]
 
@@ -75,6 +81,17 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
     data$hemisphere <- data$hemisphere[
       which(data$hemisphere == data$hemisphere[2])[2] + 2]
     data$hemisphere <- gsub("[[:punct:]]", "", data$hemisphere)
+
+    data$nspp <- getsplit("K_num_tot_sp", "[[:space:]]+", prm)[1]
+    data$nspp <- as.numeric(data$nspp)
+
+    fishing <- strsplit(getsplit("fishout", "\\t", prm), "[[:space:]]+")[[1]][1]
+    if (fishing == 1) {
+        data$nfleet <- getsplit("K_num_subfleet", "[[:space:]]+", prm)[1]
+        data$nfleet <- as.numeric(data$nfleet)
+    } else {
+      data$nfleet <- 0
+    }
   } # Close if for prm file
 
   # Get box number information
