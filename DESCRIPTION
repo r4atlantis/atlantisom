@@ -22,6 +22,6 @@ Description: The atlantisom package develops data sets for use in other modellin
 License: What license is it under?
 LazyData: TRUE
 Imports: data.table,
-         ncdf4
+         ncdf4,
          RNetCDF
 Suggests: knitr
