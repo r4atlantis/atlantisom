@@ -1,10 +1,23 @@
 Package: atlantisOM
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Generates Data Sets From Atlantis Scenarios
 Version: 0.1
 Date: 2015-12-05
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
+Authors@R: c(
+  person("Gavin", "Fay", email = "gfay@umassd.edu", role = "aut"),
+  person("Sarah", "Gaichas", email = "sarah.gaichas@noaa.gov", role = "aut"),
+  person("Beth", "Fulton", email = "beth.fulton@csiro.au", role = "aut"),
+  person("Allan", "Hicks", email = "allan.hicks@noaa.gov", role = "aut"),
+  person("Emma", "Hodgson", email = "emma.e.hodgson@gmail.com", role = "aut"),
+  person("Kelli", "Johnson", email = "kellifayejohnson@gmail.com", role = "aut"),
+  person("Isaac", "Kaplan", email = "isaac.kaplan@noaa.gov", role = "aut"),
+  person("Alexander", "Keth", email = "alexander.keth@uni-hamburg.de", role = "aut"),
+  person("Sean", "Lucey", email = "sean.lucey@noaa.gov", role = "aut"),
+  person("Matteo", "Sinerchia", email = "matteo.sinerchia@iamc.cnr.it", role = "aut"),
+  person("Howard", "Townsend", email = "howard.townsend@noaa.gov", role = "aut")
+  )
+Description: The atlantisom package develops data sets for use in other modelling
+  frameworks from an Atlantis scenario. Functions located within the package may
+  be helpful for users of Atlantis wishing to look at model output as well.
 License: What license is it under?
 LazyData: TRUE
