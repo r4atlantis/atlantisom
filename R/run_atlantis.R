@@ -14,8 +14,8 @@
 run_atlantis <- function(scenario, path = "."){
   #Create file names for NetCDF files and DietCheck.txt
   groups <- file.path(path, 'functionalGroups.csv')
-  TOTCATCH <- file.path(path, scenario, '_TOTCATCH.nc')
-  DietCheck <- file.path(path, scenario, 'DietCheck.txt')
+  TOTCATCH <- file.path(path, paste0(scenario, '_TOTCATCH.nc'))
+  DietCheck <- file.path(path, paste0(scenario, 'DietCheck.txt'))
 
   #Extract from NetCDF files
   numcatch <- load_atlantis_ncdf(TOTCATCH, groups, select_groups,
