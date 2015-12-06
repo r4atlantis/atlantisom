@@ -11,3 +11,4 @@ You must install from github, using:
 devtools::install_github("r4atlantis/atlantisom")
 ```
 
+test2
