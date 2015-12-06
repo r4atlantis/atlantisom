@@ -1,5 +1,11 @@
 # atlantisom
 Atlantis operating model. Generates data sets from Atlantis scenarios.
 
-Can I change and push this?
-Can I?
+## Installing the atlantisom R package
+
+You must install from github, using: 
+
+```R
+# install.packages("devtools")
+devtools::install_github("r4atlantis/atlantisom")
+```
