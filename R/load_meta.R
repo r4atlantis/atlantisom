@@ -3,6 +3,7 @@
 #'
 #' @template dir
 #' @template file_out
+#' @template verbose
 #'
 #' @author Kelli Faye Johnson
 #' @return A \code{list} of metadata pertaining to a single Atlantis scenario.
@@ -11,7 +12,8 @@
 #'
 #' @export
 #'
-load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt") {
+load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
+  verbose = FALSE) {
   data <- list()
 
   # Main nc file
@@ -91,18 +93,24 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt") {
   data$areaunit <- "km^2"
 
   # Print the log information to a text file
-  file.out <- file.path(dir, file_out)
-  sink(file.out)
-  cat("# Meta data from atlantisom\n")
-  cat(paste("# Written by load_meta on", Sys.time(), "\n"))
-  cat(paste("# by", Sys.info()["user"], "on", Sys.info()["sysname"], "\n"))
-  cat(paste("# using", version$version.string, "\n"))
-  for (x in seq_along(data)) {
-    cat(paste0("#", names(data)[x], "\n"))
-    cat(data[[x]])
-    cat("\n")
+  if (is.null(file_out)) {
+    if (verbose) message("No file was written to the disk from load_meta\n",
+      "instead the list is returned as an invisible argument.")
+  } else {
+    file_out <- file.path(dir, file_out)
+    if (verbose) message("Writing the output from load_meta to:\n", file_out)
+    sink(file_out)
+    cat("# Meta data from atlantisom\n")
+    cat(paste("# Written by load_meta on", Sys.time(), "\n"))
+    cat(paste("# by", Sys.info()["user"], "on", Sys.info()["sysname"], "\n"))
+    cat(paste("# using", version$version.string, "\n"))
+    for (x in seq_along(data)) {
+      cat(paste0("#", names(data)[x], "\n"))
+      cat(data[[x]])
+      cat("\n")
+    }
+    sink()
   }
-  sink()
 
   invisible(data)
 }
