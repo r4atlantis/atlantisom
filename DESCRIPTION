@@ -23,5 +23,9 @@ License: What license is it under?
 LazyData: TRUE
 Imports: data.table,
          ncdf4,
-         RNetCDF
+         RNetCDF,
+	 stringr,
+	 dplyr,
+	 tidyr,
+	 magrittr
 Suggests: knitr
