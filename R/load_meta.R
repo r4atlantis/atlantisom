@@ -8,8 +8,6 @@
 #' @author Kelli Faye Johnson
 #' @return A \code{list} of metadata pertaining to a single Atlantis scenario.
 #'
-#' @importFrom RNetCDF open.nc close.nc att.get.nc
-#'
 #' @export
 #'
 load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
@@ -27,8 +25,8 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
   # Main nc file
   grepnc <- "^output[[:alnum:]]+\\.nc"
   file <- dir(dir, pattern = grepnc, full.names = TRUE)[1]
-  connection <- open.nc(file)
-  on.exit(close.nc(connection))
+  connection <- RNetCDF::open.nc(file)
+  on.exit(RNetCDF::close.nc(connection))
 
   # Get model name from the outputMODELNAME.nc file
   data$modelname <- dir(dir, pattern = grepnc)
@@ -117,8 +115,8 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
   # Get the size of the study area in kilometers^2
   # Assuming that dz (height) of lowest box is 1 m, one can assume that
   # the area is equal to the volume of the lowest box
-  volume <- var.get.nc(ncfile = connection, variable = "volume")
-  dz <- var.get.nc(ncfile = connection, variable = "dz")
+  volume <- RNetCDF::var.get.nc(ncfile = connection, variable = "volume")
+  dz <- RNetCDF::var.get.nc(ncfile = connection, variable = "dz")
   area <- volume[dim(volume)[1], , ] / dz[dim(dz)[1], 1, 1]
   # If the assumption of the lowest box having a height of 1 m is false you
   # would need to divide by the sum of meters of sediment here
