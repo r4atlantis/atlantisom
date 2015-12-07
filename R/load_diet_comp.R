@@ -11,19 +11,29 @@
 #'  object.
 #'@import data.table
 #'@export
+
 load_diet_comp <- function(dietfile){
   diet <- as.data.table(read.table(dietfile, header = TRUE))
 
-  #remove unnessesary columns and add ones that aren't present in the data
+  # remove unnessesary columns and add ones that aren't present in the data
+  # Adding polygon and layer results in serious isses when we combine this dataset
+  # with other datasets which have this information. Therefore those columns
+  # cannot be added as NA columns! We should also keep in mind that hardcoding
+  # the removal of the column stock may result in bugs when models actually 
+  # work woth multiple stocks (the CaCu model only has 1 stock per functional group).
   diet[, Stock   := NULL]
-  diet[, Polygon := NA]
-  diet[, Layer   := NA]
 
-  #Change column order
-  columns <- names(diet)[which(!names(diet) %in% c('Time', 'Group', 'Cohort',
-                                                   'Polygon', 'Layer'))]
-  setcolorder(diet, c('Group', 'Cohort', 'Polygon', 'Layer', 'Time', columns))
+  # Change column order
+  columns <- names(diet)[which(!names(diet) %in% c('Time', 'Group', 'Cohort'))]
+  setcolorder(diet, c('Group', 'Cohort','Time', columns))
   setnames(diet, c('Group', 'Cohort'), c('Species', 'agecl'))
   diet <- as.data.frame(diet)
+  
+  # Convert to tidy dataframe to allow joining/merging with other dataframes.
+  diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp", 
+                         gather_cols = names(diet)[(which(names(diet) == "Time") + 1):length(names(diet))])
+  
+  names(diet) <- tolower(names(diet))
+  
   return(diet)
 }
