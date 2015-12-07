@@ -66,10 +66,11 @@ load_nc <- function(nc_out,
   if (select_variable != "N" & all(is.element(select_groups, biomasspools))) stop("The only output for Biomasspools is N.")
 
   # Get info from netcdf file! (Filestructure and all variable names)
-  var_names_ncdf <- names(at_out$var)
-  n_timesteps <- at_out$dim[[1]]$len
-  n_boxes     <- at_out$dim[[2]]$len
-  n_layers    <- at_out$dim[[3]]$len
+  var_names_ncdf <- sapply(seq_len(RNetCDF::file.inq.nc(at_out)$nvars - 1),
+    function(x) RNetCDF::var.inq.nc(at_out, x)$name)
+  n_timesteps <- RNetCDF::dim.inq.nc(at_out, 0)$length
+  n_boxes     <- RNetCDF::dim.inq.nc(at_out, 1)$length
+  n_layers    <- RNetCDF::dim.inq.nc(at_out, 2)$length
 
   # Extract data from the ncdf file! Create a vector of all potential variable names first! Only use names which
   # are available in the ncdf-file as an extraction of missing variables is not possible! Unfortunately variable
