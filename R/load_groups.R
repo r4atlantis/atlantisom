@@ -1,9 +1,9 @@
 #' Collection of similar functions which load specific columns from the Atlantis functionalgroups-file
-#' 
-#' 
+#'
+#'
 #' This collection of function loads the Atlantis functional groups file and creates various
-#' character strings of group names or acronym names. 
-#' @param file_fgs Connection of the ATLANTIS functional groups file given as complete folder/filename string. 
+#' character strings of group names or acronym names.
+#' @param file_fgs Connection of the ATLANTIS functional groups file given as complete folder/filename string.
 #' Usually "functionalGroups.csv".
 #' @param nc_init Connection of the ATLANTIS init file given as complete folder/filename string. Usually "init[...].nc".
 #' @family load functions
@@ -18,7 +18,7 @@
 #' - load_fish_acronyms ectracts the column "Code". Only groups with InvertType equal to "FISH" or "SHARK" are selected.
 #' - load_bps extracts the names of the epibenthic biomasspools from the initial conditions file.
 #' @keywords gen
-#' @examples 
+#' @examples
 #' load_atlantis_output(model_path = file.path("z:", "Atlantis", "ATLANTIS NSmodel base"), filename = "outputNorthSea.nc", select_groups = get_groups(), select_variable = "ResN", biomasspools = c("large_crabs", "small_epifauna", "sessile_epifauna", "epifaunal_macrobenthos"))
 #' @export
 
@@ -83,7 +83,7 @@ load_fish_acronyms <- function(file_fgs){
   } else {
     result <- result$Code[result[, is.element(names(result), supported_columns)] %in% c("FISH", "SHARK")]
   }
-  return(result)  
+  return(result)
 }
 
 #' This function still need to load in the initial conditions file to check the number of
@@ -97,7 +97,8 @@ load_fish_acronyms <- function(file_fgs){
 load_bps <- function(file_fgs, nc_init){
   init <- RNetCDF::open.nc(filename = nc_init)
   all_groups <- get_groups(file_fgs = file_fgs)
-  init_vars <- names(init$var)
+  init_vars <- sapply(seq_len(RNetCDF::file.inq.nc(init)$nvars - 1),
+                      function(x) RNetCDF::var.inq.nc(init, x)$name)
   pos_init <- sapply(paste0(all_groups, "_N"), function(y) which(grepl(y, x = init_vars)))
   # Remove invertebrate cohorts > 1
   pos_init <- sapply(pos_init, function(x) x[1])
