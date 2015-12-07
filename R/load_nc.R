@@ -28,7 +28,6 @@
 # Import '%>%' operator from magrittr
 #' @importFrom magrittr %>%
 #' @export
-magrittr::`%>%`
 
 load_nc <- function(nc_out,
                     nc_init,
