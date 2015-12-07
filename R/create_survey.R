@@ -6,7 +6,7 @@
 #' @param time    The timing of the survey (can be a vector if survey spans multiple time periods)
 #' @param species The species to sample in the survey (a vector)
 #' @param spex    The specifications of Atlantis model (box-specific area, habitat, etc.)
-#'                   for now, from load_boxarea a dataframe with polygon and boxarea column names
+#'                   for now, from load_boxarea a dataframe with polygon and area column names
 #' @param boxes A matrix with two columns: 
 #'		1) polygon:  box ID's that are sampled
 #'		2) survArea: area sampled in that box
@@ -38,7 +38,7 @@ create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 	names(aggDat) <- c("species","agecl","polygon","numAtAge")
 
 	#now calculate density in each box from num-at-age and total area by habitat
-	dens <- merge(aggDat,spex[,c("polygon","boxarea")],by.x="polygon",by.y="polygon",all.x=T)
+	dens <- merge(aggDat,spex[,c("polygon","area")],by="polygon",all.x=T)
 	dens$density <- dens$numAtAge / dens$area
 
 	#Habitat? Atlantis is already modifying density? We assume that survey is acting homogenously across all habitats
