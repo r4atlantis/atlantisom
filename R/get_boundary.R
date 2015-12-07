@@ -1,13 +1,13 @@
 #' Get boundary boxes from Atlantis box information.
 #'
-#' Use the output from \link{\code{load_box}} and obtain a \code{vector}
+#' Use the output from \code{\link{load_box}} and obtain a \code{vector}
 #' specifying which boxes are along the boundary.
 #'
 #' @family get functions
-#' @seealso \link{\code{load_box}}
+#' @seealso \code{\link{load_box}}
 #' @author Kelli Faye Johnson
 #'
-#' @param boxinfo A \code{list} as returned from \link{\code{load_box}}.
+#' @param boxinfo A \code{list} as returned from \code{\link{load_box}}.
 #'
 #' @return A \code{vector} specifying which boxes are on the boundary.
 #' @export
