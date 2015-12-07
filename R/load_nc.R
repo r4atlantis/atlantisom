@@ -3,7 +3,8 @@
 #'
 #' This function loads Atlantis outputfiles (netcdf) and converts them to a dataframe.
 #' @param nc_out Connection of the ATLANTIS output file given as complete folder/filename string. Usually "output[...].nc".
-#' Additionally "output[...]PROD.nc" can be loaded.
+#' Additionally "output[...]PROD.nc" and "output[...]CATCH.nc" can be loaded.
+#' @param nc_init Connection of the ATLANTIS init file given as complete folder/filename string. Usually "init[...].nc".
 #' @param file_fgs Connection of the ATLANTIS functional groups file given as complete folder/filename string.
 #' Usually "functionalGroups.csv".
 #' @param select_groups Character vector of funtional groups which shall be plotted. Names have to match the ones
@@ -25,11 +26,12 @@
 #' @export
 
 load_nc <- function(nc_out,
-                               file_fgs,
-                               select_groups,
-                               select_variable,
-                               remove_bboxes,
-                               check_acronyms){
+                    nc_init,
+                    file_fgs,
+                    select_groups,
+                    select_variable,
+                    remove_bboxes,
+                    check_acronyms){
   # NOTE: The extraction procedure may look a bit complex... A different approach would be to
   # create a dataframe for each variable (e.g. GroupAge_Nums) and combine all dataframes
   # at the end. However, this requires alot more storage and the code wouldn't be highly
@@ -62,7 +64,7 @@ load_nc <- function(nc_out,
   on.exit(RNetCDF::close.nc(at_out))
   # Character vector giving the names of biomasspools. Note this does not mean groups
   # which are considered as biomasspools in ATLANTIS but species which are only present in the bottom layer.
-  biomasspools <- load_bps()
+  biomasspools <- load_bps(file_fgs = file_fgs, nc_init = nc_init)
   if (select_variable != "N" & all(is.element(select_groups, biomasspools))) stop("The only output for Biomasspools is N.")
 
   # Get info from netcdf file! (Filestructure and all variable names)
