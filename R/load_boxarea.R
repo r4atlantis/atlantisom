@@ -1,27 +1,28 @@
 #' Extract the box area from the bgm-file!
-#' 
-#' 
+#'
+#'
 #' This function extracts the box area for each polygon from the atlantis bgm-file.
 #' @param prm_biol Connection of the ATLANTIS bgm-file file given as complete folder/filename string.
 #' Usually "[...].bgm".
 #' @return dataframe with the columns polygon and area. Polygon gives the box id as integer and area
 #' is the box size in m².
-#' 
+#'
+#' @family load functions
 #' @export
 
 load_boxarea <- function(file_bgm){
   boxarea <- readLines(con = file_bgm, warn = F)
-  
+
   nr_boxes <- boxarea[grep(pattern = "nbox", x = boxarea)]
   nr_boxes <- str_split_twice(char = nr_boxes)
-  
+
   search_strings <- paste0("box", 0:(nr_boxes - 1), ".area")
-  
+
   boxarea <- boxarea[sapply(search_strings, grep, x = boxarea)]
   boxarea <- sapply(boxarea, str_split_twice, USE.NAMES = F)
-  
+
   boxarea <- data.frame(polygon = 0:(nr_boxes - 1), area = boxarea)
-  
+
   return(boxarea)
 }
 

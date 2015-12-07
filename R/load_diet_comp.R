@@ -3,7 +3,7 @@
 #'Uses the diet_check.txt output from Atlantis to be used in the Atlantis
 #'Operating model.
 #'
-#'@family AtlantisOM
+#'@family load functions
 #'
 #'@param dietfile file name of the diet_check.txt output from Atlantis.
 #'
