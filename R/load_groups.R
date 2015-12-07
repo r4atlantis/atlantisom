@@ -95,15 +95,23 @@ load_fish_acronyms <- function(file_fgs){
 #' @export
 #' @rdname helper_functions
 load_bps <- function(file_fgs, nc_init){
-  init <- RNetCDF::open.nc(filename = nc_init)
-  all_groups <- get_groups(file_fgs = file_fgs)
+  init <- RNetCDF::open.nc(con = nc_init)
+  all_groups <- load_groups(file_fgs = file_fgs)
   init_vars <- sapply(seq_len(RNetCDF::file.inq.nc(init)$nvars - 1),
                       function(x) RNetCDF::var.inq.nc(init, x)$name)
-  pos_init <- sapply(paste0(all_groups, "_N"), function(y) which(grepl(y, x = init_vars)))
-  # Remove invertebrate cohorts > 1
-  pos_init <- sapply(pos_init, function(x) x[1])
-  pos_bps <- which(sapply(pos_init, function(x) init$var[[x]]$ndims) == 2)
-  bps <- all_groups[pos_bps]
+
+  search_string <- paste(all_groups, "N", sep = "_")
+  search_string <- search_string[is.element(search_string, init_vars)]
+
+  groups <- substr(x = search_string, start = 1, stop = nchar(search_string) - 2)
+
+  bps_id <- vector()
+  for (i in seq_along(search_string)){
+    bps_id[i] <- RNetCDF::var.inq.nc(ncfile = init, variable = search_string[i])$ndims
+  }
+  bps_id <- which(bps_id == 2)
+
+  bps <- groups[bps_id]
   return(bps)
 }
 
