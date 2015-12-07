@@ -68,10 +68,6 @@ load_nc <- function(nc_out,
   # Get info from netcdf file! (Filestructure and all variable names)
   var_names_ncdf <- names(at_out$var)
   n_timesteps <- at_out$dim[[1]]$len
-  if (n_timesteps == 1) {
-    write.csv(x = "only 1 timestep. No run available.", file = file.path(basename(file_fgs), "only_one_timestep.csv"), row.names = F)
-    stop("Timestep is one. Plotting not possible/meaningful!")
-  }
   n_boxes     <- at_out$dim[[2]]$len
   n_layers    <- at_out$dim[[3]]$len
 
