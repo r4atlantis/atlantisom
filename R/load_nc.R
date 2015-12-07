@@ -35,7 +35,8 @@ load_nc <- function(nc_out,
                     select_groups,
                     select_variable,
                     remove_bboxes,
-                    check_acronyms){
+                    check_acronyms,
+                    bboxes){
   # NOTE: The extraction procedure may look a bit complex... A different approach would be to
   # create a dataframe for each variable (e.g. GroupAge_Nums) and combine all dataframes
   # at the end. However, this requires alot more storage and the code wouldn't be highly
@@ -128,7 +129,7 @@ load_nc <- function(nc_out,
     if (num_layers[i] == 0) {
       layerid[, i] <- 0
     } else {
-      if (remove_bboxes & is.element((i - 1), get_bboxes())) {
+      if (remove_bboxes & is.element((i - 1), bboxes)) {
         layerid[, i] <- 0
       } else {
         layerid[, i] <- c(rep(0, times = n_layers - num_layers[i]), rep(1, times = num_layers[i]))
@@ -143,7 +144,7 @@ load_nc <- function(nc_out,
   # Remove islands! and boundary boxes!
   island_ids <- num_layers == 0
   if (remove_bboxes) {
-    boundary_ids <- is.element(boxes, get_bboxes())
+    boundary_ids <- is.element(boxes, bboxes)
     island_ids <- island_ids | boundary_ids
   }
   boxes <- boxes[!island_ids]
