@@ -62,7 +62,7 @@ load_nc <- function(nc_out,
   on.exit(RNetCDF::close.nc(at_out))
   # Character vector giving the names of biomasspools. Note this does not mean groups
   # which are considered as biomasspools in ATLANTIS but species which are only present in the bottom layer.
-  biomasspools <- get_bps()
+  biomasspools <- load_bps()
   if (select_variable != "N" & all(is.element(select_groups, biomasspools))) stop("The only output for Biomasspools is N.")
 
   # Get info from netcdf file! (Filestructure and all variable names)
