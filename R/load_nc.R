@@ -15,7 +15,6 @@
 #' @param check_acronyms Logical specifying if selected groups are active in the model run. This is used in automated runs.
 #' Since all groups are passed when plotting (plot_atlantis) is called via batch-file (which cannot be changed easily)
 #' this will result in errors if some groups are not active in the model run. By default this is TRUE.
-#' @family load functions
 #' @return Dataframe in long format with the following informations: Species, timestep, polygon, agecl and value (= "atoutput").
 
 #' @details This functions converts the ATLANTIS output to a dataframe which can be processed in R.
@@ -24,7 +23,7 @@
 #' load_atlantis_output(model_path = file.path("z:", "Atlantis", "ATLANTIS NSmodel base"), filename = "outputNorthSea.nc", select_groups = get_groups(), select_variable = "ResN", biomasspools = c("large_crabs", "small_epifauna", "sessile_epifauna", "epifaunal_macrobenthos"))
 #' @export
 
-load_atlantis_ncdf <- function(nc_out,
+load_nc <- function(nc_out,
                                file_fgs,
                                select_groups, 
                                select_variable, 
@@ -58,7 +57,7 @@ load_atlantis_ncdf <- function(nc_out,
   }
   
   # Load ATLANTIS output!
-  at_out <- RNetCDF::open.nc(filename = nc_out)
+  at_out <- ncdf4::nc_open(filename = nc_out)
   # Character vector giving the names of biomasspools. Note this does not mean groups 
   # which are considered as biomasspools in ATLANTIS but species which are only present in the bottom layer.
   biomasspools <- get_bps()
@@ -102,14 +101,14 @@ load_atlantis_ncdf <- function(nc_out,
   }
   search_clean <- do.call(c, search)
   
-  at_data <- lapply(search_clean, RNetCDF::var.get.nc, nc = at_out)
+  at_data <- lapply(search_clean, ncdf4::ncvar_get, nc = at_out)
   
   # Get final species and number of ageclasses per species
   final_species <- select_groups[sapply(lapply(select_groups, grepl, x = search_clean), any)]
   final_agecl <- read.table(file_fgs, sep = ",", header = T)
   final_agecl <- final_agecl$NumCohorts[sapply(final_species, function(x) which(x == final_agecl$Name))]
   
-  num_layers <- RNetCDF::var.get.nc(nc = at_out, varid = "numlayers")[,1]
+  num_layers <- ncdf4::ncvar_get(nc = at_out, varid = "numlayers")[,1]
   # add sediment layer!
   num_layers <- num_layers + ifelse(num_layers == 0, 0, 1)
   
