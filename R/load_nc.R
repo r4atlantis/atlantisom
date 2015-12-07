@@ -24,6 +24,11 @@
 #' @examples
 #' load_atlantis_output(model_path = file.path("z:", "Atlantis", "ATLANTIS NSmodel base"), filename = "outputNorthSea.nc", select_groups = get_groups(), select_variable = "ResN", biomasspools = c("large_crabs", "small_epifauna", "sessile_epifauna", "epifaunal_macrobenthos"))
 #' @export
+#'
+# Import '%>%' operator from magrittr
+#' @importFrom magrittr %>%
+#' @export
+magrittr::`%>%`
 
 load_nc <- function(nc_out,
                     nc_init,
