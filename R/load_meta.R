@@ -6,6 +6,7 @@
 #' @template verbose
 #'
 #' @author Kelli Faye Johnson
+#' @family load functions
 #' @return A \code{list} of metadata pertaining to a single Atlantis scenario.
 #'
 #' @export
