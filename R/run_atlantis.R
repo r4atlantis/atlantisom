@@ -16,15 +16,15 @@
 #' @author Sean Lucey
 #'
 #' @param scenario output name of the Atlantis scenario.
-#' @param path location of the dietfile.
+#' @template dir
 #'
 #' @return Returns a list object.
 #' @export
-run_atlantis <- function(scenario, path = "."){
+run_atlantis <- function(scenario, dir = getwd()){
   #Create file names for NetCDF files and DietCheck.txt
-  groups <- file.path(path, 'functionalGroups.csv')
-  TOTCATCH <- file.path(path, paste(scenario, '_TOTCATCH.nc'))
-  DietCheck <- file.path(path, paste(scenario, 'DietCheck.txt'))
+  groups <- file.path(dir, 'functionalGroups.csv')
+  TOTCATCH <- file.path(dir, paste(scenario, '_TOTCATCH.nc'))
+  DietCheck <- file.path(dir, paste(scenario, 'DietCheck.txt'))
 
   #Extract from NetCDF files
   numcatch <- load_atlantis_ncdf(TOTCATCH, groups, select_groups,
