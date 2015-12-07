@@ -1,0 +1,15 @@
+.Rproj.user
+.Rhistory
+.RData
+*.Rapp.history
+*.log
+*.fls
+*.fdb_latexmk
+*.aux
+*.vim
+*.bbl
+*.blg
+tags
+Session.vim
+*.pdfsync
+*.pdf
