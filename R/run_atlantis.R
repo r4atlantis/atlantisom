@@ -1,15 +1,25 @@
-#'Create Atlantis data set
+#' Load Atlantis scenario output
 #'
-#'Uses the diet_check.txt output from Atlantis to be used in the Atlantis
-#'Operating model.
+#' Reads in data generated from an Atlantis scenario and returns a list
+#' containing the desired information. The list contains the 'truth' as known
+#' from the Atlantis scenario. The truth can later be sampled
+#' from to create a data set with observation error.
+#' Currently, the \code{run_atlantis} depends on the following files
+#' being in your working directory:
+#' \itemize{
+#'  \item{"functionalGroups.csv"}
+#'  \item{"...TOTCATCH.nc"}
+#'  \item{"...DietCheck.txt"}
+#' }
 #'
-#'@family AtlantisOM
+#' @family run functions
+#' @author Sean Lucey
 #'
-#'@param scenario output name of the Atlantis scenario.
-#'@param path location of the dietfile.
+#' @param scenario output name of the Atlantis scenario.
+#' @param path location of the dietfile.
 #'
-#'@return Returns an AtlantisOM list object.
-#'@export
+#' @return Returns a list object.
+#' @export
 run_atlantis <- function(scenario, path = "."){
   #Create file names for NetCDF files and DietCheck.txt
   groups <- file.path(path, 'functionalGroups.csv')
