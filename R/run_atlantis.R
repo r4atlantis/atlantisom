@@ -23,8 +23,11 @@
 #'
 #' @return Returns a list object.
 #' @export
+# load_all()
+# run_atlantis("CCV3", "data", "functionalGroups.csv", "CalCurrentV3_utm.bgm",
+# "Demersal_P_Fish")
 run_atlantis <- function(scenario, dir = getwd(),
-  file_fgs, select_groups){
+  file_fgs, file_bgm, select_groups){
 
   # Create file names
   if (is.null(dir)) {
@@ -41,7 +44,8 @@ run_atlantis <- function(scenario, dir = getwd(),
   DietCheck <- paste0(scenario, 'DietCheck.txt')
 
   # Get the boundary boxes
-
+  allboxes <- load_box(dir = dir, file_bgm = file_bgm)
+  boxes <- get_boundary(allboxes)
 
   #Extract from NetCDF files
   # Need: dir, file_nc, bps, fgs, select_groups, select_variable,
@@ -49,7 +53,7 @@ run_atlantis <- function(scenario, dir = getwd(),
   numcatch <- load_nc(dir = dir, file_nc = TOTCATCH,
     fgs = fgs, select_groups = select_groups,
     select_variable = "Nums", check_acronyms = TRUE,
-    boxes = boxes)
+    bboxes = boxes)
 
   #Extract Diet Matrix
   diet_comp <- load_diet_comp(DietCheck)
