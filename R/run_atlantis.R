@@ -8,9 +8,10 @@
 #' being in your working directory:
 #' \itemize{
 #'  \item{"functionalGroups.csv"}
-#'  \item{"...TOTCATCH.nc"}
-#'  \item{"...DietCheck.txt"}
-#' }
+#'  \item{"[...]TOTCATCH.nc"}
+#'  \item{"[...]DietCheck.txt"}
+#' },
+#' where [...] specifies the entry used for the \code{scenario} argument.
 #'
 #' @family run functions
 #' @author Sean Lucey
@@ -20,16 +21,20 @@
 #'
 #' @return Returns a list object.
 #' @export
-run_atlantis <- function(scenario, dir = getwd()){
-  #Create file names for NetCDF files and DietCheck.txt
-  
-  groups.path <- file.path(dir, 'functionalGroups.csv') # This needs to be changed
-  # so that the name is not hard coded?
-  
-  # read in the functional groups csv since that is used by many functions,
-  # something like:
-  fgs <- read_functionalgroups(groups.path)
-  
+run_atlantis <- function(scenario, dir = getwd(),
+  file_fgs, ){
+
+  # Create file names
+  if (is.null(dir)) {
+    file.fgs <- file_fgs
+  } else {
+    file.fgs <- file.path(dir, file_fgs)
+  }
+
+  # Read in information
+  # Read in the functional groups csv since that is used by many functions
+  fgs <- read_functionalgroups(file.fgs)
+
   TOTCATCH <- file.path(dir, paste(scenario, '_TOTCATCH.nc'))
   DietCheck <- file.path(dir, paste(scenario, 'DietCheck.txt'))
 
