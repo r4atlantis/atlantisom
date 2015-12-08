@@ -37,10 +37,9 @@
 #' @importFrom magrittr %>%
 #' @export
 
-load_nc <- function(dir = getwd(), file_nc, bps, fgs,
-  select_groups =
+load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
+  select_variable =
   c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing"),
-  select_variable,
   remove_bboxes, check_acronyms,
   bboxes = c(0)) {
   # NOTE: The extraction procedure may look a bit complex... A different approach would be to
@@ -58,11 +57,8 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs,
     file.nc <- file.path(dir, file_nc)
   }
 
-  supported_variables <- c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing")
-  if (length(select_groups) == 0) stop("No Groups selected.")
-  if (length(select_variable) == 0) stop("No Variables selected.")
-  if (length(select_variable) > 1) stop("Only one variable allowed per function call.")
-  if (any(!is.element(select_variable, supported_variables))) stop(paste("Only", paste(supported_variables, collapse = ", "), "can be selected as 'select_variable'"))
+  # Check input of select_variable as only one value is allowed
+  select_variable <- match.arg(select_variable, several.ok = FALSE)
 
   # Check input structure!
   if (check_acronyms) {
@@ -282,6 +278,7 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs,
   return(result)
 }
 
+# load_all()
 # test <- load_nc(dir = "data", file_nc = "outputCCV3.nc",
 #   fgs = read.table(file.path("data", "functionalGroups.csv"),
 #   sep = ",", header = T),
@@ -289,3 +286,4 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs,
 #   select_variable = "ResN",
 #   select_groups = "Demersal_P_Fish",
 #   remove_bboxes = TRUE, check_acronyms = TRUE)
+# str(test)
