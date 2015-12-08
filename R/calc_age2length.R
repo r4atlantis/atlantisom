@@ -10,14 +10,16 @@
 #' @param reserven dataframe of reserve n by species, age class, box, depth,
 #' and time
 #' @template biolprm
+#' @template resn
+#' @template structn
+#' @template nums
 #' @param ncfile full path and filename of biology .prm file
 #' @template fgs
 #' The above should  be changed to only pass the pieces from these that
 #' we need.
 #' @param CVlenage The variability in length at age (currently same for all species)
 calc_age2length <- function(natage,
-                            structn,
-                            reserven,
+                            structn, reserven, nums,
                             biolprm,
                             ncfile,
                             fgs, # this calls the group csv file already brought in using run_atlantis
@@ -53,27 +55,22 @@ groups <- as.factor(fgs$Name)
 ####
 # Get the Weights at age and Numbers at age matrices
 ####
-require(ncdf)
-xx2 <- open.ncdf(ncfile)
-names2 <- rep(NA,xx2$nvar)
-for (i in 1:xx2$nvar) names2[i] <- xx2$var[[i]]$name
 
 group <- groups[1] #"Demersal_D_Fish"
 #get total N
 #groupN <- get.var.ncdf(xx2,paste(group,"_N",sep=""))
 #vol <- get.var.ncdf(xx2,"volume")
 #TotN <- sum(groupN*vol,na.rm=TRUE)
-#This just gets the dimensions, could also get them from
-for (age in 1:10)
-{
-  SRN <- get.var.ncdf(xx2,paste(group,age,"_ResN",sep=""))
-  SRN <- SRN + get.var.ncdf(xx2,paste(group,age,"_StructN",sep=""))
-  Nums <- get.var.ncdf(xx2,paste(group,age,"_Nums",sep=""))
-  if (age==1) TheN <- SRN*Nums
-  if (age>1) TheN <- TheN + SRN*Nums
-}
+# for (age in 1:10)
+# {
+  # SRN <- get.var.ncdf(xx2,paste(group,age,"_ResN",sep=""))
+  # SRN <- SRN + get.var.ncdf(xx2,paste(group,age,"_StructN",sep=""))
+  # Nums <- get.var.ncdf(xx2,paste(group,age,"_Nums",sep=""))
+  # if (age==1) TheN <- SRN*Nums
+  # if (age>1) TheN <- TheN + SRN*Nums
+# }
 
-times <- get.var.ncdf(xx2,"t")
+times <- length(unique(structn$time))
 
 
 #Define size comp storage array for length fequencies
@@ -88,14 +85,6 @@ Lenfreq = array(0,dim=c(length(groups),
                 time=1:dim(SRN)[3]))
 # temporary storage array for distribution of numbers for each age.
 Fracperbin = array(0,dim=c(length(upper.bins),dim(SRN)))
-
-### fixed variable values, used for debugging/testing
-#li_a_use = 0.0107
-#li_b_use = 2.91
-#Kwet = 20.0
-#Redfield_CN = 5.7
-#ages = 1:10
-#group <- groups[1]
 
 #arrays for mean size at age (weight and length)
 mulenage <- array(0,dim=c(length(groups),10,dim(SRN)[3]))
@@ -119,9 +108,12 @@ for (group in groups)
   # loop over ages
   for (age in ages)
   {
-    SRN <- get.var.ncdf(xx2,paste(ncgroup,age,"_ResN",sep=""))
-    SRN <- SRN + get.var.ncdf(xx2,paste(ncgroup,age,"_StructN",sep=""))
-    Nums <- get.var.ncdf(xx2,paste(ncgroup,age,"_Nums",sep=""))
+    SRN <- resn[resn$species %in% ncgroup, ] +
+           structn[structn$species %in% ncgroup, ]
+    Nums <- nums[nums$species %in% ncgroup, ]
+    # SRN <- get.var.ncdf(xx2,paste(ncgroup,age,"_ResN",sep=""))
+    # SRN <- SRN + get.var.ncdf(xx2,paste(ncgroup,age,"_StructN",sep=""))
+    # Nums <- get.var.ncdf(xx2,paste(ncgroup,age,"_Nums",sep=""))
 
     Nperage <- SRN*Nums
 
@@ -161,7 +153,6 @@ for (group in groups)
   #close the species loop
 }
 
-close.ncdf(xx2)
 #save the resulting length frequency array, this is probably what needs to be
 #returned from a call to the function
 #save(Lenfreq,file="Lenfreq_Numbers.RData")
@@ -177,6 +168,3 @@ lenout <- lenout[lenout$natlength>0,]
 return(lenout)
 # END THE SIZE COMP FUNCTION HERE.
 }
-
-
-
