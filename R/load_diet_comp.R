@@ -12,8 +12,14 @@
 #'@import data.table
 #'@export
 
-load_diet_comp <- function(dietfile, file_fgs){
-  diet <- as.data.table(read.table(dietfile, header = TRUE))
+load_diet_comp <- function(dir = getwd(), dietfile, fgs){
+
+  if (is.null(dir)) {
+    diet.file <- dietfile
+  } else {
+    diet.file <- file.path(dir, dietfile)
+  }
+  diet <- as.data.table(read.table(diet.file, header = TRUE))
 
   # remove unnessesary columns and add ones that aren't present in the data
   # Adding polygon and layer results in serious isses when we combine this dataset
@@ -39,7 +45,7 @@ load_diet_comp <- function(dietfile, file_fgs){
   diet$prey <- as.character(diet$prey)
 
   # Change species acronyms to actual names.
-  species_names <- read_functionalgroups(file_fgs = file_fgs)[, c("Name", "Code")]
+  species_names <- fgs[, c("Name", "Code")]
   diet <- dplyr::left_join(diet, species_names, by = c("species" = "Code"))
   diet$species <- NULL
   names(diet)[names(diet) == "Name"] <- "species"

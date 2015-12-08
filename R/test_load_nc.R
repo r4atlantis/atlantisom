@@ -1,6 +1,6 @@
 #Testing RNetCDF
 
-library(RNetCDF); library(arrayhelpers)
+# library(RNetCDF); library(arrayhelpers)
 
 #May need to check numbering (index starts from 1 in R)
 
@@ -40,41 +40,41 @@ test_load_ncdf <- function(scenario, path = ".", groups, var){
   return(load.out)
 }
 
-scenario <- 'neusDynEffort_Summit_2c'
-path <- 'C:/Users/Sean.Lucey/Desktop/Atlantis_Summit/Atlantis_Summit_2c_MPA_50'
-
-groups <- c('Pisciv_D_Fish', 'Pisciv_S_Fish', 'Pisciv_B_Fish')
-var <- c('Nums', 'ResN', 'StructN')
-
-neus.out <- test_load_ncdf(scenario, path, groups, var)
-
-
-
-
-
-
-
-
-
-neus <- open.nc(ncfile)
-print(neus)
-
-ndims <- file.inq.nc(neus)$ndims
-dimnames <- character(ndims)
-for(i in seq_len(ndims)) {
-  dimnames[i] <- dim.inq.nc(neus, i-1)$name
-}
-
-varnames <- 1:file.inq.nc(nc)$nvars
-for(i in 1:length(varnames)){
-  varnames[i] <- var.inq.nc(nc, i-1)$name
-}
-
-var <- 'Pisciv_D_Fish3_Nums'
-
-var.inq.nc(neus, var)
-
-Nums <- var.get.nc(neus, var)
-
-
-dietfile <- "C:\\Users\\Sean.Lucey\\Desktop\\Atlantis_Summit\\Poisiden\\RdemoPlotDietTimeseries\\outputCCV3DietCheck.txt"
+# scenario <- 'neusDynEffort_Summit_2c'
+# path <- 'C:/Users/Sean.Lucey/Desktop/Atlantis_Summit/Atlantis_Summit_2c_MPA_50'
+#
+# groups <- c('Pisciv_D_Fish', 'Pisciv_S_Fish', 'Pisciv_B_Fish')
+# var <- c('Nums', 'ResN', 'StructN')
+#
+# neus.out <- test_load_ncdf(scenario, path, groups, var)
+#
+#
+#
+#
+#
+#
+#
+#
+#
+# neus <- open.nc(ncfile)
+# print(neus)
+#
+# ndims <- file.inq.nc(neus)$ndims
+# dimnames <- character(ndims)
+# for(i in seq_len(ndims)) {
+#   dimnames[i] <- dim.inq.nc(neus, i-1)$name
+# }
+#
+# varnames <- 1:file.inq.nc(nc)$nvars
+# for(i in 1:length(varnames)){
+#   varnames[i] <- var.inq.nc(nc, i-1)$name
+# }
+#
+# var <- 'Pisciv_D_Fish3_Nums'
+#
+# var.inq.nc(neus, var)
+#
+# Nums <- var.get.nc(neus, var)
+#
+#
+# dietfile <- "C:\\Users\\Sean.Lucey\\Desktop\\Atlantis_Summit\\Poisiden\\RdemoPlotDietTimeseries\\outputCCV3DietCheck.txt"

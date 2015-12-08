@@ -16,15 +16,21 @@
 #' load_atlantis_ncdf_physics(model_path = file.path("z:", "Atlantis", "ATLANTIS NSmodel base"), filename = "outputNorthSea.nc", physic_variables = c("salt", "Temp"))
 #' @export
 
-load_nc_physics <- function(nc_out,
+load_nc_physics <- function(dir = getwd(), nc_out,
                                        physic_variables,
                                        aggregate_layers,
                                        remove_bboxes,
                             bboxes){
   if (is.null(physic_variables)) stop("No physical variables selected.")
 
+  if (is.null(dir)) {
+    nc.out <- nc_out
+  } else {
+    nc.out <- file.path(dir, nc_out)
+  }
+
   # Load ATLANTIS output!
-  at_out <- RNetCDF::open.nc(con = nc_out)
+  at_out <- RNetCDF::open.nc(con = nc.out)
   on.exit(RNetCDF::close.nc(at_out))
 
   # Extract number of timesteps, polygons and layers from netcdf
