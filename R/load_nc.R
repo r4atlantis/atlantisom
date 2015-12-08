@@ -4,7 +4,7 @@
 #' converts them to a \code{data.frame}.
 #' @template dir
 #' @template file_nc
-#' @template file_init
+#' @template bps
 #' @template file_fgs
 #' @param select_groups Character vector of funtional groups to select.
 #'   Names have to match the ones used in the ncdf file, and therefore must
@@ -38,7 +38,7 @@
 #' @export
 
 load_nc <- function(dir = getwd(),
-  file_nc, file_init, file_fgs,
+  file_nc, bps, file_fgs,
   select_groups =
   c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing"),
   select_variable,
@@ -59,9 +59,6 @@ load_nc <- function(dir = getwd(),
     file.nc <- file.path(dir, file_nc)
   }
 
-  if (strsplit(file_init, "\\.")[[1]][2] != "nc") {
-    stop("The argument for file_init,", file_init, "does not end in nc")
-  }
   supported_variables <- c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing")
   if (length(select_groups) == 0) stop("No Groups selected.")
   if (length(select_variable) == 0) stop("No Variables selected.")
@@ -89,10 +86,7 @@ load_nc <- function(dir = getwd(),
   at_out <- RNetCDF::open.nc(con = file.nc)
   on.exit(RNetCDF::close.nc(at_out))
 
-  # Character vector giving the names of biomasspools. Note this does not mean groups
-  # which are considered as biomasspools in ATLANTIS but species which are only present in the bottom layer.
-  biomasspools <- load_bps(dir = dir, file_fgs = file_fgs, file_init = file_init)
-  if (select_variable != "N" & all(is.element(select_groups, biomasspools))) stop("The only output for Biomasspools is N.")
+  if (select_variable != "N" & all(is.element(select_groups, bps))) stop("The only output for Biomasspools is N.")
 
   # Get info from netcdf file! (Filestructure and all variable names)
   var_names_ncdf <- sapply(seq_len(RNetCDF::file.inq.nc(at_out)$nvars - 1),
@@ -194,8 +188,8 @@ load_nc <- function(dir = getwd(),
   if (length(at_data3d) >= 1) {
     # Remove biomasspools if selected variable is "N"!
     if (select_variable == "N") {
-      int_fs <- final_species[!is.element(final_species, biomasspools)]
-      int_fa <- final_agecl[!is.element(final_species, biomasspools)]
+      int_fs <- final_species[!is.element(final_species, bps)]
+      int_fa <- final_agecl[!is.element(final_species, bps)]
       # Note this only works if age-structured vertebrates have 10 ageclasses!
       int_fa[int_fa == 10] <- 1
     }
@@ -221,8 +215,8 @@ load_nc <- function(dir = getwd(),
   if (length(at_data2d) >= 1) {
     # Only select biomasspools if selected variable is "N"!
     if (select_variable == "N") {
-      int_fs <- final_species[is.element(final_species, biomasspools)]
-      int_fa <- final_agecl[is.element(final_species, biomasspools)]
+      int_fs <- final_species[is.element(final_species, bps)]
+      int_fa <- final_agecl[is.element(final_species, bps)]
     }
     if (select_variable == "Grazing") int_fa <- 1 # age-structured invert groups are combined in ncdf file!
     for (i in seq_along(at_data2d)) {# for loop over all variables!
@@ -292,7 +286,7 @@ load_nc <- function(dir = getwd(),
 
 # test <- load_nc(dir = "data", file_nc = "outputCCV3.nc",
 #   file_fgs = file.path(directory, "functionalGroups.csv"),
-#   file_init = "DIVCalCurrentV3_Biol.nc",
+#   bps = load_bps("data", "data/functionalGroups.csv", "DIVCalCurrentV3_Biol.nc"),
 #   select_variable = "ResN",
 #   select_groups = "Demersal_P_Fish",
 #   remove_bboxes = TRUE, check_acronyms = TRUE)
