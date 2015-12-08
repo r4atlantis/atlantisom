@@ -27,68 +27,49 @@
 
 #' @export
 #' @rdname load_groups
-load_groups <- function(dir = getwd(), file_fgs){
-  result <- read_functionalgroups(dir = dir, file_fgs = file_fgs)
-  result <- result$Name
+load_groups <- function(fgs){
+  result <- fgs$Name
   return(result)
 }
 
 #' @export
 #' @rdname load_groups
-read_functionalgroups <- function(dir = getwd(), file_fgs){
-  if (is.null(dir)) {
-    file.fgs <- file_fgs
-  } else {
-    file.fgs <- file.path(dir, file_fgs)
-  }
-  result <- read.table(file = file.fgs, sep = ",", header = T, stringsAsFactors = F)
-  return(result)
-}
-
-
-#' @export
-#' @rdname load_groups
-load_age_groups <- function(dir = getwd(), file_fgs){
-  result <- read_functionalgroups(dir = dir, file_fgs = file_fgs)
-  result <- subset(result, NumCohorts == 10)$Name
+load_age_groups <- function(fgs){
+  result <- subset(fgs, NumCohorts == 10)$Name
   return(result)
 }
 
 #' @export
 #' @rdname load_groups
-load_acronyms <- function(dir = getwd(), file_fgs){
-  result <- read_functionalgroups(dir = dir, file_fgs = file_fgs)
-  result <- result[, names(result) == "Code"]
+load_acronyms <- function(fgs){
+  result <- fgs[, names(fgs) == "Code"]
   return(result)
 }
 
 #' @export
 #' @rdname load_groups
-load_age_acronyms <- function(dir = getwd(), file_fgs){
-  result <- read_functionalgroups(dir = dir, file_fgs = file_fgs)
-  result <- subset(result, NumCohorts == 10, select = "Code")[,1]
+load_age_acronyms <- function(fgs){
+  result <- subset(fgs, NumCohorts == 10, select = "Code")[,1]
   return(result)
 }
 
 #' @export
 #' @rdname load_groups
-load_nonage_acronyms <- function(dir = getwd(), file_fgs){
-  result <- read_functionalgroups(dir = dir, file_fgs = file_fgs)
-  result <- subset(result, NumCohorts != 10, select = "Code")[,1]
+load_nonage_acronyms <- function(fgs){
+  result <- subset(fgs, NumCohorts != 10, select = "Code")[,1]
   return(result)
 }
 
 # S
 #' @export
 #' @rdname load_groups
-load_fish_acronyms <- function(dir = getwd(), file_fgs){
-  result <- read_functionalgroups(dir = dir, file_fgs = file_fgs)
+load_fish_acronyms <- function(fgs){
   # Older models use the column GroupType, newer ones use InvertType.
   supported_columns <- c("InvertType", "GroupType")
-  if (!any(is.element(names(result), supported_columns))) {
+  if (!any(is.element(names(fgs), supported_columns))) {
     stop(paste("Column names in", file_fgs, "do not match any of", supported_columns))
   } else {
-    result <- result$Code[result[, is.element(names(result), supported_columns)] %in% c("FISH", "SHARK")]
+    result <- fgs$Code[fgs[, is.element(names(fgs), supported_columns)] %in% c("FISH", "SHARK")]
   }
   return(result)
 }
@@ -101,7 +82,7 @@ load_fish_acronyms <- function(dir = getwd(), file_fgs){
 #' the init-file to the function call anymore.
 #' @export
 #' @rdname helper_functions
-load_bps <- function(dir = getwd(), file_fgs, file_init){
+load_bps <- function(dir = getwd(), fgs, file_init){
   if (strsplit(file_init, "\\.")[[1]][2] != "nc") {
     stop(paste("The file_init argument", file_init, "does not end in .nc"))
   }
@@ -113,7 +94,7 @@ load_bps <- function(dir = getwd(), file_fgs, file_init){
   init <- RNetCDF::open.nc(con = file.init)
   on.exit(RNetCDF::close.nc(init))
 
-  all_groups <- load_groups(dir = dir, file_fgs = file_fgs)
+  all_groups <- load_groups(fgs)
   init_vars <- sapply(seq_len(RNetCDF::file.inq.nc(init)$nvars - 1),
                       function(x) RNetCDF::var.inq.nc(init, x)$name)
 

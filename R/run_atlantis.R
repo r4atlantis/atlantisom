@@ -26,6 +26,14 @@
 # load_all()
 # run_atlantis("CCV3", "data", "functionalGroups.csv", "CalCurrentV3_utm.bgm",
 # "Demersal_P_Fish")
+
+# dir <- file.path("C:", "CaliforniaCurrent", "PoseidonAdventureCalCurrentINPUTdraft1", "CalCurrent65YearsCurrentFishingRates")
+# file_fgs <- "CalCurrentV3Groups.csv"
+# scenario <- "CCV3"
+# file_bgm <- "CalCurrentV3_utm.bgm"
+# file_init <- "DIVCalCurrentV3_Biol.nc"
+# select_groups <- load_groups(fgs)
+
 run_atlantis <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups){
 
@@ -38,10 +46,13 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   # Read in information
   # Read in the functional groups csv since that is used by many functions
-  fgs <- read_functionalgroups(file.fgs)
+  fgs <- read.table(file = file.fgs, sep = ",", header = T, stringsAsFactors = F)
 
-  TOTCATCH <- paste0(scenario, '_TOTCATCH.nc')
-  DietCheck <- paste0(scenario, 'DietCheck.txt')
+  nc_catch <- paste0("output", scenario, 'CATCH.nc')
+  dietcheck <- paste0("output", scenario, 'DietCheck.txt')
+  nc_out <- paste0("output", scenario, ".nc")
+  nc_prod <- paste0("output", scenario, "PROD.nc")
+  biol_param <- "CalCurrentV3_Biol.prm"
 
   # Get the boundary boxes
   allboxes <- load_box(dir = dir, file_bgm = file_bgm)
@@ -50,17 +61,79 @@ run_atlantis <- function(scenario, dir = getwd(),
   #Extract from NetCDF files
   # Need: dir, file_nc, bps, fgs, select_groups, select_variable,
   # check_acronyms, bboxes
-  numcatch <- load_nc(dir = dir, file_nc = TOTCATCH,
-    fgs = fgs, select_groups = select_groups,
-    select_variable = "Nums", check_acronyms = TRUE,
-    bboxes = boxes)
+  nums <- load_nc(dir = dir,
+                  file_nc = nc_out,
+                  bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                  fgs = fgs,
+                  select_groups = select_groups,
+                  select_variable = "Nums",
+                  check_acronyms = T,
+                  bboxes = boxes)
 
-  #Extract Diet Matrix
-  diet_comp <- load_diet_comp(DietCheck)
+  resn <- load_nc(dir = dir,
+                  file_nc = nc_out,
+                  bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                  fgs = fgs,
+                  select_groups = select_groups,
+                  select_variable = "ResN",
+                  check_acronyms = T,
+                  bboxes = boxes)
 
-  #Create list object
-  Atlantis <- list(numcatch, diet_comp)
-  return(Atlantis)
+  structn <- load_nc(dir = dir,
+                  file_nc = nc_out,
+                  bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                  fgs = fgs,
+                  select_groups = select_groups,
+                  select_variable = "StructN",
+                  check_acronyms = T,
+                  bboxes = boxes)
+
+  eat <- load_nc(dir = dir,
+                     file_nc = nc_prod,
+                     bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                     fgs = fgs,
+                     select_groups = select_groups,
+                     select_variable = "Eat",
+                     check_acronyms = T,
+                     bboxes = boxes)
+
+  grazing <- load_nc(dir = dir,
+                 file_nc = nc_prod,
+                 bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                 fgs = fgs,
+                 select_groups = select_groups,
+                 select_variable = "Grazing",
+                 check_acronyms = T,
+                 bboxes = boxes)
+
+  vol <- load_nc_physics(dir = dir,
+                         nc_out = nc_out,
+                         physic_variables = "volume",
+                         aggregate_layers = F,
+                         remove_bboxes = T,
+                         bboxes = boxes)
+
+  catch <- load_nc(dir = dir,
+                 file_nc = nc_catch,
+                 bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                 fgs = fgs,
+                 select_groups = select_groups,
+                 select_variable = "Catch",
+                 check_acronyms = T,
+                 bboxes = boxes)
+
+  diet <- load_diet_comp(dir = dir, dietfile = dietcheck, fgs = fgs)
+
+  biol <- load_biolprm(dir = dir, file_biolprm = biol_param)
+  biomass_eaten <- calc_pred_diet(dietcomp = diet, eat = eat, grazing = grazing, vol = vol, biolprm = biol)
+
+  biomass_ages <- calc_biomass_age(nums = nums, resn = resn, structn = structn, biolprm = biol)
+
+  result <- list(biomass_eaten, biomass_ages, catch, nums)
+
+  save(result, file = file.path(dir, paste0("output", scenario, "run_atlantis.RData")))
+
+  return(result)
 }
 
 

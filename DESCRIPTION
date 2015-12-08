@@ -16,16 +16,20 @@ Authors@R: c(
   person("Matteo", "Sinerchia", email = "matteo.sinerchia@iamc.cnr.it", role = "aut"),
   person("Howard", "Townsend", email = "howard.townsend@noaa.gov", role = "aut")
   )
-Description: The atlantisom package develops data sets for use in other modelling
-  frameworks from an Atlantis scenario. Functions located within the package may
-  be helpful for users of Atlantis wishing to look at model output as well.
+Description: The atlantisom package develops data sets for use in other
+    modelling frameworks from an Atlantis scenario. Functions located within
+    the package may be helpful for users of Atlantis wishing to look at model
+    output as well.
 License: What license is it under?
 LazyData: TRUE
-Imports: data.table,
-         RNetCDF,
-	 stringr,
-	 dplyr,
-	 tidyr,
-	 magrittr
-Suggests: knitr
+Imports:
+    data.table,
+    RNetCDF,
+    stringr,
+    dplyr,
+    tidyr,
+    magrittr
+Suggests:
+    knitr
 VignetteBuilder: knitr
+RoxygenNote: 5.0.1
