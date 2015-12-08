@@ -13,8 +13,6 @@
 #'   loaded. Only one variable of the options available (i.e., \code{c(
 #'   "N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing")
 #'   }) can be loaded at a time.
-#' @param remove_bboxes A logical, specifying if boundary boxes should be excluded.
-#'   The default value is \code{TRUE}.
 #' @param check_acronyms A logical, specifying if selected groups are active
 #'   in the model run. This is used in automated runs.
 #'   All groups are passed when plotting is called via batch-file,
@@ -24,8 +22,9 @@
 #'   Note this does not neet to include islands, as the presence of islands will
 #'   automatically be determined inside the \code{load_nc} function. The default is
 #'   a vector of length one, which includes \code{c(0)}, because Atlantis must be
-#'   configured to always have the first box be a boundary box. One can use
-#'   \code{\link{load_box}} and \code{\link{get_boundary}}.
+#'   configured to always have the first box be a boundary box.
+#'   One can use \code{\link{load_box}} and \code{\link{get_boundary}} to get boxes.
+#'   If argument is \code{NULL} then boundary boxes will not be removed.
 #' @family load functions
 #' @return A \code{data.frame} in long format with the following coumn names:
 #'   Species, timestep, polygon, agecl, and atoutput (i.e., variable).
@@ -40,8 +39,7 @@
 load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   select_variable =
   c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing"),
-  remove_bboxes, check_acronyms,
-  bboxes = c(0)) {
+  check_acronyms = TRUE, bboxes = c(0)) {
   # NOTE: The extraction procedure may look a bit complex... A different approach would be to
   # create a dataframe for each variable (e.g. GroupAge_Nums) and combine all dataframes
   # at the end. However, this requires alot more storage and the code wouldn't be highly
@@ -128,18 +126,19 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   # add sediment layer!
   num_layers <- num_layers + ifelse(num_layers == 0, 0, 1)
 
-  # Create an array of layerids. Every entry in the array indicates if a layer is present (= 1)
-  # or not (= 0). Boxes without layers (= islands) have only 0s as id! This is used lateron to remove
-  # data from non-existent layers! By default output should be 0 in those layers. However, this approach is
-  # much more robust as true zeros are kept!!! In addition all layers in boundary boxes are also set
-  # to 0 if remove_bboxes is TRUE! This will speed up the code ALOT! In addition is helps to vectorise
-  # the dataframe creation. Applying a boolean array to an array results in a vector!
+  # Create an array of layerids.
+  # Every entry in the array indicates if a layer is present (= 1) or not (= 0).
+  # Boxes without layers (= islands) have only 0s as id,
+  # used later on to remove data from non-existent layers!
+  # By default output should be 0 in those layers.
+  # Layers in boundary boxes are set to 0 if bboxes is anything other than NULL!
+  # Applying a boolean array to an array results in a vector!
   for (i in seq_along(num_layers)) {
     if (i == 1) layerid <- array(dim = c(n_layers, n_boxes))
     if (num_layers[i] == 0) {
       layerid[, i] <- 0
     } else {
-      if (remove_bboxes & is.element((i - 1), bboxes)) {
+      if (!is.null(bboxes) & is.element((i - 1), bboxes)) {
         layerid[, i] <- 0
       } else {
         layerid[, i] <- c(rep(0, times = n_layers - num_layers[i]), rep(1, times = num_layers[i]))
@@ -153,7 +152,7 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   boxes <- 0:(n_boxes - 1)
   # Remove islands! and boundary boxes!
   island_ids <- num_layers == 0
-  if (remove_bboxes) {
+  if (!is.null(bboxes)) {
     boundary_ids <- is.element(boxes, bboxes)
     island_ids <- island_ids | boundary_ids
   }
@@ -285,5 +284,5 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
 #   bps = load_bps("data", "data/functionalGroups.csv", "DIVCalCurrentV3_Biol.nc"),
 #   select_variable = "ResN",
 #   select_groups = "Demersal_P_Fish",
-#   remove_bboxes = TRUE, check_acronyms = TRUE)
+#   check_acronyms = TRUE)
 # str(test)
