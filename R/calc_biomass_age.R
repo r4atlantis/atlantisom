@@ -19,8 +19,8 @@
 calc_biomass_age <- function(nums, resn, structn, biolprm){
   datalist <- list(nums, resn, structn)
 
-  x_cn <- biolprm$redfieldcn
-  k_wetdry <- biolprm$kgw2d
+  x_cn <- as.numeric(as.character(biolprm$redfieldcn))
+  k_wetdry <- as.numeric(as.character(biolprm$kgw2d))
 
   # Conversion factor from mg N to t wet-weight
   bio_conv <- x_cn * k_wetdry / 1000000000
