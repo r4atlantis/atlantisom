@@ -25,7 +25,7 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   colnames(biolprm) <- seq(dim(biolprm)[2])
 
   # Get Redfield CN ratio
-  browser()
+  #browser()
   r.cn <- biolprm[grep("X_CN", biolprm[, 1]), 2]
 
   # Get kilogram wet to dry
