@@ -28,7 +28,7 @@
 # "Demersal_P_Fish")
 
 run_atlantis <- function(scenario, dir = getwd(),
-  file_fgs, file_bgm, select_groups){
+  file_fgs, file_bgm, select_groups, file_init){
 
   # Create file names
   if (is.null(dir)) {
@@ -62,6 +62,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                   select_variable = "Nums",
                   check_acronyms = T,
                   bboxes = boxes)
+  print("Numbers read in.")
 
   resn <- load_nc(dir = dir,
                   file_nc = nc_out,
@@ -71,6 +72,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                   select_variable = "ResN",
                   check_acronyms = T,
                   bboxes = boxes)
+  print("Reserve nitrogen read in.")
 
   structn <- load_nc(dir = dir,
                   file_nc = nc_out,
@@ -80,6 +82,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                   select_variable = "StructN",
                   check_acronyms = T,
                   bboxes = boxes)
+  print("Structural nitrogen read in.")
 
   eat <- load_nc(dir = dir,
                      file_nc = nc_prod,
@@ -114,9 +117,11 @@ run_atlantis <- function(scenario, dir = getwd(),
                  select_variable = "Catch",
                  check_acronyms = T,
                  bboxes = boxes)
+  print("catch read in.")
 
   diet <- load_diet_comp(dir = dir, dietfile = dietcheck, fgs = fgs)
 
+  print("***Start calc_functions")
   biol <- load_biolprm(dir = dir, file_biolprm = biol_param)
   biomass_eaten <- calc_pred_diet(dietcomp = diet, eat = eat, grazing = grazing, vol = vol, biolprm = biol)
 
@@ -124,8 +129,10 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   result <- list(biomass_eaten, biomass_ages, catch, nums)
 
+  print("***Start writing to HDD.")
   save(result, file = file.path(dir, paste0("output", scenario, "run_atlantis.RData")))
 
+  print("Hurray, done!")
   return(result)
 }
 
@@ -136,6 +143,11 @@ run_atlantis <- function(scenario, dir = getwd(),
 # file_init <- "DIVCalCurrentV3_Biol.nc"
 # select_groups <- load_groups(fgs)
 
-# test <-
+# test <- run_atlantis(scenario = "CCV3",
+#                      dir = dir,
+#                      file_fgs = "CalCurrentV3Groups.csv",
+#                      file_bgm = "CalCurrentV3_utm.bgm",
+#                      select_groups = load_groups(fgs = read.table(file.path(dir, "CalCurrentV3Groups.csv"), sep = ",", header = T, stringsAsFactors = F)),
+#                      file_init = "DIVCalCurrentV3_Biol.nc")
 
 
