@@ -30,11 +30,12 @@
 #'   Species, timestep, polygon, agecl, and atoutput (i.e., variable).
 #'
 #' @keywords gen
-#' @examples
 #' @author ALex Keth
 #'
+# Import '%>%' operator from magrittr
 #' @importFrom magrittr %>%
 #' @export
+magrittr::`%>%`
 
 load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   select_variable =
@@ -286,3 +287,14 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
 #   select_groups = "Demersal_P_Fish",
 #   check_acronyms = TRUE)
 # str(test)
+
+# main_path   <- file.path("C:", "CaliforniaCurrent", "PoseidonAdventureCalCurrentINPUTdraft1")
+# test2 <- load_nc(dir = NULL,
+#                  file_nc = file.path(main_path, "CalCurrent65YearsCurrentFishingRates", "outputCCV3.nc"),
+#                  fgs = read.table(file.path(main_path, "CalCurrentV3Groups.csv"), sep = ",", header = T),
+#                  bps = load_bps(dir = NULL, file_fgs = file.path(main_path, "CalCurrentV3Groups.csv"), file_init = file.path(main_path, "DIVCalCurrentV3_Biol.nc")),
+#                  select_variable = "ResN",
+#                  select_groups = "Demersal_P_Fish",
+#                  check_acronyms = T)
+# str(test2)
+
