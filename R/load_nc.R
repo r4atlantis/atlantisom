@@ -1,44 +1,49 @@
 #' Load Atlantis outputfiles (netcdf)
 #'
-#' This function loads Atlantis outputfiles (netcdf) and converts them to a dataframe.
+#' This function loads Atlantis outputfiles (any netcdf file) and
+#' converts them to a \code{data.frame}.
 #' @template dir
-#' @param file_nc A character value giving the file name of the netcdf file
-#'   you are trying to read in. The file should be located in your current working
-#'   directory or the folder you specify in \code{dir}.
-#' @param file_init A character value giving the file name of the intial conditions
-#'   file. The file should be located in your current working directory or the
-#'   folder you specify in \code{dir}.
-#'   Usually the file is named \code{"init[...].nc".}, but it must end in \code{.nc}.
-#' @param file_fgs Connection of the ATLANTIS functional groups file given as complete folder/filename string.
-#' Usually "functionalGroups.csv".
-#' @param select_groups Character vector of funtional groups which shall be plotted. Names have to match the ones
-#' used in the ncdf file. Check column "Name" in "functionalGroups.csv" for clarification.
-#' @param select_variable Character value spefifying which variables shall be loaded. Only one variable
-#' can be loaded at a time. Currently, only "N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn",
-#' "Grazing" can be selected.
-#' @param remove_bboxes Logical specifying if an boundary boxes  shall be excluded. Default is T.
-#' @param check_acronyms Logical specifying if selected groups are active in the model run. This is used in automated runs.
-#' Since all groups are passed when plotting (plot_atlantis) is called via batch-file (which cannot be changed easily)
-#' this will result in errors if some groups are not active in the model run. By default this is TRUE.
+#' @template file_nc
+#' @template file_init
+#' @template file_fgs
+#' @param select_groups Character vector of funtional groups to select.
+#'   Names have to match the ones used in the ncdf file, and therefore must
+#'   be in the column \code{"Name"} in the \code{file_fgs} file.
+#' @param select_variable A character value spefifying which variable to return.
+#'   loaded. Only one variable of the options available (i.e., \code{c(
+#'   "N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing")
+#'   }) can be loaded at a time.
+#' @param remove_bboxes A logical, specifying if boundary boxes should be excluded.
+#'   The default value is \code{TRUE}.
+#' @param check_acronyms A logical, specifying if selected groups are active
+#'   in the model run. This is used in automated runs.
+#'   All groups are passed when plotting is called via batch-file,
+#'   (which cannot be changed easily) this will result in errors if some
+#'   groups are not active in the model run. By default this argument is \code{TRUE}.
+#' @param bboxes A numeric vector specifying the boundary boxes.
+#'   Note this does not neet to include islands, as the presence of islands will
+#'   automatically be determined inside the \code{load_nc} function. The default is
+#'   a vector of length one, which includes \code{c(0)}, because Atlantis must be
+#'   configured to always have the first box be a boundary box. One can use
+#'   \code{\link{load_box}} and \code{\link{get_boundary}}.
 #' @family load functions
-#' @return Dataframe in long format with the following informations: Species, timestep, polygon, agecl and value (= "atoutput").
-
-#' @details This functions converts the ATLANTIS output to a dataframe which can be processed in R.
+#' @return A \code{data.frame} in long format with the following coumn names:
+#'   Species, timestep, polygon, agecl, and atoutput (i.e., variable).
+#'
 #' @keywords gen
 #' @examples
-#' @export
+#' @author ALex Keth
 #'
 #' @importFrom magrittr %>%
 #' @export
 
-load_nc <- function(dir = getwd(), file_nc,
-                    file_init,
-                    file_fgs,
-                    select_groups,
-                    select_variable,
-                    remove_bboxes,
-                    check_acronyms,
-                    bboxes = c(0, 88)){
+load_nc <- function(dir = getwd(),
+  file_nc, file_init, file_fgs,
+  select_groups =
+  c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing"),
+  select_variable,
+  remove_bboxes, check_acronyms,
+  bboxes = c(0)){
   # NOTE: The extraction procedure may look a bit complex... A different approach would be to
   # create a dataframe for each variable (e.g. GroupAge_Nums) and combine all dataframes
   # at the end. However, this requires alot more storage and the code wouldn't be highly
