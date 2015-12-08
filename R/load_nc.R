@@ -5,10 +5,10 @@
 #' @template dir
 #' @template file_nc
 #' @template bps
-#' @template file_fgs
+#' @template fgs
 #' @param select_groups Character vector of funtional groups to select.
 #'   Names have to match the ones used in the ncdf file, and therefore must
-#'   be in the column \code{"Name"} in the \code{file_fgs} file.
+#'   be in the column \code{"Name"} in the \code{fgs}.
 #' @param select_variable A character value spefifying which variable to return.
 #'   loaded. Only one variable of the options available (i.e., \code{c(
 #'   "N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing")
@@ -37,13 +37,12 @@
 #' @importFrom magrittr %>%
 #' @export
 
-load_nc <- function(dir = getwd(),
-  file_nc, bps, file_fgs,
+load_nc <- function(dir = getwd(), file_nc, bps, fgs,
   select_groups =
   c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing"),
   select_variable,
   remove_bboxes, check_acronyms,
-  bboxes = c(0)){
+  bboxes = c(0)) {
   # NOTE: The extraction procedure may look a bit complex... A different approach would be to
   # create a dataframe for each variable (e.g. GroupAge_Nums) and combine all dataframes
   # at the end. However, this requires alot more storage and the code wouldn't be highly
@@ -67,16 +66,16 @@ load_nc <- function(dir = getwd(),
 
   # Check input structure!
   if (check_acronyms) {
-    active_groups <- read.table(file_fgs, sep = ",", header = T)
-    active_groups <- as.vector(subset(active_groups, IsTurnedOn == 1)$Name)
+    active_groups <- as.vector(subset(fgs, IsTurnedOn == 1)$Name)
     inactive_groups <- select_groups[which(!is.element(select_groups, active_groups))]
     if (length(inactive_groups) >= 1) {
       select_groups <- select_groups[!is.element(select_groups, inactive_groups)]
-      warning(paste(paste("Some selected groups are not active in the model run. Check 'IsTurnedOn' in", file_fgs, "\n"),
+      warning(paste(paste("Some selected groups are not active in the model run. Check 'IsTurnedOn' in fgs\n"),
                     paste(inactive_groups, collapse = "\n")))
     }
     if (all(!is.element(select_groups, active_groups))) {
-      stop(paste("None of the species selected are active in the model run. Check spelling and Check 'IsTurnedOn' in", file_fgs, "\n"))
+      stop(paste("None of the species selected are active in the model run.",
+        "Check spelling and Check 'IsTurnedOn' in fgs"))
     }
   }
 
@@ -127,8 +126,7 @@ load_nc <- function(dir = getwd(),
 
   # Get final species and number of ageclasses per species
   final_species <- select_groups[sapply(lapply(select_groups, grepl, x = search_clean), any)]
-  final_agecl <- read.table(file_fgs, sep = ",", header = T)
-  final_agecl <- final_agecl$NumCohorts[sapply(final_species, function(x) which(x == final_agecl$Name))]
+  final_agecl <- fgs$NumCohorts[sapply(final_species, function(x) which(x == fgs$Name))]
 
   num_layers <- RNetCDF::var.get.nc(ncfile = at_out, variable = "numlayers")[,1]
   # add sediment layer!
@@ -285,7 +283,8 @@ load_nc <- function(dir = getwd(),
 }
 
 # test <- load_nc(dir = "data", file_nc = "outputCCV3.nc",
-#   file_fgs = file.path(directory, "functionalGroups.csv"),
+#   fgs = read.table(file.path("data", "functionalGroups.csv"),
+#   sep = ",", header = T),
 #   bps = load_bps("data", "data/functionalGroups.csv", "DIVCalCurrentV3_Biol.nc"),
 #   select_variable = "ResN",
 #   select_groups = "Demersal_P_Fish",
