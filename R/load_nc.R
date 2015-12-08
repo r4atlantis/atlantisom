@@ -6,9 +6,7 @@
 #' @template file_nc
 #' @template bps
 #' @template fgs
-#' @param select_groups Character vector of funtional groups to select.
-#'   Names have to match the ones used in the ncdf file, and therefore must
-#'   be in the column \code{"Name"} in the \code{fgs}.
+#' @template select_groups
 #' @param select_variable A character value spefifying which variable to return.
 #'   loaded. Only one variable of the options available (i.e., \code{c(
 #'   "N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing")
