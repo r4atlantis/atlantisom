@@ -10,15 +10,14 @@
 #' per timesetp, ageclass, and polygon. The dataframe has to origin from load_nc using "Eat" as select variable.
 #' @param grazing Dataframe containing the consumed biomass in mg N for each functional-group ("species")
 #' per timesetp, ageclass, and polygon. The dataframe has to origin from load_nc using "Grazing" as select variable.
-#' @param prm_biol Connction of the biologial parameter file given as complete folder-filename string.
-#' usually "[...]_biol.prm".
+#' @template biolprm
 #' @return Dataframe in tidy format with the following columns: species, agecl, polygon, time,
 #' atoutput, vol, dietcomp, prey, bio_eaten.
 
 #' @export
 #' @author Alexander Keth
 
-calc_pred_diet <- function(dietcomp, eat, grazing, vol, prm_biol){
+calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
   dietcomp <- dplyr::filter(dietcomp, dietcomp > 0)
 
   # Eat and razing is given per species, agecl, polygon and time.
@@ -32,10 +31,8 @@ calc_pred_diet <- function(dietcomp, eat, grazing, vol, prm_biol){
     dplyr::left_join(vol) %>%
     dplyr::left_join(dietcomp, by = c("species", "agecl", "time"))
 
-  biolprm <- readLines(con = prm_biol)
-
-  x_cn <- str_split_twice(biolprm[grep(pattern = "X_CN", x = biolprm)])
-  k_wetdry <- str_split_twice(biolprm[grep(pattern = "k_wetdry", x = biolprm)])
+  x_cn <- biolprm$redfieldcn
+  k_wetdry <- biolprm$kgw2d
 
   # Conversion factor from mg N to t wet-weight
   bio_conv <- x_cn * k_wetdry / 1000000000
