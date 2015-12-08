@@ -48,5 +48,11 @@ load_diet_comp <- function(dietfile, file_fgs){
   diet$prey <- NULL
   names(diet)[names(diet) == "Name"] <- "prey"
 
+  # Convert days to timesteps
+  # NOTE: This is hardcoded as we do not have access to the run.prm file at
+  # the moment. The timestep used in the model-run has be extracted from this
+  # file to make sure the code is running with other models.
+  diet$time <- diet$time / 365
+
   return(diet)
 }
