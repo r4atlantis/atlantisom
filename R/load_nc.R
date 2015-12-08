@@ -37,7 +37,7 @@ magrittr::`%>%`
 
 load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   select_variable =
-  c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing"),
+  c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing", "Catch"),
   check_acronyms = TRUE, bboxes = c(0)) {
   # NOTE: The extraction procedure may look a bit complex... A different approach would be to
   # create a dataframe for each variable (e.g. GroupAge_Nums) and combine all dataframes
