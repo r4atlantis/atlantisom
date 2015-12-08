@@ -12,14 +12,14 @@
 #'@import data.table
 #'@export
 
-load_diet_comp <- function(dietfile){
+load_diet_comp <- function(dietfile, file_fgs){
   diet <- as.data.table(read.table(dietfile, header = TRUE))
 
   # remove unnessesary columns and add ones that aren't present in the data
   # Adding polygon and layer results in serious isses when we combine this dataset
   # with other datasets which have this information. Therefore those columns
   # cannot be added as NA columns! We should also keep in mind that hardcoding
-  # the removal of the column stock may result in bugs when models actually 
+  # the removal of the column stock may result in bugs when models actually
   # work woth multiple stocks (the CaCu model only has 1 stock per functional group).
   diet[, Stock   := NULL]
 
@@ -28,12 +28,25 @@ load_diet_comp <- function(dietfile){
   setcolorder(diet, c('Group', 'Cohort','Time', columns))
   setnames(diet, c('Group', 'Cohort'), c('Species', 'agecl'))
   diet <- as.data.frame(diet)
-  
+
   # Convert to tidy dataframe to allow joining/merging with other dataframes.
-  diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp", 
+  diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
                          gather_cols = names(diet)[(which(names(diet) == "Time") + 1):length(names(diet))])
-  
+
   names(diet) <- tolower(names(diet))
-  
+
+  diet$species <- as.character(diet$species)
+  diet$prey <- as.character(diet$prey)
+
+  # Change species acronyms to actual names.
+  species_names <- read_functionalgroups(file_fgs = file_fgs)[, c("Name", "Code")]
+  diet <- dplyr::left_join(diet, species_names, by = c("species" = "Code"))
+  diet$species <- NULL
+  names(diet)[names(diet) == "Name"] <- "species"
+
+  diet <- dplyr::left_join(diet, species_names, by = c("prey" = "Code"))
+  diet$prey <- NULL
+  names(diet)[names(diet) == "Name"] <- "prey"
+
   return(diet)
 }
