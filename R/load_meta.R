@@ -2,17 +2,17 @@
 #' for generating data from the scenario
 #'
 #' @template dir
-#' @template file_out
+#' @template scenario
 #' @template verbose
 #'
 #' @author Kelli Faye Johnson
 #' @family load functions
 #' @return A \code{list} of metadata pertaining to a single Atlantis scenario.
+#' @seealso \code{\link{write_meta}}
 #'
 #' @export
 #'
-load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
-  verbose = FALSE) {
+load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
 
   # Functions used inside load_meta
   getsplit <- function(get, split = "[[:space:]]+", data) {
@@ -21,18 +21,20 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
     return(info)
   }
 
+  if (is.null(dir)) {
+    warning(paste("The function load_meta does not allow dir = NULL\n",
+      "and dir will be set to\n", getwd(), "\nas determined using getwd()"))
+  }
   data <- list()
 
   # Main nc file
-  grepnc <- "^output[[:alnum:]]+\\.nc"
-  file <- dir(dir, pattern = grepnc, full.names = TRUE)[1]
+  grepnc <- paste0("^output", scenario, "\\.nc")
+  file <- dir(dir, pattern = grepnc, full.names = TRUE)
   connection <- RNetCDF::open.nc(file)
   on.exit(RNetCDF::close.nc(connection))
 
-  # Get model name from the outputMODELNAME.nc file
-  data$modelname <- dir(dir, pattern = grepnc)
-  data$modelname <- gsub("output|\\.nc", "", data$modelname)
-  data$modelname <- data$modelname[which.min(nchar(data$modelname))]
+  # Get model name from the scenario argument
+  data$modelname <- scenario
 
   # Get Atlantis version number
   file.log <- dir(dir, pattern = "^log", full.names = TRUE)
@@ -95,6 +97,10 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
 
   # Get box number information
   file.bgm <- dir(dir, pattern = "\\.bgm", full.names = TRUE)
+  if (length(file.bgm) > 1) {
+    stop(paste(file.bgm, collapse = ", "), "were found in", dir,
+      "load_meta needs to be fixed to deal with this.")
+  }
   if (length(file.bgm) < 1) {
     warning(paste("The .bgm file does not exist in\n", dir, "\n",
       "and consequently the metadata will list the number",
@@ -123,26 +129,6 @@ load_meta <- function(dir = getwd(), file_out = "atlantisom_log.txt",
   # would need to divide by the sum of meters of sediment here
   data$area <- sum(area[2:dim(area)[1], 1]) / 1000000
   data$areaunit <- "km^2"
-
-  # Print the log information to a text file
-  if (is.null(file_out)) {
-    if (verbose) message("No file was written to the disk from load_meta\n",
-      "instead the list is returned as an invisible argument.")
-  } else {
-    file_out <- file.path(dir, file_out)
-    if (verbose) message("Writing the output from load_meta to:\n", file_out)
-    sink(file_out)
-    cat("# Meta data from atlantisom\n")
-    cat(paste("# Written by load_meta on", Sys.time(), "\n"))
-    cat(paste("# by", Sys.info()["user"], "on", Sys.info()["sysname"], "\n"))
-    cat(paste("# using", version$version.string, "\n"))
-    for (x in seq_along(data)) {
-      cat(paste0("#", names(data)[x], "\n"))
-      cat(data[[x]])
-      cat("\n")
-    }
-    sink()
-  }
 
   invisible(data)
 }
