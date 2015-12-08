@@ -1,0 +1,69 @@
+---
+title: "An introduction to atlantisom for simulating multispecies observations"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+    fig_caption: true
+bibliography: refs.bib
+csl: cjfas.csl
+vignette: >
+  %\VignetteIndexEntry{An introduction to atlantisom}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+# Installing the atlantisom R package
+
+atlantisom requires R version 3.1.0 or greater.
+The package can be run on OS X, Windows, or Linux.
+The development version of atlantisom can be installed from GitHub
+with the following code:
+
+```{r, install-and-load, eval=FALSE}
+# install.packages("devtools") # if needed
+devtools::install_github("r4atlantis/atlantisom", dependencies = TRUE)
+
+# If you would like the vignettes available with the GitHub development version:
+devtools::install_github("r4atlantis/atlantisom", dependencies = TRUE, build_vignettes = TRUE)
+```
+
+You can then load the package with:
+
+```{r, load-package, eval=FALSE}
+library("atlantisom")
+```
+
+You can read the help files and access the various vignettes (including this one) with:
+
+```{r, help, eval=FALSE}
+?atlantisom
+help(package = "atlantisom")
+browseVignettes("atlantisom")
+```
+
+See @fulton2010 for a more formal (but brief) overview of
+[atlantis](http://atlantis.cmar.csiro.au/).
+
+Please direct any questions, suggestions, or bug reports to the atlantisom
+issue tracker: <https://github.com/r4atlantis/atlantisom/issues>, or to an
+author as listed on the title page of this vignette.
+
+If you use atlantisom in a publication, please cite the package as
+indicated by running `citation("atlantisom")` in the R console:
+
+```{r, citation, cache=FALSE}
+citation("atlantisom")
+```
+
+# An overview of the atlantisom simulation structure
+
+atlantisom is an R package to make it relatively quick and easy
+to run simulations with the ATLANTIS output.
+
+# References
