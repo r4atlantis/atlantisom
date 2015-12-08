@@ -49,10 +49,16 @@ load_nc <- function(dir = getwd(),
   # at the end. However, this requires alot more storage and the code wouldn't be highly
   # vectorised (which it is at the moment...)!
 
-  # Check input!
-  if (strsplit(file_nc, "\\.")[[1]][2] != "nc") {
+  # Check input of the nc file
+  if (tail(strsplit(file_nc, "\\.")[[1]], 1) != "nc") {
     stop("The argument for file_nc,", file_nc, "does not end in nc")
   }
+  if (is.null(dir)) {
+    file.nc <- file_nc
+  } else {
+    file.nc <- file.path(dir, file_nc)
+  }
+
   if (strsplit(file_init, "\\.")[[1]][2] != "nc") {
     stop("The argument for file_init,", file_init, "does not end in nc")
   }
@@ -78,7 +84,6 @@ load_nc <- function(dir = getwd(),
   }
 
   # Deal with file structures
-  file.nc <- file.path(dir, file_nc)
 
   # Load ATLANTIS output!
   at_out <- RNetCDF::open.nc(con = file.nc)
