@@ -18,11 +18,13 @@
 #'
 #' @template scenario
 #' @template dir
+#' @template file_fgs
+#' @template select_groups
 #'
 #' @return Returns a list object.
 #' @export
 run_atlantis <- function(scenario, dir = getwd(),
-  file_fgs, ){
+  file_fgs, select_groups){
 
   # Create file names
   if (is.null(dir)) {
@@ -35,13 +37,19 @@ run_atlantis <- function(scenario, dir = getwd(),
   # Read in the functional groups csv since that is used by many functions
   fgs <- read_functionalgroups(file.fgs)
 
-  TOTCATCH <- file.path(dir, paste(scenario, '_TOTCATCH.nc'))
-  DietCheck <- file.path(dir, paste(scenario, 'DietCheck.txt'))
+  TOTCATCH <- paste0(scenario, '_TOTCATCH.nc')
+  DietCheck <- paste0(scenario, 'DietCheck.txt')
+
+  # Get the boundary boxes
+
 
   #Extract from NetCDF files
-  numcatch <- load_atlantis_ncdf(TOTCATCH, groups, select_groups,
-                                 'Nums', remove_bboxes = T,
-                                 check_acronyms = T)
+  # Need: dir, file_nc, bps, fgs, select_groups, select_variable,
+  # check_acronyms, bboxes
+  numcatch <- load_nc(dir = dir, file_nc = TOTCATCH,
+    fgs = fgs, select_groups = select_groups,
+    select_variable = "Nums", check_acronyms = TRUE,
+    boxes = boxes)
 
   #Extract Diet Matrix
   diet_comp <- load_diet_comp(DietCheck)
