@@ -1,6 +1,6 @@
 #Testing RNetCDF
 
-library(RNetCDF); library(arrayhelpers)
+# library(RNetCDF); library(arrayhelpers)
 
 #May need to check numbering (index starts from 1 in R)
 

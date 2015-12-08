@@ -27,13 +27,6 @@
 # run_atlantis("CCV3", "data", "functionalGroups.csv", "CalCurrentV3_utm.bgm",
 # "Demersal_P_Fish")
 
-# dir <- file.path("C:", "CaliforniaCurrent", "PoseidonAdventureCalCurrentINPUTdraft1", "CalCurrent65YearsCurrentFishingRates")
-# file_fgs <- "CalCurrentV3Groups.csv"
-# scenario <- "CCV3"
-# file_bgm <- "CalCurrentV3_utm.bgm"
-# file_init <- "DIVCalCurrentV3_Biol.nc"
-# select_groups <- load_groups(fgs)
-
 run_atlantis <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups){
 
@@ -136,5 +129,13 @@ run_atlantis <- function(scenario, dir = getwd(),
   return(result)
 }
 
+# dir <- file.path("C:", "CaliforniaCurrent", "PoseidonAdventureCalCurrentINPUTdraft1", "CalCurrent65YearsCurrentFishingRates")
+# file_fgs <- "CalCurrentV3Groups.csv"
+# scenario <- "CCV3"
+# file_bgm <- "CalCurrentV3_utm.bgm"
+# file_init <- "DIVCalCurrentV3_Biol.nc"
+# select_groups <- load_groups(fgs)
+
+# test <-
 
 

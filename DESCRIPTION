@@ -28,7 +28,8 @@ Imports:
     stringr,
     dplyr,
     tidyr,
-    magrittr
+    magrittr,
+    arrayhelpers
 Suggests:
     knitr
 VignetteBuilder: knitr
