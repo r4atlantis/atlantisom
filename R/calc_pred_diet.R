@@ -31,8 +31,8 @@ calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
     dplyr::left_join(vol) %>%
     dplyr::left_join(dietcomp, by = c("species", "agecl", "time"))
 
-  x_cn <- biolprm$redfieldcn
-  k_wetdry <- biolprm$kgw2d
+  x_cn <- as.numeric(as.character(biolprm$redfieldcn))
+  k_wetdry <- as.numeric(as.character(biolprm$kgw2d))
 
   # Conversion factor from mg N to t wet-weight
   bio_conv <- x_cn * k_wetdry / 1000000000
