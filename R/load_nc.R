@@ -1,10 +1,14 @@
 #' Load Atlantis outputfiles (netcdf)
 #'
-#'
 #' This function loads Atlantis outputfiles (netcdf) and converts them to a dataframe.
-#' @param nc_out Connection of the ATLANTIS output file given as complete folder/filename string. Usually "output[...].nc".
-#' Additionally "output[...]PROD.nc" and "output[...]CATCH.nc" can be loaded.
-#' @param nc_init Connection of the ATLANTIS init file given as complete folder/filename string. Usually "init[...].nc".
+#' @template dir
+#' @param file_nc A character value giving the file name of the netcdf file
+#'   you are trying to read in. The file should be located in your current working
+#'   directory or the folder you specify in \code{dir}.
+#' @param file_init A character value giving the file name of the intial conditions
+#'   file. The file should be located in your current working directory or the
+#'   folder you specify in \code{dir}.
+#'   Usually the file is named \code{"init[...].nc".}, but it must end in \code{.nc}.
 #' @param file_fgs Connection of the ATLANTIS functional groups file given as complete folder/filename string.
 #' Usually "functionalGroups.csv".
 #' @param select_groups Character vector of funtional groups which shall be plotted. Names have to match the ones
@@ -22,27 +26,31 @@
 #' @details This functions converts the ATLANTIS output to a dataframe which can be processed in R.
 #' @keywords gen
 #' @examples
-#' load_atlantis_output(model_path = file.path("z:", "Atlantis", "ATLANTIS NSmodel base"), filename = "outputNorthSea.nc", select_groups = get_groups(), select_variable = "ResN", biomasspools = c("large_crabs", "small_epifauna", "sessile_epifauna", "epifaunal_macrobenthos"))
 #' @export
 #'
-# Import '%>%' operator from magrittr
 #' @importFrom magrittr %>%
 #' @export
 
-load_nc <- function(nc_out,
-                    nc_init,
+load_nc <- function(dir = getwd(), file_nc,
+                    file_init,
                     file_fgs,
                     select_groups,
                     select_variable,
                     remove_bboxes,
                     check_acronyms,
-                    bboxes){
+                    bboxes = c(0, 88)){
   # NOTE: The extraction procedure may look a bit complex... A different approach would be to
   # create a dataframe for each variable (e.g. GroupAge_Nums) and combine all dataframes
   # at the end. However, this requires alot more storage and the code wouldn't be highly
   # vectorised (which it is at the moment...)!
 
   # Check input!
+  if (strsplit(file_nc, "\\.")[[1]][2] != "nc") {
+    stop("The argument for file_nc,", file_nc, "does not end in nc")
+  }
+  if (strsplit(file_init, "\\.")[[1]][2] != "nc") {
+    stop("The argument for file_init,", file_init, "does not end in nc")
+  }
   supported_variables <- c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing")
   if (length(select_groups) == 0) stop("No Groups selected.")
   if (length(select_variable) == 0) stop("No Variables selected.")
@@ -64,12 +72,16 @@ load_nc <- function(nc_out,
     }
   }
 
+  # Deal with file structures
+  file.nc <- file.path(dir, file_nc)
+
   # Load ATLANTIS output!
-  at_out <- RNetCDF::open.nc(con = nc_out)
+  at_out <- RNetCDF::open.nc(con = file.nc)
   on.exit(RNetCDF::close.nc(at_out))
+
   # Character vector giving the names of biomasspools. Note this does not mean groups
   # which are considered as biomasspools in ATLANTIS but species which are only present in the bottom layer.
-  biomasspools <- load_bps(file_fgs = file_fgs, nc_init = nc_init)
+  biomasspools <- load_bps(dir = dir, file_fgs = file_fgs, file_init = file_init)
   if (select_variable != "N" & all(is.element(select_groups, biomasspools))) stop("The only output for Biomasspools is N.")
 
   # Get info from netcdf file! (Filestructure and all variable names)
@@ -268,4 +280,9 @@ load_nc <- function(nc_out,
   return(result)
 }
 
-
+# test <- load_nc(dir = "data", file_nc = "outputCCV3.nc",
+#   file_fgs = file.path(directory, "functionalGroups.csv"),
+#   file_init = "DIVCalCurrentV3_Biol.nc",
+#   select_variable = "ResN",
+#   select_groups = "Demersal_P_Fish",
+#   remove_bboxes = TRUE, check_acronyms = TRUE)
