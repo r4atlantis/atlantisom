@@ -1,7 +1,6 @@
-#' Load Atlantis outputfiles (netcdf)
+#' Calculate biomass in t per age-structured-groups per polygon, time and ageclass.
 #'
 #'
-#' This function loads Atlantis outputfiles (netcdf) and converts them to a dataframe.
 #' @param nums Dataframe containing the numbers per functional-group ("species") per timesetp,
 #' ageclass, layer and polygon. The dataframe has to origin from load_nc using "Nums" as select variable.
 #' @param resn Dataframe containing the reserve nitrogen per functional-group ("species") per timesetp,
@@ -16,6 +15,7 @@
 #' @details This functions converts the ATLANTIS output to a dataframe which can be processed in R.
 #' @keywords gen
 #' @export
+#' @author Alexander Keth
 
 
 calc_biomass_age <- function(nums, resn, structn, prm_biol){
