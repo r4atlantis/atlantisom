@@ -11,7 +11,7 @@
 #' and time
 #' @param ncfile full path and filename of biology .prm file
 #' @param biolfile full path and filename of biology .prm file
-#' @param groupfile full path and filename of functional groups .csv file
+#' @template fgs 
 #' The above should  be changed to only pass the pieces from these that
 #' we need.
 #' @param CVlenage The variability in length at age (currently same for all species)
@@ -20,7 +20,8 @@ calc_age2length <- function(natage,
                             reserven,
                             ncfile,
                             biolfile,
-                            groupfile,
+                            fgs, # this calls the group csv file already brought in using run_atlantis
+                            #groupfile,
                             CVlenage=0.01) {
 
 ### Inputs required
@@ -42,12 +43,8 @@ upper.bins <- 1:150
 #CVlenage = 0.01 #15
 #CVlenage <- array(0.01,dim=c(length(groups),length(ages)))
 
-## Get group codes to calculate size comps for. 
-## This could be an argument to the function.
-group.names <- read.csv(groupfile)
-group.names <- group.names[group.names$NumCohorts==10,]  #This just grabs those species with 10 cohorts
-groups <- group.names$Name
-#groups <- as.character(unique(natage[,1]))
+## Get group codes to calculate size comps for
+groups <- as.factor(fgs$Name)
 
 ### Get the weight-length relationship parameters.
 # Currently assuming they are fixed inputs and not changing over time.
