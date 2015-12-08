@@ -94,11 +94,15 @@ load_fish_acronyms <- function(file_fgs){
 #' the init-file to the function call anymore.
 #' @export
 #' @rdname helper_functions
-load_bps <- function(dir, file_fgs, file_init){
+load_bps <- function(dir = getwd(), file_fgs, file_init){
   if (strsplit(file_init, "\\.")[[1]][2] != "nc") {
     stop(paste("The file_init argument", file_init, "does not end in .nc"))
   }
-  file.init <- file.path(dir, file_init)
+  if (is.null(dir)) {
+    file.init <- file_init
+  } else {
+    file.init <- file.path(dir, file_init)
+  }
   init <- RNetCDF::open.nc(con = file.init)
   on.exit(RNetCDF::close.nc(init))
 
