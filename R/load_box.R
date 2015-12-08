@@ -14,7 +14,11 @@
 #' @export
 #'
 load_box <- function(dir = getwd(), file_bgm) {
-  file.bgm <- file.path(dir, file_bgm)
+  if (is.null(dir)) {
+    file.bgm <- file_bgm
+  } else {
+    file.bgm <- file.path(dir, file_bgm)
+  }
   if (!file.exists(file.bgm)) {
     stop(paste("The file", file.bgm, "does not exist in the specified dir\n",
       "please check the arguments dir and file_bgm in load_box."))
