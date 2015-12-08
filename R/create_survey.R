@@ -29,13 +29,8 @@ create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 
 	#Do some vector length tests (species=effic, column names, )
 
-	#first select the appropriate rows (time and box)
-
-	sampDat <- dat[dat$time%in%time & dat$polygon%in%boxes$polygon & dat$species%in%species, ]
-	
-	#sum over time and depth layers, leaving only species, agecl, and polygon
-	aggDat <- aggregate(sampDat$atoutput, list(sampDat$species,sampDat$agecl,sampDat$polygon), sum)
-	names(aggDat) <- c("species","agecl","polygon","numAtAge")
+	#first select the appropriate rows and 
+	aggDat <- aggregateData(dat, time, species, boxes$polygon, keepColumns=c("species","agecl","polygon"))
 
 	#now calculate density in each box from num-at-age and total area by habitat
 	dens <- merge(aggDat,spex[,c("polygon","area")],by="polygon",all.x=T)
