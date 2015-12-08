@@ -16,7 +16,7 @@
 #' @family run functions
 #' @author Sean Lucey
 #'
-#' @param scenario output name of the Atlantis scenario.
+#' @template scenario
 #' @template dir
 #'
 #' @return Returns a list object.

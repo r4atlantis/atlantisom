@@ -28,3 +28,4 @@ Imports: data.table,
 	 tidyr,
 	 magrittr
 Suggests: knitr
+VignetteBuilder: knitr
