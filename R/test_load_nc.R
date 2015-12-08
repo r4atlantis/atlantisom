@@ -26,8 +26,15 @@ test_load_ncdf <- function(scenario, path = ".", groups, var){
       all.var.out <- rbindlist(list(all.var.out, group.var.out))
     }
     if(v == 1) load.out <- all.var.out
-    if(v == 2) load.out <- list(load.out, all.var.out)
-    if(v > 2)  load.out[[v]] <- all.var.out
+    if(v == 2){
+      load.out <- list(load.out, all.var.out)
+      names(load.out)[1:2] <- var[1:2]
+    }
+    if(v > 2){
+      load.out[[v]] <- all.var.out
+      names(load.out)[v] <- var[v]
+    }
+
   }
 
   return(load.out)
