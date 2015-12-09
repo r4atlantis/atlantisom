@@ -2,7 +2,7 @@
 #'
 #' This function loads the Atlantis biology parameter output file.
 #' @template dir
-#' @parm file_biolprm A character value giving the file name of the biology
+#' @param file_biolprm A character value giving the file name of the biology
 #'   \code{.prm} file.
 #'   The file should be located in your current working directory or the
 #'   folder you specify in \code{dir}.
@@ -10,7 +10,7 @@
 #'   argument \code{dir} is specified as \code{NULL}.
 #'   Usually the file is named \code{"[...]_run.prm".}.
 #' @family load functions
-#' @return A list of parameters dictating run characteristics from the 
+#' @return A list of parameters dictating run characteristics from the
 #' \code{_run.prm} file.
 #' @author Emma E Hodgson
 #' @export
