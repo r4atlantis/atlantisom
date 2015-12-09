@@ -42,6 +42,8 @@ run_atlantis <- function(scenario, dir = getwd(),
   # Read in information
   # Read in the functional groups csv since that is used by many functions
   fgs <- load_fgs(dir = dir, file_fgs = file_fgs)
+  # Read in the biomass pools
+  bps <- load_bps(dir = dir, fgs = fgs, file_init = file_init)
   # Read in the biological parameters
   biol <- load_biolprm(dir = dir, file_biolprm = file_biolprm)
 
@@ -58,7 +60,7 @@ run_atlantis <- function(scenario, dir = getwd(),
   # check_acronyms, bboxes
   nums <- load_nc(dir = dir,
                   file_nc = nc_out,
-                  bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                  bps = bps,
                   fgs = fgs,
                   select_groups = select_groups,
                   select_variable = "Nums",
@@ -68,7 +70,7 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   resn <- load_nc(dir = dir,
                   file_nc = nc_out,
-                  bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                  bps = bps,
                   fgs = fgs,
                   select_groups = select_groups,
                   select_variable = "ResN",
@@ -78,7 +80,7 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   structn <- load_nc(dir = dir,
                   file_nc = nc_out,
-                  bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                  bps = bps,
                   fgs = fgs,
                   select_groups = select_groups,
                   select_variable = "StructN",
@@ -88,7 +90,7 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   eat <- load_nc(dir = dir,
                      file_nc = nc_prod,
-                     bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                     bps = bps,
                      fgs = fgs,
                      select_groups = select_groups,
                      select_variable = "Eat",
@@ -97,7 +99,7 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   grazing <- load_nc(dir = dir,
                  file_nc = nc_prod,
-                 bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                 bps = bps,
                  fgs = fgs,
                  select_groups = select_groups,
                  select_variable = "Grazing",
@@ -113,7 +115,7 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   catch <- load_nc(dir = dir,
                  file_nc = nc_catch,
-                 bps = load_bps(dir = dir, fgs = fgs, file_init = file_init),
+                 bps = bps,
                  fgs = fgs,
                  select_groups = select_groups,
                  select_variable = "Catch",
