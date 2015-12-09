@@ -25,8 +25,7 @@ is the box size in m².
 This function extracts the box area for each polygon from the atlantis bgm-file.
 }
 \examples{
-scenario <- "INIT_VMPA_Jan2015"
-d <- system.file("extdata", scenario, package = "atlantisom")
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 boxarea <- load_boxarea(dir = d, file_bgm = "VMPA_setas.bgm")
 
 }
@@ -34,6 +33,7 @@ boxarea <- load_boxarea(dir = d, file_bgm = "VMPA_setas.bgm")
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_box}}, \code{\link{load_bps}},
   \code{\link{load_diet_comp}}, \code{\link{load_fgs}},
-  \code{\link{load_meta}}, \code{\link{load_nc}}
+  \code{\link{load_meta}}, \code{\link{load_nc}},
+  \code{\link{load_runprm}}
 }
 

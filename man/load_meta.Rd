@@ -35,6 +35,7 @@ Kelli Faye Johnson
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_box}},
   \code{\link{load_bps}}, \code{\link{load_diet_comp}},
-  \code{\link{load_fgs}}, \code{\link{load_nc}}
+  \code{\link{load_fgs}}, \code{\link{load_nc}},
+  \code{\link{load_runprm}}
 }
 

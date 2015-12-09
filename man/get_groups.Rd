@@ -23,27 +23,27 @@ get_nonage_acronyms(fgs)
 get_fish_acronyms(fgs)
 }
 \arguments{
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 }

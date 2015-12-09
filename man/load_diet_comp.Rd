@@ -12,7 +12,7 @@ default is \code{getwd()}.}
 
 \item{dietfile}{file name of the diet_check.txt output from Atlantis.}
 
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 }
@@ -28,6 +28,7 @@ Operating model.
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_box}},
   \code{\link{load_bps}}, \code{\link{load_fgs}},
-  \code{\link{load_meta}}, \code{\link{load_nc}}
+  \code{\link{load_meta}}, \code{\link{load_nc}},
+  \code{\link{load_runprm}}
 }
 

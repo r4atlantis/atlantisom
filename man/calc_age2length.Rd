@@ -27,7 +27,7 @@ The \code{data.frame} has to origininate from \code{\link{load_nc}} using
 
 \item{ncfile}{full path and filename of biology .prm file}
 
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 

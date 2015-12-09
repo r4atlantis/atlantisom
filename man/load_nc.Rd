@@ -23,7 +23,7 @@ argument \code{dir} is specified as \code{NULL}.}
 The biomass pools are not true biomass pools but all epibenthic
 groups from the functional groups file.}
 
-\item{fgs}{A data frame created by \code{\link{read_functionalgroups}} that
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
@@ -79,7 +79,8 @@ Alexander Keth
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_box}},
   \code{\link{load_bps}}, \code{\link{load_diet_comp}},
-  \code{\link{load_fgs}}, \code{\link{load_meta}}
+  \code{\link{load_fgs}}, \code{\link{load_meta}},
+  \code{\link{load_runprm}}
 }
 \keyword{gen}
 

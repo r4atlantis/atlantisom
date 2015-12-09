@@ -61,13 +61,13 @@ where [...] specifies the entry used for the \code{scenario} argument.
 \examples{
 #load_all()
 scenario <- "SETAS"
-run_atlantis(scenario = scenario,
-  dir = system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom"),
-  file_fgs = "functionalGroups.csv",
-  file_bgm = "VMPA_setas.bgm",
-  select_groups = "Pisciv_D_Fish",
-  file_init = "INIT_VMPA_Jan2015.nc",
-  file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#run_atlantis(scenario = scenario,
+#  dir = system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom"),
+#  file_fgs = "functionalGroups.csv",
+#  file_bgm = "VMPA_setas.bgm",
+#  select_groups = "Pisciv_D_Fish",
+#  file_init = "INIT_VMPA_Jan2015.nc",
+#  file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
 
 }
 \author{

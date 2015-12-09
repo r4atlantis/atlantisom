@@ -41,5 +41,8 @@ This functions converts the ATLANTIS output to a \code{data.frame}
 \author{
 Alexander Keth
 }
+\seealso{
+Other calc functions: \code{\link{calc_stage2age}}
+}
 \keyword{gen}
 
