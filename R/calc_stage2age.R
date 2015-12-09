@@ -80,7 +80,7 @@ calc_stage2age <- function(dir, nums_data, biolprm) {
   multiple_ages_data <- nums_data[nums_data$species %in% multiple_ages,]
 
   for(i in 1:timesteps) {
-    time1_dat <- multiple_ages_data[multiple_ages_data$time==(i-1)
+    time1_dat <- multiple_ages_data[multiple_ages_data$time==(i-1)]
 
         # start at the second since we subtract the first
         # in this loop we will calculate for each species and cohort in each box,
