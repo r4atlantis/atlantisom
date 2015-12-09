@@ -11,6 +11,10 @@
 #'
 #' @return A list of information regarding boxes for an Atlantis scenario.
 #' @export
+#' @examples
+#' scenario <- "INIT_VMPA_Jan2015"
+#' d <- system.file("extdata", scenario, package = "atlantisom")
+#' boxes <- load_box(dir = d, file_bgm = "VMPA_setas.bgm")
 #'
 load_box <- function(dir = getwd(), file_bgm) {
   if (is.null(dir)) {
