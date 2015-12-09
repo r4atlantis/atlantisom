@@ -15,6 +15,11 @@
 #' @return A \code{vector} of biomass pools.
 #'
 #' @examples
+#' testscenario <- "INIT_VMPA_Jan2015"
+#' d <- system.file("extdata", testscenario, package = "atlantisom")
+#' file <- "functionalGroups.csv"
+#' fgs <- load_fgs(d, file)
+#' bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
 #'
 load_bps <- function(dir = getwd(), fgs, file_init){
   if (strsplit(file_init, "\\.")[[1]][2] != "nc") {
