@@ -7,8 +7,7 @@
 #' @author Kelli Faye Johnson
 #'
 #' @template dir
-#' @param file_bgm A character value specifying the file name of a \code{.bgm}
-#'   file, which contains information on box locations for an Atlantis scenario.
+#' @template file_bgm
 #'
 #' @return A list of information regarding boxes for an Atlantis scenario.
 #' @export

@@ -2,8 +2,7 @@
 #'
 #'
 #' This function extracts the box area for each polygon from the atlantis bgm-file.
-#' @param prm_biol Connection of the ATLANTIS bgm-file file given as complete folder/filename string.
-#' Usually "[...].bgm".
+#' @template file_bgm
 #' @return dataframe with the columns polygon and area. Polygon gives the box id as integer and area
 #' is the box size in m².
 #'
