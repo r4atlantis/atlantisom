@@ -41,7 +41,7 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   # Read in information
   # Read in the functional groups csv since that is used by many functions
-  fgs <- read.table(file = file.fgs, sep = ",", header = T, stringsAsFactors = F)
+  fgs <- load_fgs(dir = dir, file_fgs = file_fgs)
 
   nc_catch <- paste0("output", scenario, 'CATCH.nc')
   dietcheck <- paste0("output", scenario, 'DietCheck.txt')
