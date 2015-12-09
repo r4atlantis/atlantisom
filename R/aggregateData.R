@@ -1,4 +1,4 @@
-#aggregate and select data for Atlantis Summitt Poseidon adventure
+#' aggregate and select data from an Atlantis scenario
 
 #' @author Poseidon
 
@@ -10,7 +10,7 @@
 #' @details Returns a subsetted matrix with columns not aggregated over
 #' @details columns: species, agecl, polygon, layer, time, atoutput
 #' @details  --will sum over layers, but enter NA as layer to indicate all layers
-#' @details This function is for a vector of defined species 
+#' @details This function is for a vector of defined species
 
 
 aggregateData <- function(dat, time, species, boxes, keepColumns=c("species","agecl","polygon")) {
@@ -19,7 +19,7 @@ aggregateData <- function(dat, time, species, boxes, keepColumns=c("species","ag
 
 	#first select the appropriate rows (time and box)
 	sampDat <- dat[dat$time%in%time & dat$polygon%in%boxes & dat$species%in%species, ]
-	
+
 	#sum over time and depth layers, leaving only species, agecl, and polygon
 	aggDat <- aggregate(sampDat$atoutput, as.list(sampDat[,c(keepColumns)]), sum)
 	names(aggDat) <- c(keepColumns,"numAtAge")
@@ -33,9 +33,9 @@ aggregateData <- function(dat, time, species, boxes, keepColumns=c("species","ag
 if(F) {
 
 	dat <- data.frame(species = c(rep("spec1",3*3),rep("spec2",5*3)),
-		              agecl = c(rep(1:3,3),rep(3:7,3)), 
-		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)), 
-		              layer = 1, 
+		              agecl = c(rep(1:3,3),rep(3:7,3)),
+		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)),
+		              layer = 1,
 		              time = 1)
 
     dat$atoutput <- 10000/dat$agecl
