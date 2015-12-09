@@ -14,9 +14,9 @@
 #' @export
 #'
 #' @examples
-#' This is just to bring in an example data frame I can use to write the code,
-#' much of the beginning code will be removed as I actually write the function,
-#' but I wanted to push what I have so far!
+#' #This is just to bring in an example data frame I can use to write the code,
+#' #much of the beginning code will be removed as I actually write the function,
+#' #but I wanted to push what I have so far!
 #' dir <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' file_nc="outputSETAS.nc"
 #' fgs=load_fgs(dir = dir, "functionalGroups.csv")
@@ -100,6 +100,6 @@ calc_stage2age <- function(dir, nums_data, biolprm) {
         # happens to get the final values???
         # I am brain fried and am not sure about that
 
-      }}}
+      }
 
 }
