@@ -27,7 +27,7 @@ get_groups <- function(fgs){
 #' @rdname get_groups
 #' @template fgs
 get_age_groups <- function(fgs){
-  result <- subset(fgs, NumCohorts == 10)$Name
+  result <- gfs$Name[fgs$NumCohorts == 10]
   return(result)
 }
 
@@ -43,7 +43,7 @@ get_acronyms <- function(fgs){
 #' @rdname get_groups
 #' @template fgs
 get_age_acronyms <- function(fgs){
-  result <- subset(fgs, NumCohorts == 10, select = "Code")[,1]
+  result <- fgs$Code[fgs$NumCohorts == 10]
   return(result)
 }
 
@@ -51,7 +51,7 @@ get_age_acronyms <- function(fgs){
 #' @rdname get_groups
 #' @template fgs
 get_nonage_acronyms <- function(fgs){
-  result <- subset(fgs, NumCohorts != 10, select = "Code")[,1]
+  result <- fgs$Code[fgs$NumCohorts != 10]
   return(result)
 }
 
