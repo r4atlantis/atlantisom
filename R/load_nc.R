@@ -16,24 +16,17 @@
 #'   All groups are passed when plotting is called via batch-file,
 #'   (which cannot be changed easily) this will result in errors if some
 #'   groups are not active in the model run. By default this argument is \code{TRUE}.
-#' @param bboxes A numeric vector specifying the boundary boxes.
-#'   Note this does not neet to include islands, as the presence of islands will
-#'   automatically be determined inside the \code{load_nc} function. The default is
-#'   a vector of length one, which includes \code{c(0)}, because Atlantis must be
-#'   configured to always have the first box be a boundary box.
-#'   One can use \code{\link{load_box}} and \code{\link{get_boundary}} to get boxes.
-#'   If argument is \code{NULL} then boundary boxes will not be removed.
+#' @template bboxes
 #' @family load functions
 #' @return A \code{data.frame} in long format with the following coumn names:
 #'   Species, timestep, polygon, agecl, and atoutput (i.e., variable).
 #'
 #' @keywords gen
-#' @author ALex Keth
+#' @author Alexander Keth
 #'
-# Import '%>%' operator from magrittr
+#'
 #' @importFrom magrittr %>%
 #' @export
-magrittr::`%>%`
 
 load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   select_variable =
