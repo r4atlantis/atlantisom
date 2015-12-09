@@ -1,6 +1,6 @@
 #' Extracts the names of the epibenthic biomasspools from the initial conditions file.
 #'
-#' Use \code{\link{fgs}} \code{data.frame} as read in by \code{\link{load_fgs}}
+#' Use \code{fgs} \code{data.frame} as read in by \code{\link{load_fgs}}
 #' to get the biomass pool information.
 #'
 #' @template dir

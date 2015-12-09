@@ -25,7 +25,7 @@ Usually the file is named \code{"init[...].nc".}, but it must end in \code{.nc}.
 A \code{vector} of biomass pools.
 }
 \description{
-Use \code{\link{fgs}} \code{data.frame} as read in by \code{\link{load_fgs}}
+Use \code{fgs} \code{data.frame} as read in by \code{\link{load_fgs}}
 to get the biomass pool information.
 }
 \examples{
