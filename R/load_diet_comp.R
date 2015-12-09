@@ -5,7 +5,9 @@
 #'
 #'@family load functions
 #'
+#' @template dir
 #'@param dietfile file name of the diet_check.txt output from Atlantis.
+#' @template fgs
 #'
 #'@return Returns a data frame of the data to be exported to the AtlantisOM list
 #'  object.
