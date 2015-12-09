@@ -25,10 +25,17 @@
 #'
 #' @return Returns a list object.
 #' @export
-# load_all()
-# run_atlantis("CCV3", "data", "functionalGroups.csv", "CalCurrentV3_utm.bgm",
-# "Demersal_P_Fish")
-
+#' @examples
+#'#load_all()
+#' scenario <- "SETAS"
+#' run_atlantis(scenario = scenario,
+#'   dir = system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom"),
+#'   file_fgs = "functionalGroups.csv",
+#'   file_bgm = "VMPA_setas.bgm",
+#'   select_groups = "Pisciv_D_Fish",
+#'   file_init = "INIT_VMPA_Jan2015.nc",
+#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#'
 run_atlantis <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm){
 
