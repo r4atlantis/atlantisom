@@ -27,7 +27,7 @@ create_fishery_data <- function(dat, time, species, boxes) {
 
 	#first select the appropriate rows (time and box)
 	#first select the appropriate rows and
-	aggDat <- aggregateData(dat, time, species, boxes, keepColumns=c("species","agecl","polygon"))
+	aggData <- aggregateData(dat, time, species, boxes, keepColumns=c("species","agecl","polygon"))
 
 	#Should I be checking for NA's along the way to identify problems?
 
