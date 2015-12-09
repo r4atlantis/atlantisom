@@ -32,7 +32,7 @@ load_box <- function(dir = getwd(), file_bgm) {
 
   bnd_vert <- grep("bnd_vert", data, value = TRUE)
   bnd_vert <- gsub("bnd_vert[[:space:]]+", "", bnd_vert)
-  bnd_vert <- strsplit(bnd_vert, "[[:space:]]")
+  bnd_vert <- strsplit(bnd_vert, "[[:space:]]+")
   bnd_vert <- do.call("rbind", bnd_vert)
   bnd_vert <- apply(bnd_vert, 2, as.numeric)
 
