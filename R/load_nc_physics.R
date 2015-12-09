@@ -28,9 +28,9 @@ load_nc_physics <- function(dir = getwd(), file_nc,
   if (is.null(physic_variables)) stop("No physical variables selected.")
 
   if (is.null(dir)) {
-    nc.out <- nc_out
+    nc.out <- file_nc
   } else {
-    nc.out <- file.path(dir, nc_out)
+    nc.out <- file.path(dir, file_nc)
   }
 
   # Load ATLANTIS output!
