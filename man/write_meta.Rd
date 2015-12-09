@@ -4,7 +4,8 @@
 \alias{write_meta}
 \title{Write metadata to the disk.}
 \usage{
-write_meta(meta, dir = getwd(), file_out = "atlantisom_log.txt")
+write_meta(meta, dir = getwd(), file_out = "atlantisom_log.txt",
+  verbose = FALSE)
 }
 \arguments{
 \item{meta}{A \code{list} of metadata as read in by \code{\link{load_meta}}.}
@@ -19,6 +20,9 @@ argument \code{dir} is not included in the function then the file will
 be written to the current directory or one can specify a full path name.
 The default will depend on the function and if \code{is.null(file_out)}
 then no file will be written.}
+
+\item{verbose}{A logical value specifying if output should be written
+to the screen or not. The default value is \code{FALSE}.}
 }
 \value{
 Write a file to the disk of metadata pertaining to a single Atlantis scenario.

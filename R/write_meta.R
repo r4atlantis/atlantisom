@@ -3,6 +3,7 @@
 #' @template meta
 #' @template dir
 #' @template file_out
+#' @template verbose
 #'
 #' @author Kelli Faye Johnson
 #' @family write functions
@@ -11,7 +12,8 @@
 #'
 #' @export
 #'
-write_meta <- function(meta, dir = getwd(), file_out = "atlantisom_log.txt") {
+write_meta <- function(meta, dir = getwd(), file_out = "atlantisom_log.txt",
+  verbose = FALSE) {
   # Print the log information to a text file
   if (is.null(dir)) {
     file.out <- file_out
