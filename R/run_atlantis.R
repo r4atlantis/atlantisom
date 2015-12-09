@@ -19,7 +19,9 @@
 #' @template scenario
 #' @template dir
 #' @template file_fgs
+#' @template file_bgm
 #' @template select_groups
+#' @template file_init
 #'
 #' @return Returns a list object.
 #' @export
