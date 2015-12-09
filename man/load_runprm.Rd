@@ -10,7 +10,7 @@ load_runprm(dir = getwd(), file_runprm)
 \item{dir}{The directory of the atlantis model output, where the
 default is \code{getwd()}.}
 
-\item{file_biolprm}{A character value giving the file name of the biology
+\item{file_runprm}{A character value giving the file name of the biology
 \code{.prm} file.
 The file should be located in your current working directory or the
 folder you specify in \code{dir}.
@@ -24,6 +24,11 @@ A list of parameters dictating run characteristics from the
 }
 \description{
 This function loads the Atlantis biology parameter output file.
+}
+\examples{
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+load_runprm(d, "VMPA_setas_biol_fishing_Trunk.prm")
+
 }
 \author{
 Emma E Hodgson

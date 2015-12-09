@@ -2,7 +2,7 @@
 #'
 #' This function loads the Atlantis biology parameter output file.
 #' @template dir
-#' @param file_biolprm A character value giving the file name of the biology
+#' @param file_runprm A character value giving the file name of the biology
 #'   \code{.prm} file.
 #'   The file should be located in your current working directory or the
 #'   folder you specify in \code{dir}.
@@ -14,7 +14,10 @@
 #' \code{_run.prm} file.
 #' @author Emma E Hodgson
 #' @export
-
+#' @examples
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' load_runprm(d, "VMPA_setas_biol_fishing_Trunk.prm")
+#'
 load_runprm <- function(dir = getwd(), file_runprm) {
   if (is.null(dir)) {
     file.runprm <- file_runprm
@@ -25,6 +28,3 @@ load_runprm <- function(dir = getwd(), file_runprm) {
                         fill = TRUE, header = FALSE)
   return(runprm)
 }
-
-# load_all()
-# load_runprm("data", "CalCurrentV3_Biol.prm")

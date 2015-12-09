@@ -6,6 +6,7 @@
 #' character strings of group names or acronym names.
 #' @family get functions
 #' @return Character string.
+#' @template fgs
 #'
 #' @details Currently, the following character strings can be created
 #' - get_groups extracts the column "Name"
@@ -17,7 +18,6 @@
 #'
 #' @export
 #' @rdname get_groups
-#' @template fgs
 get_groups <- function(fgs){
   result <- fgs$Name
   return(result)
@@ -25,7 +25,6 @@ get_groups <- function(fgs){
 
 #' @export
 #' @rdname get_groups
-#' @template fgs
 get_age_groups <- function(fgs){
   result <- gfs$Name[fgs$NumCohorts == 10]
   return(result)
@@ -33,7 +32,6 @@ get_age_groups <- function(fgs){
 
 #' @export
 #' @rdname get_groups
-#' @template fgs
 get_acronyms <- function(fgs){
   result <- fgs[, names(fgs) == "Code"]
   return(result)
@@ -41,7 +39,6 @@ get_acronyms <- function(fgs){
 
 #' @export
 #' @rdname get_groups
-#' @template fgs
 get_age_acronyms <- function(fgs){
   result <- fgs$Code[fgs$NumCohorts == 10]
   return(result)
@@ -49,7 +46,6 @@ get_age_acronyms <- function(fgs){
 
 #' @export
 #' @rdname get_groups
-#' @template fgs
 get_nonage_acronyms <- function(fgs){
   result <- fgs$Code[fgs$NumCohorts != 10]
   return(result)
@@ -57,7 +53,6 @@ get_nonage_acronyms <- function(fgs){
 
 #' @export
 #' @rdname get_groups
-#' @template fgs
 get_fish_acronyms <- function(fgs){
   # Older models use the column GroupType, newer ones use InvertType.
   supported_columns <- c("InvertType", "GroupType")
