@@ -30,7 +30,7 @@
 # "Demersal_P_Fish")
 
 run_atlantis <- function(scenario, dir = getwd(),
-  file_fgs, file_bgm, select_groups, file_init){
+  file_fgs, file_bgm, select_groups, file_init, file_biolprm){
 
   # Create file names
   if (is.null(dir)) {
@@ -42,13 +42,13 @@ run_atlantis <- function(scenario, dir = getwd(),
   # Read in information
   # Read in the functional groups csv since that is used by many functions
   fgs <- load_fgs(dir = dir, file_fgs = file_fgs)
+  # Read in the biological parameters
+  biol <- load_biolprm(dir = dir, file_biolprm = file_biolprm)
 
   nc_catch <- paste0("output", scenario, 'CATCH.nc')
   dietcheck <- paste0("output", scenario, 'DietCheck.txt')
   nc_out <- paste0("output", scenario, ".nc")
   nc_prod <- paste0("output", scenario, "PROD.nc")
-  biol_param <- "CalCurrentV3_Biol.prm"
-
   # Get the boundary boxes
   allboxes <- load_box(dir = dir, file_bgm = file_bgm)
   boxes <- get_boundary(allboxes)
@@ -124,7 +124,6 @@ run_atlantis <- function(scenario, dir = getwd(),
   diet <- load_diet_comp(dir = dir, dietfile = dietcheck, fgs = fgs)
 
   print("***Start calc_functions")
-  biol <- load_biolprm(dir = dir, file_biolprm = biol_param)
   biomass_eaten <- calc_pred_diet(dietcomp = diet, eat = eat, grazing = grazing, vol = vol, biolprm = biol)
 
   biomass_ages <- calc_biomass_age(nums = nums, resn = resn, structn = structn, biolprm = biol)
