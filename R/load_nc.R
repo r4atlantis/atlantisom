@@ -24,6 +24,18 @@
 #' @keywords gen
 #' @author Alexander Keth
 #'
+#' @examples
+#' testfolder <- "INIT_VMPA_Jan2015"
+#' d <- system.file("extdata", testfolder, package = "atlantisom")
+#' fgs <- load_fgs(d, "functionalGroups.csv")
+#' bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
+#' test <- load_nc(dir = d, file_nc = "outputSETASCATCH.nc",
+#'   fgs = fgs, bps = bps,
+#'   select_variable = "Catch",
+#'   select_groups = "Pisciv_T_Fish",
+#'   check_acronyms = TRUE)
+#' str(test)
+#' rm(test)
 #'
 #' @importFrom magrittr %>%
 #' @export
@@ -268,24 +280,3 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
 
   return(result)
 }
-
-# load_all()
-# test <- load_nc(dir = "data", file_nc = "outputCCV3.nc",
-#   fgs = read.table(file.path("data", "functionalGroups.csv"),
-#   sep = ",", header = T),
-#   bps = load_bps("data", "data/functionalGroups.csv", "DIVCalCurrentV3_Biol.nc"),
-#   select_variable = "ResN",
-#   select_groups = "Demersal_P_Fish",
-#   check_acronyms = TRUE)
-# str(test)
-
-# main_path   <- file.path("C:", "CaliforniaCurrent", "PoseidonAdventureCalCurrentINPUTdraft1")
-# test2 <- load_nc(dir = NULL,
-#                  file_nc = file.path(main_path, "CalCurrent65YearsCurrentFishingRates", "outputCCV3.nc"),
-#                  fgs = read.table(file.path(main_path, "CalCurrentV3Groups.csv"), sep = ",", header = T),
-#                  bps = load_bps(dir = NULL, file_fgs = file.path(main_path, "CalCurrentV3Groups.csv"), file_init = file.path(main_path, "DIVCalCurrentV3_Biol.nc")),
-#                  select_variable = "ResN",
-#                  select_groups = "Demersal_P_Fish",
-#                  check_acronyms = T)
-# str(test2)
-
