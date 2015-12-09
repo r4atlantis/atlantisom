@@ -8,7 +8,7 @@
 #' @family calc functions
 #' @author Emma Hodgson
 #'
-#' @param dir
+#' @template dir
 #' @return A \code{data.frame} in long format with the following coumn names:
 #'   Species, timestep, polygon, TRUEagecl, and atoutput (i.e., variable).
 #' @export
