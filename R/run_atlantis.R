@@ -59,7 +59,7 @@ run_atlantis <- function(scenario, dir = getwd(),
   nc_out <- paste0("output", scenario, ".nc")
   nc_prod <- paste0("output", scenario, "PROD.nc")
   # Get the boundary boxes
-  allboxes <- load_box(dir = dir, file_bgm = file_bgm)
+  allboxes <- load_box(dir = dir, file_bgm = file_init)
   boxes <- get_boundary(allboxes)
 
   #Extract from NetCDF files
