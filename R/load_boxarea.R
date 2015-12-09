@@ -2,6 +2,7 @@
 #'
 #'
 #' This function extracts the box area for each polygon from the atlantis bgm-file.
+#' @template dir
 #' @template file_bgm
 #' @return dataframe with the columns polygon and area. Polygon gives the box id as integer and area
 #' is the box size in m².
@@ -9,7 +10,12 @@
 #' @family load functions
 #' @export
 
-load_boxarea <- function(file_bgm){
+load_boxarea <- function(dir = getwd(), file_bgm) {
+  if (is.null(dir)) {
+    file.bgm <- file_bgm
+  } else {
+    file.bgm <- file.path(dir, file_bgm)
+  }
   boxarea <- readLines(con = file_bgm, warn = F)
 
   nr_boxes <- boxarea[grep(pattern = "nbox", x = boxarea)]
