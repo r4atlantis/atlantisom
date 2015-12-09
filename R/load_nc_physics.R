@@ -1,25 +1,29 @@
 #' Load Atlantis outputfiles (netcdf)
 #'
+#' This function loads Atlantis outputfiles (netcdf) and converts them to a
+#' \code{data.frame}. The function should be replaced by adding additional
+#' functionality to \code{\link{load_nc}}, but it works as is for right now.
+#' Todo: remove the function and fix \code{\link{load_nc}}
+#' @template dir
+#' @template file_nc
+#' @param physic_variables A character value spefifying which variables
+#'   should be loaded. Only one variable can be loaded at a time.
+#'   Currently, only the following variables are allowed:
+#'   "salt", "NO3", "NH3", "Temp", "Oxygen", "Si", "Det_Si", "DON",
+#'    "Chl_a", "Denitrifiction", "Nitrification".
+#' @param aggregate_layers A logical specifying if layers shall be aggregated.
+#' @template bboxes
+#' @return A \code{data.frame} in long format with the following information:
+#'   variable, timestep, polygon, and value (= "atoutput").
 #'
-#' This function loads Atlantis outputfiles (netcdf) and converts them to a dataframe.
-#' @param model_path Character string of the ATLANTIS folder.
-#' @param filename Character string of the general ATLANTIS output file. Usually "outputNorthSea.nc".
-#' @param physic_variables Character value spefifying which variables shall be loaded. Only one variable can be loaded at a time. Currently, only "salt", "NO3", "NH3", "Temp", "Oxygen", "Si", "Det_Si", "DON", "Chl_a", "Denitrifiction", "Nitrification" can be selected.
-#' @param aggregate_layers Logical specifying if layers shall be aggregated or not.
-#' @param load_init Logical specifying if an initial file shall be read in. Default is F wich means output files are loaded.
-#' @param remove_bboxes Logical specifying if an boundary boxes  shall be excluded. Default is T.
-#' @return Dataframe in long format with the following informations: variable, timestep, polygon, and value (= "atoutput").
-
-#' @details This functions converts the ATLANTIS output to a dataframe which can be processed in R.
 #' @keywords gen
-#' @examples
-#' load_atlantis_ncdf_physics(model_path = file.path("z:", "Atlantis", "ATLANTIS NSmodel base"), filename = "outputNorthSea.nc", physic_variables = c("salt", "Temp"))
+#'
+#' @importFrom magrittr %>%
 #' @export
 
-load_nc_physics <- function(dir = getwd(), nc_out,
+load_nc_physics <- function(dir = getwd(), file_nc,
                                        physic_variables,
                                        aggregate_layers,
-                                       remove_bboxes,
                             bboxes){
   if (is.null(physic_variables)) stop("No physical variables selected.")
 
@@ -46,14 +50,14 @@ load_nc_physics <- function(dir = getwd(), nc_out,
   # or not (= 0). Boxes without layers (= islands) have only 0s as id! This is used lateron to remove
   # data from non-existent layers! By default output should be 0 in those layers. However, this approach is
   # much more robust as true zeros are kept!!! In addition all layers in boundary boxes are also set
-  # to 0 if remove_bboxes is TRUE! This will speed up the code ALOT! In addition is helps to vectorise
+  # to 0 if bboxes is not NULL! This will speed up the code ALOT! In addition is helps to vectorise
   # the dataframe creation. Applying a boolean array to an array results in a vector!
   for (i in seq_along(num_layers)) {
     if (i == 1) layerid <- array(dim = c(n_layers, n_boxes))
     if (num_layers[i] == 0) {
       layerid[, i] <- 0
     } else {
-      if (remove_bboxes & is.element((i - 1), bboxes)) {
+      if (!is.null(bboxes) & is.element((i - 1), bboxes)) {
         layerid[, i] <- 0
       } else {
         layerid[, i] <- c(rep(0, times = n_layers - num_layers[i]), rep(1, times = num_layers[i]))
@@ -71,7 +75,7 @@ load_nc_physics <- function(dir = getwd(), nc_out,
   boxes <- 0:(n_boxes - 1)
   # Remove islands! and boundary boxes!
   island_ids <- num_layers == 0
-  if (remove_bboxes) {
+  if (!is.null(bboxes)) {
     boundary_ids <- is.element(boxes, bboxes)
     island_ids <- island_ids | boundary_ids
   }
