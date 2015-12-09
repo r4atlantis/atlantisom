@@ -10,8 +10,7 @@
 #' @family load functions
 #' @export
 #' @examples
-#' scenario <- "INIT_VMPA_Jan2015"
-#' d <- system.file("extdata", scenario, package = "atlantisom")
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' boxarea <- load_boxarea(dir = d, file_bgm = "VMPA_setas.bgm")
 #'
 load_boxarea <- function(dir = getwd(), file_bgm) {
@@ -20,7 +19,7 @@ load_boxarea <- function(dir = getwd(), file_bgm) {
   } else {
     file.bgm <- file.path(dir, file_bgm)
   }
-  boxarea <- readLines(con = file_bgm, warn = F)
+  boxarea <- readLines(con = file.bgm, warn = F)
 
   nr_boxes <- boxarea[grep(pattern = "nbox", x = boxarea)]
   nr_boxes <- str_split_twice(char = nr_boxes)
