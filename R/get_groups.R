@@ -55,7 +55,6 @@ get_nonage_acronyms <- function(fgs){
   return(result)
 }
 
-# S
 #' @export
 #' @rdname get_groups
 #' @template fgs
