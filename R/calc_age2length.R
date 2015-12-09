@@ -15,9 +15,10 @@
 #' @template nums
 #' @param ncfile full path and filename of biology .prm file
 #' @template fgs
-#' The above should  be changed to only pass the pieces from these that
-#' we need.
 #' @param CVlenage The variability in length at age (currently same for all species)
+#'
+#' @details The above should  be changed to only pass the pieces from these that
+#' we need.
 calc_age2length <- function(natage,
                             structn, reserven, nums,
                             biolprm,
