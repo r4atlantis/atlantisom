@@ -1,9 +1,9 @@
-#' Code to get size at age and plot
+#'
 #' @author Gavin Fay
 #' calculate length composition from Atlantis output (st)age data
 #' Uses numbers at age, plus weight at age, and weight-length relationships to
 #' generate size comps
-#' @param natage dataframe of numbers at age by species, age class, box, depth,
+#' @param nums dataframe of numbers at age by species, age class, box, depth,
 #' and time
 #' @param structn dataframe of structural n by species, age class, box, depth,
 #' and time
@@ -15,17 +15,22 @@
 #' @template nums
 #' @param ncfile full path and filename of biology .prm file
 #' @template fgs
-#' @param CVlenage The variability in length at age (currently same for all species)
-#'
-#' @details The above should  be changed to only pass the pieces from these that
+#' The above should  be changed to only pass the pieces from these that
 #' we need.
-calc_age2length <- function(natage,
-                            structn, reserven, nums,
+#' @param CVlenage The variability in length at age (currently same for all species)
+#' @param remove.zeroes  Logical asking whether to only return numbers at length for
+#' combinations of species, age, box, depth, etc that have numbers>0
+#' @return A \code{list} containing three \code{data.frame}s, mulen (mean length at age),
+#' muweight (mean weight at age), and natlength (numbers at length). natlength is in the
+#' same format as other dataframes in the atlantisom package except has two additional
+#' columns to include the length bin information.
+calc_age2length <- function(structn, reserven, nums,
                             biolprm,
                             ncfile,
                             fgs, # this calls the group csv file already brought in using run_atlantis
                             #groupfile,
-                            CVlenage=0.01) {
+                            CVlenage=0.1,
+                            remove.zeroes=TRUE) {
 
 ### Inputs required
 ### Ages (hard-wired right now for 10 cohorts per group). This can be modified.
@@ -38,134 +43,125 @@ ages = 1:10
 # change the upper limits for each length bin
 upper.bins <- 1:150
 
-# CV length at age for each species. Needed to create the age-length key.
-# This could conceivably be passed to the function for each species.
-#CVlenage = 0.01 #15
-#CVlenage <- array(0.01,dim=c(length(groups),length(ages)))
+# CV length at age for each species is Needed to create the age-length key.
+# This could conceivably be passed to the function with vals for each species.
 
 ## Get group codes to calculate size comps for
 groups <- as.factor(fgs$Name)
 
-#Here is where you could be clever with regard to stage/ages.
-# Numbers and Size at age passed to here should be converted from stages to ages.
-#group.names$NumAgeClassSize
+times <- unique(structn$time)
 
-# For each Atlantis age class, calculate length associated with weight
-# Generate length distribution assuming a fixed CV of length at age
+#BIOL PRM IS CURRENTLY OUTPUTTING VALS AS FACTORS!!! THIS NEEDS FIXING.
+kgw2d <- as.numeric(as.character(biolprm$kgw2d))
+redfieldcn <- as.numeric(as.character(biolprm$redfieldcn))
 
-####
-# Get the Weights at age and Numbers at age matrices
-####
-
-group <- groups[1] #"Demersal_D_Fish"
-#get total N
-#groupN <- get.var.ncdf(xx2,paste(group,"_N",sep=""))
-#vol <- get.var.ncdf(xx2,"volume")
-#TotN <- sum(groupN*vol,na.rm=TRUE)
-# for (age in 1:10)
-# {
-  # SRN <- get.var.ncdf(xx2,paste(group,age,"_ResN",sep=""))
-  # SRN <- SRN + get.var.ncdf(xx2,paste(group,age,"_StructN",sep=""))
-  # Nums <- get.var.ncdf(xx2,paste(group,age,"_Nums",sep=""))
-  # if (age==1) TheN <- SRN*Nums
-  # if (age>1) TheN <- TheN + SRN*Nums
-# }
-
-times <- length(unique(structn$time))
-
-
-#Define size comp storage array for length fequencies
-# dimensions: species, Len bins, Depth, Box, Time
-Lenfreq = array(0,dim=c(length(groups),
-                        length(upper.bins),
-                        dim(SRN)),
-                dimnames=list(groups=groups,
-                length=upper.bins,
-                depth=1:dim(SRN)[1],
-                box=0:(dim(SRN)[2]-1),
-                time=1:dim(SRN)[3]))
-# temporary storage array for distribution of numbers for each age.
-Fracperbin = array(0,dim=c(length(upper.bins),dim(SRN)))
-
-#arrays for mean size at age (weight and length)
-mulenage <- array(0,dim=c(length(groups),10,dim(SRN)[3]))
-muweight <- array(0,dim=c(length(groups),10,dim(SRN)[3]))
-
-# Start the calculations
-# Loop over groups
-for (group in groups)
-{
-  igroup <- which(groups==group)
-  ncgroup <- group
-
-  # Get the appropriate weight-at-length parameters for this group
-  # Currently assuming they are fixed inputs and not changing over time
-  li_a_use <- biolprm[which(biolprm[, 1] == group.names$Code[igroup]), 2]
-  li_b_use <- biolprm[which(biolprm[, 1] == group.names$Code[igroup]), 3]
-
-  #calculate length
-  #weght-length determined by equation #95 in NMFS TechMemo 218, Link et al. 2010
-
-  # loop over ages
-  for (age in ages)
+#calculate mean length at age
+mulen <- nums
+muweight <- nums
+#This loop is very slow and needs vectorizing.
+#Issue is that nums only contains elements with non-zero numbers whereas
+#reserven and structn are for all combinations
+#
+#for (irow in 1:nrow(nums))
+  for (irow in 1:100)
   {
-    SRN <- resn[resn$species %in% ncgroup, ] +
-           structn[structn$species %in% ncgroup, ]
-    Nums <- nums[nums$species %in% ncgroup, ]
-    # SRN <- get.var.ncdf(xx2,paste(ncgroup,age,"_ResN",sep=""))
-    # SRN <- SRN + get.var.ncdf(xx2,paste(ncgroup,age,"_StructN",sep=""))
-    # Nums <- get.var.ncdf(xx2,paste(ncgroup,age,"_Nums",sep=""))
+  group <- nums$species[irow]
+  igroup <- which(groups==group)
+  box <- nums$polygon[irow]
+  layer <- nums$layer[irow]
+  time <- nums$time[irow]
+  age <- nums$agecl[irow]
+  li_a_use <- biolprm$wl[which(biolprm$wl[, 1] == fgs$Code[igroup]), 2]
+  li_b_use <- biolprm$wl[which(biolprm$wl[, 1] == fgs$Code[igroup]), 3]
+  li_a_use <- as.numeric(as.character(li_a_use))
+  li_b_use <- as.numeric(as.character(li_b_use))
 
-    Nperage <- SRN*Nums
+  SRN <- reserven$atoutput[reserven$species %in% group & reserven$agecl %in% age
+                           & reserven$polygon %in% box & reserven$layer %in% layer
+                           & reserven$time %in% time] +
+         structn$atoutput[structn$species %in% group & structn$agecl %in% age
+                      & structn$polygon %in% box & structn$layer %in% layer
+                      & structn$time %in% time]
 
-    #GET LENGTH FOR THIS AGE CLASS
-    Length <- ((biolprm$kgw2d*biolprm$redfieldcn*SRN)/(1000*li_a_use))^(1/li_b_use)
-    # also produce a summary for each time step
-    mulen <- rep(0,length(Length[1,1,]))
-    for (t in 1:length(mulen))
-     {
-      numfreq <- Nums[,,t]/sum(Nums[,,t])
-      mulen[t] <- sum(Length[,,t]*numfreq)
-     }
-    mulenage[igroup,age,] <- mulen
-    muweight[igroup,age,] <- li_a_use*mulen^li_b_use
-
-    # Now create the age-length key based on the assumed distribution of length at age
-    # Some modification will be required here if CVlenage is not a scalar
-    sigma = sqrt(log((CVlenage^2)+1))
-    muuse <- log(Length) - 0.5*(sigma^2)
-    for (i in 1:dim(SRN)[1])
-      for (j in 1:dim(SRN)[2])
-        for (k in 1:dim(SRN)[3])
-        {
-          CumFracperbin <- plnorm(upper.bins,muuse[i,j,k],sigma)
-          Fracperbin[,i,j,k] <- c(CumFracperbin[1],diff(CumFracperbin))
-        }
-    #Now use the ALK and the Numbers at age to get the Length frequencies
-    for (i in 1:dim(SRN)[1])
-      for (j in 1:dim(SRN)[2])
-        for (k in 1:dim(SRN)[3])
-        {
-          Lenfreq[igroup,,i,j,k] = Lenfreq[igroup,,i,j,k] + Fracperbin[,i,j,k]*Nums[i,j,k]
-        }
-
-    #close the age loop
-  }
-  #close the species loop
+  mulen$atoutput[irow] <- ((kgw2d*redfieldcn*SRN)/(1000*li_a_use))^(1/li_b_use)
+  muweight$atoutput[irow] <- li_a_use*mulen$atoutput[irow]^li_b_use
 }
 
-#save the resulting length frequency array, this is probably what needs to be
-#returned from a call to the function
-#save(Lenfreq,file="Lenfreq_Numbers.RData")
+#calculate length comps
+#(numbers at length at max resolution - can then be collapsed to appropriate
+#spatial/temporal resolution later)
+upper.bins <- 1:150
+lower.bins <- c(0,upper.bins[-length(upper.bins)])
+lenfreq <- NULL
+#for (irow in 1:nrow(mulen))
+for (irow in 1:100)
+  {
+  group <- nums$species[irow]
+  igroup <- which(groups==group)
+  box <- nums$polygon[irow]
+  layer <- nums$layer[irow]
+  time <- nums$time[irow]
+  age <- nums$agecl[irow]
 
-#convert to data frame - need to add a column with lower length bin limit
-lendat <- as.vector(aperm(Lenfreq,c(2,5,4,3,1)))
-thecols <- expand.grid(upper.bins,1:dim(SRN)[3],0:(dim(SRN)[2]-1),1:7,groups)
-lenout <- cbind(thecols[,c(5,1,3,4,2)],lendat)
-lenout[,5] <- times[lenout[,5]]
-names(lenout) <- c("species","upperlength","polygon","layer","time","natlength")
+  sigma = sqrt(log((CVlenage^2)+1))
+  muuse <- log(mulen$atoutput[irow]) - 0.5*(sigma^2)
+  CumFracperbin <- plnorm(upper.bins,muuse,sigma)
+  Fracperbin <- c(CumFracperbin[1],diff(CumFracperbin))
+  natlength = Fracperbin*nums$atoutput[irow]
+  results <- cbind(mulen[irow,],lower.bins,upper.bins)
+  results$atoutput <- natlength
+  #results <- results[results$atoutput>0,]
+  lenfreq <- rbind(lenfreq,results)
+}
+
 #get rid of zero rows.
-lenout <- lenout[lenout$natlength>0,]
+if (remove.zeroes) lenfreq <- lenfreq[lenfreq$atoutput>0,]
+
+#output. natlength now has additional columns because of need to store length bin info
+lenout <- NULL
+lenout$mulen <- mulen
+lenout$muweight <- muweight
+lenout$natlength <- lenfreq
+
 return(lenout)
 # END THE SIZE COMP FUNCTION HERE.
 }
+
+
+#example on test data set
+#
+#dir <- "~/Atlantis/r4atlantis/atlantisom/inst/extdata/INIT_VMPA_Jan2015"
+#biolprm <- load_biolprm(dir=NULL,file_biolprm=file.path(dir,"VMPA_setas_biol_fishing_Trunk.prm",fsep="/"))
+#groups <- load_groups(file.path(dir,'functionalGroups.csv',fsep="/"))
+#bps <- load_box(dir=NULL,file_bgm=file.path(dir,"VMPA_setas.bgm",fsep="/")) #,
+#groupfile <- file.path(dir,'functionalGroups.csv',fsep="/")
+#ncfile <- file.path(dir,'outputSETAS.nc',fsep="/")
+
+#reserven <- load_nc(dir=NULL,
+#              file_nc=ncfile,
+#              fgs=read.table(groupfile,sep=",",header=TRUE),
+#              bps=bps,select_groups=groups,
+#               select_variable="ResN",
+#               check_acronyms=TRUE)
+# structn <- load_nc(dir=NULL,
+#                     file_nc=ncfile,
+#                     fgs=read.csv(groupfile),
+#                     bps=bps,select_groups=groups,
+#                     select_variable="StructN",
+#                     check_acronyms=TRUE)
+# nums <- load_nc(dir=NULL,
+#                    file_nc=ncfile,
+#                    fgs=read.csv(groupfile),
+#                    bps=bps,select_groups=groups,
+#                    select_variable="Nums",
+#                    check_acronyms=TRUE)
+#
+# lenout <- calc_age2length(structn=structn,
+#                           reserven=reserven,
+#                           nums=nums,
+#                             biolprm=biolprm,
+#                             ncfile=ncfile,
+#                             fgs=read.csv(groupfile),
+#                             CVlenage=0.1,
+#                             remove.zeroes=TRUE)
+#
