@@ -63,7 +63,7 @@ NNED TO RETHINK TIME
 		              agecl = surv$agecl, 
 		              polygon = surv$polygon, 
 		              layer = NA, 
-		              time = mean(time),
+		              time = time,
 		              atoutput = surv$numAtAgeSurv)
 
 	return(out)
