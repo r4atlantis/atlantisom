@@ -127,6 +127,13 @@ run_atlantis <- function(scenario, dir = getwd(),
                  select_variable = "Catch",
                  check_acronyms = TRUE,
                  bboxes = boxes)
+  if (check_catch) {
+    file_catch.txt <- paste0("output", scenario, "CatchPerFishery.txt")
+    if (!is.null(dir)) {
+      file_catch.txt <- file.path(dir, file_catch.txt)
+    }
+    catchtxt <- read.table(file_catch.txt, header = TRUE)
+  }
   print("catch read in.")
 
   diet <- load_diet_comp(dir = dir, dietfile = dietcheck, fgs = fgs)
@@ -149,19 +156,3 @@ run_atlantis <- function(scenario, dir = getwd(),
   print("Hurray, done!")
   return(result)
 }
-
-# dir <- file.path("C:", "CaliforniaCurrent", "PoseidonAdventureCalCurrentINPUTdraft1", "CalCurrent65YearsCurrentFishingRates")
-# file_fgs <- "CalCurrentV3Groups.csv"
-# scenario <- "CCV3"
-# file_bgm <- "CalCurrentV3_utm.bgm"
-# file_init <- "DIVCalCurrentV3_Biol.nc"
-# select_groups <- load_groups(fgs)
-
-# test <- run_atlantis(scenario = "CCV3",
-#                      dir = dir,
-#                      file_fgs = "CalCurrentV3Groups.csv",
-#                      file_bgm = "CalCurrentV3_utm.bgm",
-#                      select_groups = load_groups(fgs = read.table(file.path(dir, "CalCurrentV3Groups.csv"), sep = ",", header = T, stringsAsFactors = F)),
-#                      file_init = "DIVCalCurrentV3_Biol.nc")
-
-
