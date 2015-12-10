@@ -19,8 +19,8 @@ aggregateData <- function(dat, time, species, boxes, keepColumns=c("species","ag
 
 	#first select the appropriate rows (time and box)
 	sampDat <- dat[dat$time%in%time & dat$polygon%in%boxes & dat$species%in%species, ]
-	
-	#sum over depth layers, leaving only species, agecl, and polygon
+
+	#sum over a variable
 	aggDat <- aggregate(sampDat$atoutput, as.list(sampDat[,c(keepColumns)]), sum)
 	names(aggDat) <- c(keepColumns,"numAtAge")
 

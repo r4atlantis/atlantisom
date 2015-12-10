@@ -33,7 +33,7 @@ create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 	#first select the appropriate rows and 
 	aggDat <- aggregateData(dat, time, species, boxes$polygon, keepColumns=c("species","agecl","polygon","time"))
 
-NNED TO RETHINK TIME
+#NNED TO RETHINK TIME
 
 
 	#now calculate density in each box from num-at-age and total area by habitat
@@ -66,6 +66,8 @@ NNED TO RETHINK TIME
 		              time = time,
 		              atoutput = surv$numAtAgeSurv)
 
+	out <- out[order(out$species,out$time,out$polygon,out$agecl),]
+
 	return(out)
 
 
@@ -78,10 +80,14 @@ if(F) {
 	dat <- data.frame(species = c(rep("spec1",3*3),rep("spec2",5*3)),
 		              agecl = c(rep(1:3,3),rep(3:7,3)), 
 		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)), 
-		              layer = 1, 
-		              time = 1)
-
+		              layer = 1:2, 
+		              time = 365)
     dat$atoutput <- 10000/dat$agecl
+
+	dat2 <- dat; dat2$time=365*2; 
+	dat2$atoutput <- 20000/dat2$agecl	
+	dat <- rbind(dat,dat2)
+
 
     spex <- data.frame(polygon=1:3,area=c(1000,2000,3000))
 
@@ -95,5 +101,5 @@ if(F) {
 
 
 
-	tmp <- create_survey(dat=dat, time=1, species=c("spec1","spec2"), spex=spex, boxes=boxes, effic=effic, selex=selex)
+	tmp <- create_survey(dat=dat, time=c(365,2*365), species=c("spec1","spec2"), spex=spex, boxes=boxes, effic=effic, selex=selex)
 }
