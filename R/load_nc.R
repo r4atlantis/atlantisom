@@ -119,6 +119,8 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
     search[[i]] <- unique(search[[i]])
   }
   search_clean <- do.call(c, search)
+  # If the combination of select_groups and select_variable ends up not being found.
+  if (length(search_clean) == 0) return(0)
 
   at_data <- lapply(search_clean, RNetCDF::var.get.nc, ncfile = at_out)
 

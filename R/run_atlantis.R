@@ -32,7 +32,7 @@
 #'   dir = system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom"),
 #'   file_fgs = "functionalGroups.csv",
 #'   file_bgm = "VMPA_setas.bgm",
-#'   select_groups = "Pisciv_D_Fish",
+#'   select_groups = "Planktiv_S_Fish",
 #'   file_init = "INIT_VMPA_Jan2015.nc",
 #'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
 #'
@@ -59,7 +59,7 @@ run_atlantis <- function(scenario, dir = getwd(),
   nc_out <- paste0("output", scenario, ".nc")
   nc_prod <- paste0("output", scenario, "PROD.nc")
   # Get the boundary boxes
-  allboxes <- load_box(dir = dir, file_bgm = file_init)
+  allboxes <- load_box(dir = dir, file_bgm = file_bgm)
   boxes <- get_boundary(allboxes)
 
   #Extract from NetCDF files
@@ -71,7 +71,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                   fgs = fgs,
                   select_groups = select_groups,
                   select_variable = "Nums",
-                  check_acronyms = T,
+                  check_acronyms = TRUE,
                   bboxes = boxes)
   print("Numbers read in.")
 
@@ -81,7 +81,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                   fgs = fgs,
                   select_groups = select_groups,
                   select_variable = "ResN",
-                  check_acronyms = T,
+                  check_acronyms = TRUE,
                   bboxes = boxes)
   print("Reserve nitrogen read in.")
 
@@ -91,7 +91,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                   fgs = fgs,
                   select_groups = select_groups,
                   select_variable = "StructN",
-                  check_acronyms = T,
+                  check_acronyms = TRUE,
                   bboxes = boxes)
   print("Structural nitrogen read in.")
 
@@ -101,7 +101,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                      fgs = fgs,
                      select_groups = select_groups,
                      select_variable = "Eat",
-                     check_acronyms = T,
+                     check_acronyms = TRUE,
                      bboxes = boxes)
 
   grazing <- load_nc(dir = dir,
@@ -110,14 +110,13 @@ run_atlantis <- function(scenario, dir = getwd(),
                  fgs = fgs,
                  select_groups = select_groups,
                  select_variable = "Grazing",
-                 check_acronyms = T,
+                 check_acronyms = TRUE,
                  bboxes = boxes)
 
   vol <- load_nc_physics(dir = dir,
-                         nc_out = nc_out,
+                         file_nc = nc_out,
                          physic_variables = "volume",
-                         aggregate_layers = F,
-                         remove_bboxes = T,
+                         aggregate_layers = FALSE,
                          bboxes = boxes)
 
   catch <- load_nc(dir = dir,
@@ -126,7 +125,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                  fgs = fgs,
                  select_groups = select_groups,
                  select_variable = "Catch",
-                 check_acronyms = T,
+                 check_acronyms = TRUE,
                  bboxes = boxes)
   print("catch read in.")
 
