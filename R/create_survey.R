@@ -8,12 +8,12 @@
 #' @param species The species to sample in the survey (a vector)
 #' @param spex    The specifications of Atlantis model (box-specific area, habitat, etc.)
 #'                   for now, from load_boxarea a dataframe with polygon and area column names
-#' @param boxes A matrix with two columns: 
+#' @param boxes A matrix with two columns:
 #'		1) polygon:  box ID's that are sampled
 #'		2) survArea: area sampled in that box
 #' @param effic Efficiency for each species: a matrix with nrow=length(species). Columns:
 #'                 species:    the species name. Matches names in species
-#'				   efficiency: 
+#'				   efficiency:
 #' @param selex Selectivity at age. A dataframe defining selectivity at age for each species. Columns are:
 #'                 species: the species name. Matches names in species
 #'                 agecl:   the age class that selectivity represents
@@ -23,14 +23,20 @@
 #' @details Returns a matrix similar to the input matrix
 #' @details columns: species, agecl, polygon, layer, time, atoutput
 #' @details  --will sum over layers, but enter NA as layer to indicate all layers
-#' @details This function is for a vector of defined species 
+#' @details This function is for a vector of defined species
+
+#' @examples
+# testscenario <- "INIT_VMPA_Jan2015"
+# d <- system.file("extdata", testscenario, package = "atlantisom")
+# load(file = file.path(d, "outputSETASrun_atlantis.RData"))
+# dat <- result$nums
 
 
 create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 
 	#Do some vector length tests (species=effic, column names, )
 
-	#first select the appropriate rows and 
+	#first select the appropriate rows and
 	aggDat <- aggregateData(dat, time, species, boxes$polygon, keepColumns=c("species","agecl","polygon","time"))
 
 #NNED TO RETHINK TIME
@@ -59,10 +65,10 @@ create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 
 	#Create final dataframe in same format as input
 	#put time (mean) and layers (NA) back in the dataframe for completeness
-	out <- data.frame(species = surv$species, 
-		              agecl = surv$agecl, 
-		              polygon = surv$polygon, 
-		              layer = NA, 
+	out <- data.frame(species = surv$species,
+		              agecl = surv$agecl,
+		              polygon = surv$polygon,
+		              layer = NA,
 		              time = time,
 		              atoutput = surv$numAtAgeSurv)
 
@@ -78,14 +84,14 @@ create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 if(F) {
 
 	dat <- data.frame(species = c(rep("spec1",3*3),rep("spec2",5*3)),
-		              agecl = c(rep(1:3,3),rep(3:7,3)), 
-		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)), 
-		              layer = 1:2, 
+		              agecl = c(rep(1:3,3),rep(3:7,3)),
+		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)),
+		              layer = 1:2,
 		              time = 365)
     dat$atoutput <- 10000/dat$agecl
 
-	dat2 <- dat; dat2$time=365*2; 
-	dat2$atoutput <- 20000/dat2$agecl	
+	dat2 <- dat; dat2$time=365*2;
+	dat2$atoutput <- 20000/dat2$agecl
 	dat <- rbind(dat,dat2)
 
 
@@ -95,7 +101,7 @@ if(F) {
 
 	effic <- data.frame(species=c("spec1","spec2"), efficiency=c(0.1,0.5))
 
-	selex <- data.frame(species=c(rep("spec1",3),rep("spec2",7)), 
+	selex <- data.frame(species=c(rep("spec1",3),rep("spec2",7)),
 		                agecl=c(1:3,1:7),
 		                selex=c(0.1,0.5,1,0,0.1,0.3,0.5,0.7,1,1))
 
