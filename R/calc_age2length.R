@@ -52,42 +52,30 @@ groups <- as.factor(fgs$Name)
 times <- unique(structn$time)
 
 #BIOL PRM IS CURRENTLY OUTPUTTING VALS AS FACTORS!!! THIS NEEDS FIXING.
-kgw2d <- as.numeric(as.character(biolprm$kgw2d))
-redfieldcn <- as.numeric(as.character(biolprm$redfieldcn))
+#biol_prm fixed to address this 12/10/15
+#kgw2d <- as.numeric(as.character(biolprm$kgw2d))
+#redfieldcn <- as.numeric(as.character(biolprm$redfieldcn))
 
 #calculate mean length at age
 mulen <- nums
 muweight <- nums
-#This loop is very slow and needs vectorizing.
-#Issue is that nums only contains elements with non-zero numbers whereas
-#reserven and structn are for all combinations
 #
-#for (irow in 1:nrow(nums))
-  for (irow in 1:100)
-  {
-  group <- nums$species[irow]
-  igroup <- which(groups==group)
-  box <- nums$polygon[irow]
-  layer <- nums$layer[irow]
-  time <- nums$time[irow]
-  age <- nums$agecl[irow]
-  li_a_use <- biolprm$wl[which(biolprm$wl[, 1] == fgs$Code[igroup]), 2]
-  li_b_use <- biolprm$wl[which(biolprm$wl[, 1] == fgs$Code[igroup]), 3]
-  li_a_use <- as.numeric(as.character(li_a_use))
-  li_b_use <- as.numeric(as.character(li_b_use))
+# extract rows from structn and reserven that match the rows in nums, which are only non-zeroes
+resn.ind <- with(reserven,paste(species,'.',agecl,'.',polygon,'.',layer,'.',time,sep=""))
+num.ind <- with(nums,paste(species,'.',agecl,'.',polygon,'.',layer,'.',time,sep=""))
+pick <- match(num.ind,resn.ind)
+SRN <- reserven$atoutput[pick] + structn$atoutput[pick]
 
-  SRN <- reserven$atoutput[reserven$species %in% group & reserven$agecl %in% age
-                           & reserven$polygon %in% box & reserven$layer %in% layer
-                           & reserven$time %in% time] +
-         structn$atoutput[structn$species %in% group & structn$agecl %in% age
-                      & structn$polygon %in% box & structn$layer %in% layer
-                      & structn$time %in% time]
+# get weight-length parameters
+li_a_use <- biolprm$wl[match(fgs$Code[match(nums$species,fgs$Name)],biolprm$wl[, 1]), 2]
+li_b_use <- biolprm$wl[match(fgs$Code[match(nums$species,fgs$Name)],biolprm$wl[, 1]), 3]
 
-  mulen$atoutput[irow] <- ((kgw2d*redfieldcn*SRN)/(1000*li_a_use))^(1/li_b_use)
-  muweight$atoutput[irow] <- li_a_use*mulen$atoutput[irow]^li_b_use
-}
+#calc mean length and weight at age
+mulen$atoutput <- ((kgw2d*redfieldcn*SRN)/(1000*li_a_use))^(1/li_b_use)
+muweight$atoutput <- li_a_use*mulen$atoutput^li_b_use
 
-#calculate length comps
+#
+# #calculate length comps
 #(numbers at length at max resolution - can then be collapsed to appropriate
 #spatial/temporal resolution later)
 upper.bins <- 1:150
@@ -128,16 +116,16 @@ return(lenout)
 }
 
 
-#example on test data set
+# #example on test data set
+# #
+# dir <- "~/Atlantis/r4atlantis/atlantisom/inst/extdata/INIT_VMPA_Jan2015"
+# biolprm <- load_biolprm(dir=NULL,file_biolprm=file.path(dir,"VMPA_setas_biol_fishing_Trunk.prm",fsep="/"))
+# groups <- load_groups(file.path(dir,'functionalGroups.csv',fsep="/"))
+# bps <- load_box(dir=NULL,file_bgm=file.path(dir,"VMPA_setas.bgm",fsep="/")) #,
+# groupfile <- file.path(dir,'functionalGroups.csv',fsep="/")
+# ncfile <- file.path(dir,'outputSETAS.nc',fsep="/")
 #
-#dir <- "~/Atlantis/r4atlantis/atlantisom/inst/extdata/INIT_VMPA_Jan2015"
-#biolprm <- load_biolprm(dir=NULL,file_biolprm=file.path(dir,"VMPA_setas_biol_fishing_Trunk.prm",fsep="/"))
-#groups <- load_groups(file.path(dir,'functionalGroups.csv',fsep="/"))
-#bps <- load_box(dir=NULL,file_bgm=file.path(dir,"VMPA_setas.bgm",fsep="/")) #,
-#groupfile <- file.path(dir,'functionalGroups.csv',fsep="/")
-#ncfile <- file.path(dir,'outputSETAS.nc',fsep="/")
-
-#reserven <- load_nc(dir=NULL,
+# reserven <- load_nc(dir=NULL,
 #              file_nc=ncfile,
 #              fgs=read.table(groupfile,sep=",",header=TRUE),
 #              bps=bps,select_groups=groups,
