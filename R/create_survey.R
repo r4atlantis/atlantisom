@@ -23,13 +23,7 @@
 #' @details Returns a matrix similar to the input matrix
 #' @details columns: species, agecl, polygon, layer, time, atoutput
 #' @details  --will sum over layers, but enter NA as layer to indicate all layers
-#' @details This function is for a vector of defined species
-
-#' @examples
-# testscenario <- "INIT_VMPA_Jan2015"
-# d <- system.file("extdata", testscenario, package = "atlantisom")
-# load(file = file.path(d, "outputSETASrun_atlantis.RData"))
-# dat <- result$nums
+#' @details This function is for a vector of defined species 
 
 
 create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
@@ -65,11 +59,11 @@ create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 
 	#Create final dataframe in same format as input
 	#put time (mean) and layers (NA) back in the dataframe for completeness
-	out <- data.frame(species = surv$species,
-		              agecl = surv$agecl,
-		              polygon = surv$polygon,
-		              layer = NA,
-		              time = time,
+	out <- data.frame(species = surv$species, 
+		              agecl = surv$agecl, 
+		              polygon = surv$polygon, 
+		              layer = NA, 
+		              time = surv$time,
 		              atoutput = surv$numAtAgeSurv)
 
 	out <- out[order(out$species,out$time,out$polygon,out$agecl),]
@@ -84,14 +78,14 @@ create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 if(F) {
 
 	dat <- data.frame(species = c(rep("spec1",3*3),rep("spec2",5*3)),
-		              agecl = c(rep(1:3,3),rep(3:7,3)),
-		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)),
-		              layer = 1:2,
+		              agecl = c(rep(1:3,3),rep(3:7,3)), 
+		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)), 
+		              layer = 1:2, 
 		              time = 365)
     dat$atoutput <- 10000/dat$agecl
 
-	dat2 <- dat; dat2$time=365*2;
-	dat2$atoutput <- 20000/dat2$agecl
+	dat2 <- dat; dat2$time=365*2; 
+	dat2$atoutput <- 20000/dat2$agecl	
 	dat <- rbind(dat,dat2)
 
 
