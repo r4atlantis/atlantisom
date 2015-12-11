@@ -34,10 +34,10 @@
 #'                      select_variable = "Nums",
 #'                      check_acronyms = TRUE, bboxes = bboxes)
 #' biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
-#' recruits <- as.data.table(read.table(YOY, header = T))
+#' YOY <- load_yoy(dir, file_yoytxt="outputSETASYOY.txt")
 
 ## ACTUAL FUNCTION ##
-calc_stage2age <- function(dir, nums_data, biolprm, YOY_name) {
+calc_stage2age <- function(dir, nums_data, biolprm, YOY) {
   # Figure out the groups that have multiple ages classes in each stage (or
   # cohort), will end up only looping over these groups
   multiple_ages <- fgs[fgs$NumAgeClassSize>1, c(1,4,10)]
@@ -50,10 +50,14 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY_name) {
   # species, agecl, trueage, polygon, layer, time, atoutput
   for(i in 1:num_multi_age) {
     temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
-    temp_Z <- calc_Z(YOY="outputCCV3YOY.txt", Nums=temp_nums, 
-                     species.code=multiple_ages$Code[i])
+    temp_Z <- calc_Z(YOY=YOY, Nums=temp_nums, 
+                     species_info=multiple_ages[i,1:2])
     num_ages <- multiple_ages$NumAgeClassSize[i]
     
+  }
+  
+  
+  
     # need to consider each time step -- that is where I am leaving it, but 
     # for a time step, something like the following needs to occur:
     for(j in 1:(ntimesteps-1)) { # won't work to skip 0 but I have to think a bit
