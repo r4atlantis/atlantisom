@@ -128,12 +128,16 @@ run_atlantis <- function(scenario, dir = getwd(),
                  select_variable = "Catch",
                  check_acronyms = TRUE,
                  bboxes = boxes)
-  if (check_catch) {
+  if (TRUE) {
     file_catch.txt <- paste0("output", scenario, "CatchPerFishery.txt")
     if (!is.null(dir)) {
       file_catch.txt <- file.path(dir, file_catch.txt)
     }
     catchtxt <- read.table(file_catch.txt, header = TRUE)
+    catchbio <- calc_biomass_age(nums = catch,
+      resn = resn, structn = structn, biolprm = biol)
+    # test <- lapply(grep("FPS", var_names_ncdf),
+      # RNetCDF::var.get.nc, ncfile = at_out)
   }
   print("catch read in.")
 
