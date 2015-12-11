@@ -12,7 +12,33 @@
 #' @details because it starts with numbers-at-age, I add across boxes to properly weight them
 #' @details then, it simply applies a multinomial with the effective sample size
 #' @details It could be improved by adding an argument to create spatial strata which are conglomerations of subsets of boxes
-
+#'
+#' @examples
+#' 		setwd(file.path(system.file( package = "atlantisom"),".."))
+#'
+#'		directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#'		scenario <- "SETAS"
+#'		groups <- load_fgs(dir = directory, "functionalGroups.csv")
+#'		groups <- groups[groups$IsTurnedOn > 0, "Name"]
+#'		results <- run_atlantis(scenario = scenario,
+#'		dir = directory,
+#'		file_fgs = "functionalGroups.csv",
+#'		file_bgm = "VMPA_setas.bgm",
+#'		select_groups = groups,
+#'		file_init = "INIT_VMPA_Jan2015.nc",
+#'		file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#'
+#'		species=c("Pisciv_T_Fish","Pisciv_V_Fish")
+#'	    boxes <- 1:3
+#'		effic <- data.frame(species=c("Pisciv_T_Fish","Pisciv_V_Fish"), efficiency=c(0.3,0.1))
+#'		selex <- data.frame(species=c(rep("Pisciv_T_Fish",10),rep("Pisciv_V_Fish",10)),
+#'		                agecl=c(1:10,1:10),
+#'		                selex=c(0,0,0.1,0.5,0.8,1,1,1,1,1,0,0,0.1,0.3,0.5,0.7,0.9,1,1,1))
+#'
+#'		tmp <- create_survey(dat=results$nums, time=seq(70,82,3), species=species, boxes=boxes, effic=effic, selex=selex)
+#'		effN <- data.frame(species=species, effN=c(200, 500))
+#'		samp <- sample_fish(tmp, effN=effN)
+#'
 
 sample_fish <- function(dat, effN) {
 
@@ -33,6 +59,11 @@ sample_fish <- function(dat, effN) {
 		nn <- effN[effN$species==sp,"effN"]
 		for(y in unique(dat2$time)) {
 			ind <- dat2$species == sp & dat2$time == y
+			totalNums <- sum(dat2[ind,]$numAtAge)
+			if(effN > totalNums) {
+				effN <- totalNums
+				cat("effN is greater than total numbers available, so nEff set equal to",effN,"\n")
+			}
 			probs <- matrix(dat2[ind,]$numAtAge,nrow=1)
 		    dat2[ind,]$numAtAgeSamp <- rmultinom(1,nn,probs)[,1]
 		}
@@ -84,6 +115,41 @@ if(F) {
 	samp <- sample_fish(tmp, effN=effN)
 	tapply(samp$atoutput,list(samp$species,samp$time),sum)
 
+
+
+		#load_all()
+		#devtools::load_all(pkg="C:/GitHub/atlantisom") #A devtools function
+		setwd(file.path(system.file( package = "atlantisom"),".."))
+
+		directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+		scenario <- "SETAS"
+		groups <- load_fgs(dir = directory, "functionalGroups.csv")
+		groups <- groups[groups$IsTurnedOn > 0, "Name"]
+		results <- run_atlantis(scenario = scenario,
+		dir = directory,
+		file_fgs = "functionalGroups.csv",
+		file_bgm = "VMPA_setas.bgm",
+		select_groups = groups,
+		file_init = "INIT_VMPA_Jan2015.nc",
+		file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+
+
+		#allboxes <- load_box(dir = directory, file_bgm = "VMPA_setas.bgm")
+		#boxes <- get_boundary(allboxes)
+
+
+		#spex <- load_boxarea(dir = directory, file_bgm = "VMPA_setas.bgm")
+		species=c("Pisciv_T_Fish","Pisciv_V_Fish")
+	    boxes <- 1:3
+		effic <- data.frame(species=c("Pisciv_T_Fish","Pisciv_V_Fish"), efficiency=c(0.3,0.1))
+		selex <- data.frame(species=c(rep("Pisciv_T_Fish",10),rep("Pisciv_V_Fish",10)),
+		                agecl=c(1:10,1:10),
+		                selex=c(0,0,0.1,0.5,0.8,1,1,1,1,1,0,0,0.1,0.3,0.5,0.7,0.9,1,1,1))
+
+
+		tmp <- create_survey(dat=results$nums, time=seq(70,82,3), species=species, boxes=boxes, effic=effic, selex=selex)
+		effN <- data.frame(species=species, effN=c(200, 500))
+		samp <- sample_fish(tmp, effN=effN)
 
 }
 
