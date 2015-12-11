@@ -6,11 +6,11 @@
 #' @param time    The timing of the survey (a vector indicating specific time steps, which are typically associated with years)
 #'                    i.e., seq(365,10*3650,365) would be an annual survey for 10 years
 #' @param species The species to sample in the survey (a vector)
-#' @param spex    The specifications of Atlantis model (box-specific area, habitat, etc.)
-#'                   for now, from load_boxarea a dataframe with polygon and area column names
-#' @param boxes A matrix with two columns:
-#'		1) polygon:  box ID's that are sampled
-#'		2) survArea: area sampled in that box
+##' @param spex    The specifications of Atlantis model (box-specific area, habitat, etc.)
+##'                   for now, from load_boxarea a dataframe with polygon and area column names
+##' @param boxes A matrix with two columns:
+##'		1) polygon:  box ID's that are sampled
+##'		2) survArea: area sampled in that box
 #' @param effic Efficiency for each species: a matrix with nrow=length(species). Columns:
 #'                 species:    the species name. Matches names in species
 #'				   efficiency:
@@ -25,16 +25,17 @@
 #' @details  --will sum over layers, but enter NA as layer to indicate all layers
 #' @details This function is for a vector of defined species 
 
+#Update: 12/10/2015, I'm making it more simple and removing the density stuff. 
+#This assumes that the survey simply samples from each polygon, and does not account for different amounts of effort in different polygons.
+#This way, coastwide sampling can be done without worrying about differences in effort across polygons
 
-create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
+#create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
+create_survey <- function(dat, time, species, effic, selex) {
 
 	#Do some vector length tests (species=effic, column names, )
 
 	#first select the appropriate rows and
 	aggDat <- aggregateData(dat, time, species, boxes$polygon, keepColumns=c("species","agecl","polygon","time"))
-
-#NNED TO RETHINK TIME
-
 
 	#now calculate density in each box from num-at-age and total area by habitat
 	dens <- merge(aggDat,spex[,c("polygon","area")],by="polygon",all.x=T)
@@ -52,7 +53,8 @@ create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
 	#should I change any missing selex to zero???
 	#should I scale or check selex maximum at 1?
 
-	surv$numAtAgeSurv <- surv$density * surv$survArea * surv$efficiency * surv$selex
+	#surv$numAtAgeSurv <- surv$density * surv$survArea * surv$efficiency * surv$selex
+	surv$numAtAgeSurv <- surv$numAtAge * surv$efficiency * surv$selex
 
 	#Should I be checking for NA's along the way to identify problems?
 
@@ -101,5 +103,6 @@ if(F) {
 
 
 
-	tmp <- create_survey(dat=dat, time=c(365,2*365), species=c("spec1","spec2"), spex=spex, boxes=boxes, effic=effic, selex=selex)
+	#tmp <- create_survey(dat=dat, time=c(365,2*365), species=c("spec1","spec2"), spex=spex, boxes=boxes, effic=effic, selex=selex)
+	tmp <- create_survey(dat=dat, time=c(365,2*365), species=c("spec1","spec2"), effic=effic, selex=selex)
 }
