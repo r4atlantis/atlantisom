@@ -1,0 +1,89 @@
+#sample_fish R function for Atlantis Summitt Poseidon adventure
+
+#' @author Poseidon
+
+#' @param dat 	  The dataframe of numbers-at-age from create_survey or create_fishery_subset
+#'                   columns: species, agecl, polygon, layer, time, atoutput
+#' @param effN    Efficiency for each species: a matrix with nrow=length(species). Columns:
+#'                 species:  the species name. Matches names in species
+#'                 effN:     the effective N for each species (effective sample size)
+
+#' @details create sampled numbers-at-age to then create comps (age, convert to length, age-at-weigth, etc.)
+#' @details because it starts with numbers-at-age, I add across boxes to properly weight them
+#' @details then, it simply applies a multinomial with the effective sample size
+#' @details It could be improved by adding an argument to create spatial strata which are conglomerations of subsets of boxes
+
+
+sample_fish <- function(dat, effN) {
+
+    #assumes that time is already selected/subsetted
+	#assumes equal effort in each polygon, thus samples coastwide
+	#### Therefore make sure that density is not applied in create_survey function
+
+	#TODO: parameterize effN to vary with time period
+
+	#sum over boxes and assume sampling occurs coastwide (the sampled boxes were already subset in create functions)
+	dat2 <- aggregate(dat$atoutput,list(dat$species,dat$agecl,dat$time),sum)
+	names(dat2) <- c("species","agecl","time","numAtAge")
+
+
+	#TODO: Need error checking
+	dat2$numAtAgeSamp <- NA
+	for(sp in unique(dat2$species)) {
+		nn <- effN[effN$species==sp,"effN"]
+		for(y in unique(dat2$time)) {
+			ind <- dat2$species == sp & dat2$time == y
+			probs <- matrix(dat2[ind,]$numAtAge,nrow=1)
+		    dat2[ind,]$numAtAgeSamp <- rmultinom(1,nn,probs)[,1]
+		}
+	}
+
+
+	#output same general format that can be input into comp functions
+	out <- data.frame(species = dat2$species,
+					  agecl = dat2$agecl,
+					  polygon = NA,
+					  layer = NA,
+					  time = dat2$time,
+					  atoutput = dat2$numAtAgeSamp)
+
+	return(out)
+}
+
+
+if(F) {
+		dat <- data.frame(species = c(rep("spec1",3*3),rep("spec2",5*3)),
+		              agecl = c(rep(1:3,3),rep(3:7,3)), 
+		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)), 
+		              layer = 1:2, 
+		              time = 365)
+    dat$atoutput <- 10000/dat$agecl
+
+	dat2 <- dat; dat2$time=365*2; 
+	dat2$atoutput <- 20000/dat2$agecl	
+	dat <- rbind(dat,dat2)
+
+
+    spex <- data.frame(polygon=1:3,area=c(1000,2000,3000))
+
+    boxes <- data.frame(polygon=1:2,survArea=c(10,200))
+
+	effic <- data.frame(species=c("spec1","spec2"), efficiency=c(0.1,0.5))
+
+	selex <- data.frame(species=c(rep("spec1",3),rep("spec2",7)),
+		                agecl=c(1:3,1:7),
+		                selex=c(0.1,0.5,1,0,0.1,0.3,0.5,0.7,1,1))
+
+
+	#tmp <- create_survey(dat=dat, time=c(365,2*365), species=c("spec1","spec2"), spex=spex, boxes=boxes, effic=effic, selex=selex)
+	tmp <- create_survey(dat=dat, time=c(365,2*365), species=c("spec1","spec2"), effic=effic, selex=selex)
+
+	effN <- data.frame(species=c("spec1","spec2"), effN=c(200, 500))
+	#wts number of samples is assumed proportional to area surveyed. In other words, it assumes that a single survey sample is a specific size of area sampled. 
+
+	samp <- sample_fish(tmp, effN=effN)
+	tapply(samp$atoutput,list(samp$species,samp$time),sum)
+
+
+}
+
