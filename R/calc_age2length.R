@@ -3,17 +3,13 @@
 #' calculate length composition from Atlantis output (st)age data
 #' Uses numbers at age, plus weight at age, and weight-length relationships to
 #' generate size comps
-#' @param nums dataframe of numbers at age by species, age class, box, depth,
+#'
+#' @param resn dataframe of reserve n by species, age class, box, depth,
 #' and time
-#' @param structn dataframe of structural n by species, age class, box, depth,
-#' and time
-#' @param reserven dataframe of reserve n by species, age class, box, depth,
-#' and time
-#' @template biolprm
-#' @template resn
 #' @template structn
+#' @template resn
 #' @template nums
-#' @param ncfile full path and filename of biology .prm file
+#' @template biolprm
 #' @template fgs
 #' The above should  be changed to only pass the pieces from these that
 #' we need.
@@ -24,13 +20,9 @@
 #' muweight (mean weight at age), and natlength (numbers at length). natlength is in the
 #' same format as other dataframes in the atlantisom package except has two additional
 #' columns to include the length bin information.
-calc_age2length <- function(structn, reserven, nums,
-                            biolprm,
-                            ncfile,
-                            fgs, # this calls the group csv file already brought in using run_atlantis
-                            #groupfile,
-                            CVlenage=0.1,
-                            remove.zeroes=TRUE) {
+calc_age2length <- function(structn, resn, nums,
+  biolprm, fgs,
+  CVlenage = 0.1, remove.zeroes = TRUE) {
 
 ### Inputs required
 ### Ages (hard-wired right now for 10 cohorts per group). This can be modified.
@@ -60,11 +52,11 @@ times <- unique(structn$time)
 mulen <- nums
 muweight <- nums
 #
-# extract rows from structn and reserven that match the rows in nums, which are only non-zeroes
-resn.ind <- with(reserven,paste(species,'.',agecl,'.',polygon,'.',layer,'.',time,sep=""))
+# extract rows from structn and resn that match the rows in nums, which are only non-zeroes
+resn.ind <- with(resn,paste(species,'.',agecl,'.',polygon,'.',layer,'.',time,sep=""))
 num.ind <- with(nums,paste(species,'.',agecl,'.',polygon,'.',layer,'.',time,sep=""))
 pick <- match(num.ind,resn.ind)
-SRN <- reserven$atoutput[pick] + structn$atoutput[pick]
+SRN <- resn$atoutput[pick] + structn$atoutput[pick]
 
 # get weight-length parameters
 li_a_use <- biolprm$wl[match(fgs$Code[match(nums$species,fgs$Name)],biolprm$wl[, 1]), 2]
