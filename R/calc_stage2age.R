@@ -42,23 +42,23 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY) {
   # cohort), will end up only looping over these groups
   multiple_ages <- fgs[fgs$NumAgeClassSize>1, c(1,4,10)]
   num_multi_age <- dim(multiple_ages)[1]
-  
+
   ntimesteps <- length(unique(nums_data$time))
-  
+
   # loop through species that have multiple ages in a cohort -- to expand
   # their information to include:
   # species, agecl, trueage, polygon, layer, time, atoutput
   for(i in 1:num_multi_age) {
     temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
-    temp_Z <- calc_Z(YOY=YOY, Nums=temp_nums, 
+    temp_Z <- calc_Z(YOY=YOY, Nums=temp_nums,
                      species_info=multiple_ages[i,1:2])
     num_ages <- multiple_ages$NumAgeClassSize[i]
-    
+
   }
-  
-  
-  
-    # need to consider each time step -- that is where I am leaving it, but 
+
+
+
+    # need to consider each time step -- that is where I am leaving it, but
     # for a time step, something like the following needs to occur:
     for(j in 1:(ntimesteps-1)) { # won't work to skip 0 but I have to think a bit
       Zval <- temp_Z$Z[j]
@@ -70,26 +70,24 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY) {
       nums_proportion <- nums_vec/sum(nums_vec)
       # stopping in here -- there needs to be some interesting multiplications
       # to make all 'atoutput' multiply by the nums_proportion to break it into pieces
-      
-      # not sure the best way to do that.
-      nums_vec <- rep(nums_proportion, dim(nums_time_sub)[1]*2) 
-      # this probably needs to change to not be 10, since in the new code some 
-      # species can have less than 10 cohorts? Butthis is it for now
-      
-      
-      # maybe a better way than so many for loops can be figured out? 
-      
-    }
-    
-    
-  }
-  
 
-  # then outside the for loop, combine the specific age data to the 
+      # not sure the best way to do that.
+      nums_vec <- rep(nums_proportion, dim(nums_time_sub)[1]*2)
+      # this probably needs to change to not be 10, since in the new code some
+      # species can have less than 10 cohorts? Butthis is it for now
+
+
+      # maybe a better way than so many for loops can be figured out?
+
+    }
+
+
+
+  # then outside the for loop, combine the specific age data to the
   # species with only stage data
-  
+
   # one possible issue: number of columns might be larger than the other data
   # frames
-  
+
 
 }
