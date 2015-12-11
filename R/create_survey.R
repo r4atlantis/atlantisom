@@ -8,6 +8,7 @@
 #' @param species The species to sample in the survey (a vector)
 ##' @param spex    The specifications of Atlantis model (box-specific area, habitat, etc.)
 ##'                   for now, from load_boxarea a dataframe with polygon and area column names
+#' @param boxes   A vector of polygon numbers that are sampled by survey
 ##' @param boxes A matrix with two columns:
 ##'		1) polygon:  box ID's that are sampled
 ##'		2) survArea: area sampled in that box
@@ -30,22 +31,24 @@
 #This way, coastwide sampling can be done without worrying about differences in effort across polygons
 
 #create_survey <- function(dat, time, species, spex, boxes, effic, selex) {
-create_survey <- function(dat, time, species, effic, selex) {
+create_survey <- function(dat, time, species, boxes, effic, selex) {
 
 	#Do some vector length tests (species=effic, column names, )
 
 	#first select the appropriate rows and
-	aggDat <- aggregateData(dat, time, species, boxes$polygon, keepColumns=c("species","agecl","polygon","time"))
+	#aggDat <- aggregateData(dat, time, species, boxes$polygon, keepColumns=c("species","agecl","polygon","time"))
+	aggDat <- aggregateData(dat, time, species, boxes, keepColumns=c("species","agecl","polygon","time"))
 
 	#now calculate density in each box from num-at-age and total area by habitat
-	dens <- merge(aggDat,spex[,c("polygon","area")],by="polygon",all.x=T)
-	dens$density <- dens$numAtAge / dens$area
+	#dens <- merge(aggDat,spex[,c("polygon","area")],by="polygon",all.x=T)
+	#dens$density <- dens$numAtAge / dens$area
 
 	#Habitat? Atlantis is already modifying density? We assume that survey is acting homogenously across all habitats
 
 	#Calculate numbers-at-age surveyed using area surveyed, efficiency, and selex-at-age
 	##merge in surveyed area
-	surv <- merge(dens,boxes,by="polygon",all.x=T)
+	#surv <- merge(dens,boxes,by="polygon",all.x=T)
+	surv <- aggDat   #this can be removed and uncomment density stuff above. Make sure to think how this plays into sampling
 	#merge in efficiency
 	surv <- merge(surv,effic,by="species",all.x=T)
 	#merge in selex
