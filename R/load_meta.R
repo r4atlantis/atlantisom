@@ -40,7 +40,7 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
   file.log <- dir(dir, pattern = "^log", full.names = TRUE)
   if (length(file.log) > 1) {
     warning(paste("There are more than one log files in your directory:\n",
-      paste(file.log, collapse = "\n")
+      paste(file.log, collapse = "\n"),
       "and only the last one, i.e., the one with the largest sequence number",
       "will be used.\n",
       "load_meta will use the following log file:\n", tail(file.log, 1)))
@@ -61,7 +61,7 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
   file.prm <- dir(dir, pattern = "run\\.prm", full.names = TRUE)
   if (length(file.prm) > 1) {
     warning(paste("There are more than one prm files in your directory:\n",
-      paste(file.prm, collapse = "\n")
+      paste(file.prm, collapse = "\n"),
       "and only the last one, i.e., the one with the largest sequence number",
       "will be used.\n",
       "load_meta will use the following prm file:\n", tail(file.prm, 1)))
