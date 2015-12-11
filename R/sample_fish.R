@@ -1,4 +1,21 @@
-#sample_fish R function for Atlantis Summitt Poseidon adventure
+#' @title Sample numbers-at-age to create composition data
+#'
+#' @details The function takes numbers-at-age data from an Atlantis scenario
+#'   where the data was read in from Atlantis output using \code{\link{load_nc}}
+#'   within \code{\link{run_atlantis}}. One does not need to use these functions
+#'   to create \code{dat}, rather you must only ensure that the structure of
+#'   \code{dat} is the same.
+#'   Currently, the function creates sampled numbers-at-age data to create
+#'   composition data (age, convert to length, age-at-weigth, etc.).
+#'   sums across boxes to properly weight the
+#'   numbers-at-age data. Subsequently, the data is sampled using a multinomial
+#'   with the effective sample size based on the number of fish you pass in
+#'   \code{dat} and \code{prop}.
+#'   The function starts with numbers-at-age data and therefore the function then must
+#'   sum across boxes to properly weight them. Subsequently, the function then uses
+#'   a multinomial with a specified effective sample size.
+#'   The function could be improved by adding an argument to create spatial
+#'   strata which are conglomerations of subsets of boxes.
 
 #' @author Poseidon
 
@@ -6,12 +23,6 @@
 #' @param effN    Efficiency for each species: a matrix with nrow=length(species). Columns:
 #'                 species:  the species name. Matches names in species
 #'                 effN:     the effective N for each species (effective sample size)
-
-#' @details create sampled numbers-at-age to then create comps (age, convert to length, age-at-weigth, etc.)
-#' @details because it starts with numbers-at-age, I add across boxes to properly weight them
-#' @details then, it simply applies a multinomial with the effective sample size
-#' @details It could be improved by adding an argument to create spatial strata which are conglomerations of subsets of boxes
-#'
 #' @examples
 #' 		setwd(file.path(system.file( package = "atlantisom"),".."))
 #'
