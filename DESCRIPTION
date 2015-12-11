@@ -9,10 +9,10 @@ Authors@R: c(
   person("Beth", "Fulton", email = "beth.fulton@csiro.au", role = "aut"),
   person("Allan", "Hicks", email = "allan.hicks@noaa.gov", role = "aut"),
   person("Emma", "Hodgson", email = "emma.e.hodgson@gmail.com", role = "aut"),
-  person("Kelli", "Johnson", email = "kellifayejohnson@gmail.com", role = "aut"),
+  person("Kelli", "Johnson", email = "kellifayejohnson@gmail.com", role = c("aut", "cre")),
   person("Isaac", "Kaplan", email = "isaac.kaplan@noaa.gov", role = "aut"),
   person("Alexander", "Keth", email = "alexander.keth@uni-hamburg.de", role = "aut"),
-  person("Sean", "Lucey", email = "sean.lucey@noaa.gov", role = c("aut", "cre")),
+  person("Sean", "Lucey", email = "sean.lucey@noaa.gov", role = "aut"),
   person("Matteo", "Sinerchia", email = "matteo.sinerchia@iamc.cnr.it", role = "aut"),
   person("Howard", "Townsend", email = "howard.townsend@noaa.gov", role = "aut")
   )
