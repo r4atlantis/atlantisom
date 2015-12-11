@@ -38,6 +38,14 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
 
   # Get Atlantis version number
   file.log <- dir(dir, pattern = "^log", full.names = TRUE)
+  if (length(file.log) > 1) {
+    warning(paste("There are more than one log files in your directory:\n",
+      paste(file.log, collapse = "\n")
+      "and only the last one, i.e., the one with the largest sequence number",
+      "will be used.\n",
+      "load_meta will use the following log file:\n", tail(file.log, 1)))
+    file.log <- tail(file.log, 1)
+  }
   if (!file.exists(file.log)) {
     warning(paste("The log file does not exist in\n", dir, "\n",
       "and consequently the metadata will list the version number",
@@ -51,6 +59,14 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
   # Get number of years, timestep, output interval,
   # number of species, and number of fleets
   file.prm <- dir(dir, pattern = "run\\.prm", full.names = TRUE)
+  if (length(file.prm) > 1) {
+    warning(paste("There are more than one prm files in your directory:\n",
+      paste(file.prm, collapse = "\n")
+      "and only the last one, i.e., the one with the largest sequence number",
+      "will be used.\n",
+      "load_meta will use the following prm file:\n", tail(file.prm, 1)))
+    file.prm <- tail(file.prm, 1)
+  }
   if (!file.exists(file.prm)) {
     warning(paste("The .prm file does not exist in\n", dir, "\n",
       "and consequently the metadata will list the number of years,",
