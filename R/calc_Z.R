@@ -23,6 +23,7 @@ calc_Z <- function(YOY, Nums, species.code){
   recruits[, Time := Time / 365]
 
   #Sum over all boxes/depth/cohorts
+  Nums <- as.data.table(Nums)
   totnums <- Nums[, sum(atoutput), by = time]
   setnames(totnums, c('time', 'V1'), c('Time', 'atoutput'))
 

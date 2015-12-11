@@ -27,15 +27,15 @@
 #' @export
 #' @examples
 #'#load_all()
-#' scenario <- "SETAS"
-#' run_atlantis(scenario = scenario,
-#'   dir = system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom"),
-#'   file_fgs = "functionalGroups.csv",
-#'   file_bgm = "VMPA_setas.bgm",
-#'   select_groups = "Planktiv_S_Fish",
-#'   file_init = "INIT_VMPA_Jan2015.nc",
-#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
-#'
+scenario <- "SETAS"
+run_atlantis(scenario = scenario,
+  dir = system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom"),
+  file_fgs = "functionalGroups.csv",
+  file_bgm = "VMPA_setas.bgm",
+  select_groups = "Planktiv_S_Fish",
+  file_init = "INIT_VMPA_Jan2015.nc",
+  file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+
 run_atlantis <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm){
 
@@ -136,7 +136,10 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   biomass_ages <- calc_biomass_age(nums = nums, resn = resn, structn = structn, biolprm = biol)
 
-  result <- list(biomass_eaten, biomass_ages, catch, nums)
+  result <- list("biomass_eaten" = biomass_eaten,
+                 "biomass_ages" = biomass_ages,
+                 "catch" = catch,
+                 "nums" = nums)
 
   print("***Start writing to HDD.")
   save(result, file = file.path(dir, paste0("output", scenario, "run_atlantis.RData")))
