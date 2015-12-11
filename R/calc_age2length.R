@@ -6,15 +6,11 @@
 #'
 #' @author Gavin Fay
 #' @export
-#' @param resn dataframe of reserve n by species, age class, box, depth,
-#' and time
 #' @template structn
 #' @template resn
 #' @template nums
 #' @template biolprm
 #' @template fgs
-#' The above should  be changed to only pass the pieces from these that
-#' we need.
 #' @param CVlenage The variability in length at age (currently same for all species)
 #' @param remove.zeroes  Logical asking whether to only return numbers at length for
 #' combinations of species, age, box, depth, etc that have numbers>0.
