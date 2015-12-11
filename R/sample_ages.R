@@ -1,5 +1,5 @@
-#sample_ages R function for Atlantis Summitt Poseidon adventure
-
+#' @title Add observation error to numbers-at-age data
+#'
 #' @details The function takes numbers-at-age data from an Atlantis scenario
 #'   where the data was read in from Atlantis output using \code{\link{load_nc}}
 #'   within \code{\link{run_atlantis}}. One does not need to use these functions
