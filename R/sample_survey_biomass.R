@@ -1,5 +1,14 @@
-#sample_survey_biomass R function for Atlantis Summitt Poseidon adventure
+#sample_survey_biomass R function for Atlantis Summit Poseidon adventure
 
+#' @details The function takes numbers-at-age data from an Atlantis scenario
+#'   where the data was read in from Atlantis output using \code{\link{load_nc}}
+#'   within \code{\link{run_atlantis}}. One does not need to use these functions
+#'   to create \code{dat}, rather you must only ensure that the structure of
+#'   \code{dat} is the same.
+#'   This function simply calculates biomass-at-age by applying a weight-at-age vector,
+#'   sums over polygons, and then applies user defined error to the biomass.
+#'   The result is a coastwide biomass estimate from the survey
+#'   Improvements could be to provide polygon specific biomass, but the cv will need to be thought about.
 #' @author Poseidon
 
 #' @param dat 	  The dataframe of numbers-at-age from create_survey or create_fishery_subset
@@ -9,9 +18,10 @@
 #' @param wtAtAge Weight-at-age by species. a matrix with columns:
 #'                   species, agecl, wtAtAge 
 
-#' @details Create a biomass estimate from the survey with error incorporated
-#' @details Need to add in possibility of strata (boxes)
-#' @details Need to figure out what year is
+#' @return The standard dataframe 
+#' columns: species, agecl, polygon, layer, time, atoutput
+#' --will sum over layers, agecl, and polygon, but enter NA to indicate this
+
 
 #' @examples
 #'	directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")

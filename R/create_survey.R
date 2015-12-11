@@ -1,8 +1,20 @@
-#create_survey R function for Atlantis Summitt Poseidon adventure
+#' @title Create survey observations from Atlantis output
+
+#' @details The function takes numbers-at-age data from an Atlantis scenario
+#'   where the data was read in from Atlantis output using \code{\link{load_nc}}
+#'   within \code{\link{run_atlantis}}. One does not need to use these functions
+#'   to create \code{dat}, rather you must only ensure that the structure of
+#'   \code{dat} is the same.
+#'   Currently, the function subsets the data by polygon and time,
+#'   and sums over layers.  An efficiency (\code{effic}) parameter is applied
+#'   that determines that proportion of fully selected fish that are captured
+#'   by the survey, then selectivity-at-age is applied.
+#'   This function works for specific defined species, specific defined polygons,
+#'   and specific defined time.
 
 #' @author Poseidon
 
-#' @param dat 	  The dataframe of numbers-at-age from reading in the Atlantis files
+#' @template dat
 #' @param time    The timing of the survey (a vector indicating specific time steps, which are typically associated with years)
 #'                    i.e., seq(365,10*3650,365) would be an annual survey for 10 years
 #' @param species The species to sample in the survey (a vector)
@@ -21,10 +33,9 @@
 #'                 selex:   the proportion selected relative to fully selected age classes (between 0 and 1)
 
 
-#' @details Returns a matrix similar to the input matrix
-#' @details columns: species, agecl, polygon, layer, time, atoutput
-#' @details  --will sum over layers, but enter NA as layer to indicate all layers
-#' @details This function is for a vector of defined species 
+#' @return Returns a matrix similar to the input matrix
+#' columns: species, agecl, polygon, layer, time, atoutput
+#' --will sum over layers, but enter NA as layer to indicate all layers
 
 #Update: 12/10/2015, I'm making it more simple and removing the density stuff. 
 #This assumes that the survey simply samples from each polygon, and does not account for different amounts of effort in different polygons.

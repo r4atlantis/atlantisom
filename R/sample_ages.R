@@ -2,14 +2,13 @@
 #'
 #' @details The function takes numbers-at-age data from an Atlantis scenario
 #'   where the data was read in from Atlantis output using \code{\link{load_nc}}
-#'   within \code{\link{run_atlantis}}. One does not need to use these functions
+#'   within \code{\link{run_atlantis}}, and then run through \code{\link{sample_fish}}. 
+#'   One does not need to use these functions 
 #'   to create \code{dat}, rather you must only ensure that the structure of
 #'   \code{dat} is the same.
-#'   Currently, the function sums across boxes to properly weight the
-#'   numbers-at-age data. Subsequently, the data is sampled using a multinomial
-#'   with the effective sample size based on the number of fish you pass in
-#'   \code{dat} and \code{prop}.
-#'   Additionally, you can apply ageing error to the data, using the \code{ageErr}
+#'   Currently, the function takes output from \code{\link{sample_fish}} 
+#'   and subsamples those fish given the proportion supplied by \code{prop}.
+#'   You can also apply ageing error to the data, using the \code{ageErr}
 #'   argument.
 #' @author Poseidon
 #' @export

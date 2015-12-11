@@ -11,9 +11,9 @@
 #'   numbers-at-age data. Subsequently, the data is sampled using a multinomial
 #'   with the effective sample size based on the number of fish you pass in
 #'   \code{dat} and \code{prop}.
-#'   The function starts with numbers-at-age data and therefore the function then must
-#'   sum across boxes to properly weight them. Subsequently, the function then uses
-#'   a multinomial with a specified effective sample size.
+##'   The function starts with numbers-at-age data and therefore the function then must
+##'   sum across boxes to properly weight them. Subsequently, the function then uses
+##'   a multinomial with a specified effective sample size.
 #'   The function could be improved by adding an argument to create spatial
 #'   strata which are conglomerations of subsets of boxes.
 
