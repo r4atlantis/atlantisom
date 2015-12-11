@@ -145,6 +145,25 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   bio_catch <- calc_biomass_age(nums = catch, resn = resn, structn = structn, biolprm = biol)
 
+  # Get catch from txt. Sum per species and compare with values from nc-file!
+  catch <- read.table(file = file.path("inst/extdata/INIT_VMPA_Jan2015/outputSETASCatch.txt"), header = T, sep = " ")
+  catch <- tidyr::gather(catch, key = code, value = catch, FPS:ZG)
+  catch <- dplyr::filter(catch, catch > 0)
+  catch <- dplyr::select(catch, Time, code, catch)
+  catch <- dplyr::left_join(catch, fgs[, c("Code", "Name")], by = c("code" = "Code"))
+  names(catch) <- tolower(names(catch))
+  catch$time <- catch$time / 365
+  names(catch)[names(catch) == "Name"] <- "species"
+
+  bio_catch <- bio_catch %>%
+    dplyr::group_by(species, time) %>%
+    dplyr::summarise(atoutput = sum(atoutput))
+
+  check <- dplyr::left_join(catch, bio_catch)
+  check$check <- with(check, atoutput / catch)
+
+  sum(catch[, ])
+
   result <- list("biomass_eaten" = biomass_eaten,
                  "biomass_ages" = biomass_ages,
                  "catch" = catch,
