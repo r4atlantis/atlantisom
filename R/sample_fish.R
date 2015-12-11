@@ -22,6 +22,7 @@
 #'   strata which are conglomerations of subsets of boxes.
 
 #' @author Poseidon
+#' @export
 
 #' @template dat
 #' @param effN    Efficiency for each species: a matrix with nrow=length(species). Columns:

@@ -13,6 +13,7 @@
 #'   and specific defined time.
 
 #' @author Poseidon
+#' @export
 
 #' @template dat
 #' @param time    The timing of the survey (a vector indicating specific time steps, which are typically associated with years)

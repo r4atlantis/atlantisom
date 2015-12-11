@@ -11,6 +11,8 @@
 #'   Improvements could be to provide polygon specific biomass, but the cv will need to be thought about.
 #' @author Poseidon
 
+#' @export
+
 #' @param dat 	  The dataframe of numbers-at-age from create_survey or create_fishery_subset
 #'                   columns: species, agecl, polygon, layer, time, atoutput
 #' @param cv      Coefficient of variation for the entire species specific biomass
