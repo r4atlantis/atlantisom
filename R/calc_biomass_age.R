@@ -23,6 +23,8 @@ calc_biomass_age <- function(nums, resn, structn, biolprm){
   k_wetdry <- as.numeric(as.character(biolprm$kgw2d))
 
   # Conversion factor from mg N to t wet-weight
+  # should only use conversion for non vertebrates
+  # also need volume of cell info
   bio_conv <- x_cn * k_wetdry / 1000000000
 
   data_names <- c("species", "agecl", "polygon", "layer", "time", "atoutput")
