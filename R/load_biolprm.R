@@ -19,7 +19,6 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   colnames(biolprm) <- seq(dim(biolprm)[2])
 
   # Get Redfield CN ratio
-  #browser()
   r.cn <- as.numeric(as.character(biolprm[grep("X_CN", biolprm[, 1]), 2]))
 
   # Get kilogram wet to dry
@@ -43,9 +42,10 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   wl[, 1] <- gsub("li_a_", "", as.character(wl[, 1]))
   colnames(wl) <- c("group", "a", "b")
 
-  return(list("wl" = wl, "redfieldcn" = r.cn, "kgw2d" = kgw2d,
-    "agespercohort" = agespercohort))
-}
+  # Determine which species are vertebrates
+  vertebrates <- as.character(biolprm[grep("^flagplankfish", biolprm[, 1]), 1])
+  vertebrates <- gsub("flagplankfish", "", vertebrates)
 
-# load_all()
-# load_biolprm("data", "CalCurrentV3_Biol.prm")
+  return(list("wl" = wl, "redfieldcn" = r.cn, "kgw2d" = kgw2d,
+    "agespercohort" = agespercohort, "vertebrates" = vertebrates))
+}
