@@ -43,11 +43,6 @@ groups <- as.factor(fgs$Name)
 
 times <- unique(structn$time)
 
-#BIOL PRM IS CURRENTLY OUTPUTTING VALS AS FACTORS!!! THIS NEEDS FIXING.
-#biol_prm fixed to address this 12/10/15
-#kgw2d <- as.numeric(as.character(biolprm$kgw2d))
-#redfieldcn <- as.numeric(as.character(biolprm$redfieldcn))
-
 #calculate mean length at age
 mulen <- nums
 muweight <- nums
@@ -63,7 +58,7 @@ li_a_use <- biolprm$wl[match(fgs$Code[match(nums$species,fgs$Name)],biolprm$wl[,
 li_b_use <- biolprm$wl[match(fgs$Code[match(nums$species,fgs$Name)],biolprm$wl[, 1]), 3]
 
 #calc mean length and weight at age
-mulen$atoutput <- ((kgw2d*redfieldcn*SRN)/(1000*li_a_use))^(1/li_b_use)
+mulen$atoutput <- ((biolprm$kgw2d*biolprm$redfieldcn*SRN)/(1000*li_a_use))^(1/li_b_use)
 muweight$atoutput <- li_a_use*mulen$atoutput^li_b_use
 
 #
