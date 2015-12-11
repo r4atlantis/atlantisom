@@ -28,7 +28,8 @@ Imports:
     stringr,
     dplyr,
     tidyr,
-    magrittr
+    magrittr,
+    chron
 Suggests:
     knitr
 VignetteBuilder: knitr
