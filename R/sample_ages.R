@@ -12,6 +12,35 @@
 #'					list element name is species name
 #'                  matrix rows are true age, columns are assigned age
 #'                  species that are missing will be assigned no ageing error (so a value of NULL means no ageing error for all species)
+#'
+#' @examples
+#' 		setwd(file.path(system.file( package = "atlantisom"),".."))
+#'
+#'		directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#'		scenario <- "SETAS"
+#'		groups <- load_fgs(dir = directory, "functionalGroups.csv")
+#'		groups <- groups[groups$IsTurnedOn > 0, "Name"]
+#'		results <- run_atlantis(scenario = scenario,
+#'		dir = directory,
+#'		file_fgs = "functionalGroups.csv",
+#'		file_bgm = "VMPA_setas.bgm",
+#'		select_groups = groups,
+#'		file_init = "INIT_VMPA_Jan2015.nc",
+#'		file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#'
+#'		species=c("Pisciv_T_Fish","Pisciv_V_Fish")
+#'	    boxes <- 1:3
+#'		effic <- data.frame(species=c("Pisciv_T_Fish","Pisciv_V_Fish"), efficiency=c(0.3,0.1))
+#'		selex <- data.frame(species=c(rep("Pisciv_T_Fish",10),rep("Pisciv_V_Fish",10)),
+#'		                agecl=c(1:10,1:10),
+#'		                selex=c(0,0,0.1,0.5,0.8,1,1,1,1,1,0,0,0.1,0.3,0.5,0.7,0.9,1,1,1))
+#'
+#'		tmp <- create_survey(dat=results$nums, time=seq(70,82,3), species=species, boxes=boxes, effic=effic, selex=selex)
+#'		effN <- data.frame(species=species, effN=c(200, 500))
+#'		samp <- sample_fish(tmp, effN=effN)
+#'
+#'	    prop <- data.frame(species=species, prop=c(0.5,1)) #should be same as input when prop=1, but with ageing error
+#'      sample_ages(samp,prop,ageErr=NULL)
 
 
 
@@ -72,8 +101,6 @@ sample_ages <- function(dat,prop,ageErr=NULL) {
 		    #dat2$numAtAgeSamp <- (rmultinom(1,nn,probs)[,1]%*%ageingError)[1,]   #this is a quick way to apply ageing error. Could think of each row (true age) as a multinomial sample
 		    dat2$ageComp <- dat2$numAtAgeSamp/sum(dat2$numAtAgeSamp)
 
-print(dat2)
-
 		    dat3 <- data.frame(species = dat2$species,
 							   age = dat2$agecl,
 							   time = dat2$time,
@@ -127,6 +154,33 @@ if(F) {
     sample_ages(samp,prop,ageErr=NULL)
 
 
+	setwd(file.path(system.file( package = "atlantisom"),".."))
+
+	directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+	scenario <- "SETAS"
+	groups <- load_fgs(dir = directory, "functionalGroups.csv")
+	groups <- groups[groups$IsTurnedOn > 0, "Name"]
+	results <- run_atlantis(scenario = scenario,
+	dir = directory,
+	file_fgs = "functionalGroups.csv",
+	file_bgm = "VMPA_setas.bgm",
+	select_groups = groups,
+	file_init = "INIT_VMPA_Jan2015.nc",
+	file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+
+	species=c("Pisciv_T_Fish","Pisciv_V_Fish")
+    boxes <- 1:3
+	effic <- data.frame(species=c("Pisciv_T_Fish","Pisciv_V_Fish"), efficiency=c(0.3,0.1))
+	selex <- data.frame(species=c(rep("Pisciv_T_Fish",10),rep("Pisciv_V_Fish",10)),
+	                agecl=c(1:10,1:10),
+	                selex=c(0,0,0.1,0.5,0.8,1,1,1,1,1,0,0,0.1,0.3,0.5,0.7,0.9,1,1,1))
+
+	tmp <- create_survey(dat=results$nums, time=seq(70,82,3), species=species, boxes=boxes, effic=effic, selex=selex)
+	effN <- data.frame(species=species, effN=c(200, 500))
+	samp <- sample_fish(tmp, effN=effN)
+
+    prop <- data.frame(species=species, prop=c(0.5,1)) #should be same as input when prop=1, but with ageing error
+    ageSamp <- sample_ages(samp,prop,ageErr=NULL)
 
 }
 
