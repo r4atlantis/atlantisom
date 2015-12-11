@@ -170,7 +170,11 @@ run_atlantis <- function(scenario, dir = getwd(),
   result <- list("biomass_eaten" = biomass_eaten,
                  "biomass_ages" = biomass_ages,
                  "catch" = catch,
-                 "nums" = nums)
+                 "nums" = nums,
+                 "resn" = resn,
+                 "structn" = structn,
+                 "biolprm" = biol,
+                 "fgs" = fgs)
 
   print("***Start writing to HDD.")
   save(result, file = file.path(dir, paste0("output", scenario, "run_atlantis.RData")))
