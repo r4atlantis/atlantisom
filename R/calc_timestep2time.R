@@ -13,12 +13,12 @@
 #' @return dataframe in tidy format with column time showing the actual time.
 #'
 #' @examples
-# testscenario <- "INIT_VMPA_Jan2015"
-# d <- system.file("extdata", testscenario, package = "atlantisom")
-# load(file = file.path(d, "outputSETASrun_atlantis.RData"))
-# data <- result$biomass_ages
-# test <- convert_time(data = data, file_runprm = "test")
-
+#' testscenario <- "INIT_VMPA_Jan2015"
+#' d <- system.file("extdata", testscenario, package = "atlantisom")
+#' load(file = file.path(d, "outputSETASrun_atlantis.RData"))
+#' data <- result$biomass_ages
+#' #runfile <- ".prm"
+#' #test <- convert_time(dir = d, data = data, file_runprm = runfile)
 convert_time <- function(dir, data, file_runprm, modelstart){
   if (!is.null(dir)) file_runprm <- file.path(dir, file_runprm)
 
