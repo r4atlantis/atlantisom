@@ -33,6 +33,8 @@ calc_Z <- function(YOY, Nums, species.code){
   #Calculate survivors
   totnums[, survive := (atoutput - recruits) / shift(atoutput)]
   
+  # adding something here
+  
   #Calculate Z
   totnums[, Z := -1 * log(survive)]
   return(totnums[, list(Time, Z)])
