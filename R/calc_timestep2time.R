@@ -1,9 +1,9 @@
 #' Converts timestep from Atlantis output to actual time!
 #'
 #' @template dir
-#' @template data
+#' @param data todo: document this properly
 #' @template file_runprm
-#' @template modelstart
+#' @param modelstart todo: document this properly
 #'
 #' @author Alexander Keth
 #' @export
