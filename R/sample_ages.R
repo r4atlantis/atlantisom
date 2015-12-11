@@ -12,7 +12,8 @@
 #'   Additionally, you can apply ageing error to the data, using the \code{ageErr}
 #'   argument.
 #' @author Poseidon
-
+#' @export
+#'
 #' @template dat
 #' @param prop    Percentage of samples for each species: a matrix with nrow=length(species). Columns:
 #'                 species:  the species name. Matches names in species
