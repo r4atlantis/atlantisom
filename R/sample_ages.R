@@ -1,5 +1,16 @@
 #sample_ages R function for Atlantis Summitt Poseidon adventure
 
+#' @details The function takes numbers-at-age data from an Atlantis scenario
+#'   where the data was read in from Atlantis output using \code{\link{load_nc}}
+#'   within \code{\link{run_atlantis}}. One does not need to use these functions
+#'   to create \code{dat}, rather you must only ensure that the structure of
+#'   \code{dat} is the same.
+#'   Currently, the function sums across boxes to properly weight the
+#'   numbers-at-age data. Subsequently, the data is sampled using a multinomial
+#'   with the effective sample size based on the number of fish you pass in
+#'   \code{dat} and \code{prop}.
+#'   Additionally, you can apply ageing error to the data, using the \code{ageErr}
+#'   argument.
 #' @author Poseidon
 
 #' @param dat 	  The dataframe of numbers-at-age from create_survey or create_fishery_subset
@@ -41,14 +52,6 @@
 #'
 #'	    prop <- data.frame(species=species, prop=c(0.5,1)) #should be same as input when prop=1, but with ageing error
 #'      sample_ages(samp,prop,ageErr=NULL)
-
-
-
-#' @details create a sampled age composition from numbers-at-age
-#' @details because it starts with numbers-at-age, I add across boxes to properly weight them
-#' @details then, it simply applies a multinomial with the effective sample size
-#' @details it can also apply ageing error
-
 
 sample_ages <- function(dat,prop,ageErr=NULL) {
 
