@@ -28,11 +28,20 @@ calc_biomass_age <- function(nums, resn, structn, biolprm){
   data_names <- c("species", "agecl", "polygon", "layer", "time", "atoutput")
 
   if (all(sapply(datalist, function(x) all(is.element(names(x), data_names))))){
-    names(resn)[names(resn) == "atoutput"] <- "atresn"
-    names(nums)[names(nums) == "atoutput"] <- "atnums"
-    structn <- dplyr::inner_join(structn, nums)
-    structn <- dplyr::inner_join(structn, resn)
-    structn$biomass_ind <- with(structn, (atoutput + atresn) * atnums * bio_conv)
+    names(resn)[names(resn) == "atoutput"] <- "resn"
+    names(structn)[names(structn) == "atoutput"] <- "structn"
+    if (!any(is.element(names(nums), "layer"))) {
+      # Calculate mean individual weight over layers when catch data is used for numbers!
+      structn <- structn %>%
+        dplyr::group_by(species, agecl, polygon, time) %>%
+        dplyr::summarise(structn = mean(structn))
+      resn <- resn %>%
+        dplyr::group_by(species, agecl, polygon, time) %>%
+        dplyr::summarise(resn = mean(resn))
+    }
+    structn <- dplyr::left_join(nums, structn)
+    structn <- dplyr::left_join(structn, resn)
+    structn$biomass_ind <- with(structn, (structn + resn) * atoutput * bio_conv)
 
     biomass_ages <- structn %>%
       dplyr::group_by(species, agecl, time, polygon) %>%
