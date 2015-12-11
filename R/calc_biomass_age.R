@@ -32,12 +32,12 @@ calc_biomass_age <- function(nums, resn, structn, biolprm){
     names(structn)[names(structn) == "atoutput"] <- "structn"
     if (!any(is.element(names(nums), "layer"))) {
       # Calculate mean individual weight over layers when catch data is used for numbers!
-      structn <- structn %>%
-        dplyr::group_by(species, agecl, polygon, time) %>%
-        dplyr::summarise(structn = mean(structn))
-      resn <- resn %>%
-        dplyr::group_by(species, agecl, polygon, time) %>%
-        dplyr::summarise(resn = mean(resn))
+#       structn <- structn %>%
+#         dplyr::group_by(species, agecl, polygon, time) %>%
+#         dplyr::summarise(structn = mean(structn))
+#       resn <- resn %>%
+#         dplyr::group_by(species, agecl, polygon, time) %>%
+#         dplyr::summarise(resn = mean(resn))
     }
     structn <- dplyr::left_join(nums, structn)
     structn <- dplyr::left_join(structn, resn)

@@ -35,6 +35,7 @@
 #   select_groups = "Planktiv_S_Fish",
 #   file_init = "INIT_VMPA_Jan2015.nc",
 #   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+select_groups <- get_groups(fgs)
 
 run_atlantis <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm){
@@ -153,7 +154,7 @@ run_atlantis <- function(scenario, dir = getwd(),
   catch <- dplyr::left_join(catch, fgs[, c("Code", "Name")], by = c("code" = "Code"))
   names(catch) <- tolower(names(catch))
   catch$time <- catch$time / 365
-  names(catch)[names(catch) == "Name"] <- "species"
+  names(catch)[names(catch) == "name"] <- "species"
 
   bio_catch <- bio_catch %>%
     dplyr::group_by(species, time) %>%
@@ -161,8 +162,6 @@ run_atlantis <- function(scenario, dir = getwd(),
 
   check <- dplyr::left_join(catch, bio_catch)
   check$check <- with(check, atoutput / catch)
-
-  sum(catch[, ])
 
   result <- list("biomass_eaten" = biomass_eaten,
                  "biomass_ages" = biomass_ages,
