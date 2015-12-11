@@ -43,7 +43,6 @@ calc_Z <- function(YOY, Nums, species.code){
   # to Z.
   for(i in 2:dim(totnums)[1]) {
     if(totnums$survive[i] > 0) {
-      print("yes")
       pos_survive <- totnums$survive[i]}
     final_survival <- c(final_survival, pos_survive)
   }
