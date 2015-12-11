@@ -1,9 +1,11 @@
+#' Calculate length from ages
 #'
-#' @author Gavin Fay
 #' calculate length composition from Atlantis output (st)age data
 #' Uses numbers at age, plus weight at age, and weight-length relationships to
 #' generate size comps
 #'
+#' @author Gavin Fay
+#' @export
 #' @param resn dataframe of reserve n by species, age class, box, depth,
 #' and time
 #' @template structn
@@ -15,11 +17,23 @@
 #' we need.
 #' @param CVlenage The variability in length at age (currently same for all species)
 #' @param remove.zeroes  Logical asking whether to only return numbers at length for
-#' combinations of species, age, box, depth, etc that have numbers>0
+#' combinations of species, age, box, depth, etc that have numbers>0.
+#' The default value is \code{TRUE}.
 #' @return A \code{list} containing three \code{data.frame}s, mulen (mean length at age),
 #' muweight (mean weight at age), and natlength (numbers at length). natlength is in the
 #' same format as other dataframes in the atlantisom package except has two additional
 #' columns to include the length bin information.
+#'
+#' @examples
+#'
+#' directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' load(file.path(directory, "outputSETASrun_atlantis.RData"))
+#'
+#' lenout <- calc_age2length(
+#'   structn=result$structn, resn=result$resn, nums=result$nums,
+#'   biolprm = result$biolprm, fgs = result$fgs,
+#'   CVlenage = 0.1, remove.zeroes=TRUE)
+#'
 calc_age2length <- function(structn, resn, nums,
   biolprm, fgs,
   CVlenage = 0.1, remove.zeroes = TRUE) {
@@ -102,41 +116,3 @@ return(lenout)
 # END THE SIZE COMP FUNCTION HERE.
 }
 
-
-# #example on test data set
-# #
-# dir <- "~/Atlantis/r4atlantis/atlantisom/inst/extdata/INIT_VMPA_Jan2015"
-# biolprm <- load_biolprm(dir=NULL,file_biolprm=file.path(dir,"VMPA_setas_biol_fishing_Trunk.prm",fsep="/"))
-# groups <- load_groups(file.path(dir,'functionalGroups.csv',fsep="/"))
-# bps <- load_box(dir=NULL,file_bgm=file.path(dir,"VMPA_setas.bgm",fsep="/")) #,
-# groupfile <- file.path(dir,'functionalGroups.csv',fsep="/")
-# ncfile <- file.path(dir,'outputSETAS.nc',fsep="/")
-#
-# reserven <- load_nc(dir=NULL,
-#              file_nc=ncfile,
-#              fgs=read.table(groupfile,sep=",",header=TRUE),
-#              bps=bps,select_groups=groups,
-#               select_variable="ResN",
-#               check_acronyms=TRUE)
-# structn <- load_nc(dir=NULL,
-#                     file_nc=ncfile,
-#                     fgs=read.csv(groupfile),
-#                     bps=bps,select_groups=groups,
-#                     select_variable="StructN",
-#                     check_acronyms=TRUE)
-# nums <- load_nc(dir=NULL,
-#                    file_nc=ncfile,
-#                    fgs=read.csv(groupfile),
-#                    bps=bps,select_groups=groups,
-#                    select_variable="Nums",
-#                    check_acronyms=TRUE)
-#
-# lenout <- calc_age2length(structn=structn,
-#                           reserven=reserven,
-#                           nums=nums,
-#                             biolprm=biolprm,
-#                             ncfile=ncfile,
-#                             fgs=read.csv(groupfile),
-#                             CVlenage=0.1,
-#                             remove.zeroes=TRUE)
-#
