@@ -1,8 +1,12 @@
-#create_survey R function for Atlantis Summitt Poseidon adventure
-
+#' @title Create survey data from an Altantis scenario
+#'
+#' @details The function works for a vector of defined species
+#'   and only returns information in boxes that are sampled.
+#'
 #' @author Poseidon
-
-#' @param dat 	  The dataframe of numbers-at-age from reading in the Atlantis files
+#' @export
+#'
+#' @template dat
 #' @param time    The timing of the survey (a vector indicating specific time steps, which are typically associated with years)
 #'                    i.e., seq(365,10*3650,365) would be an annual survey for 10 years
 #' @param species The species to sample in the survey (a vector)
@@ -19,14 +23,10 @@
 #'                 species: the species name. Matches names in species
 #'                 agecl:   the age class that selectivity represents
 #'                 selex:   the proportion selected relative to fully selected age classes (between 0 and 1)
+#' @return A \code{matrix} in the same format as the \code{dat} summed
+#'   over layers, with \code{NA} in the layer column.
 
-
-#' @details Returns a matrix similar to the input matrix
-#' @details columns: species, agecl, polygon, layer, time, atoutput
-#' @details  --will sum over layers, but enter NA as layer to indicate all layers
-#' @details This function is for a vector of defined species 
-
-#Update: 12/10/2015, I'm making it more simple and removing the density stuff. 
+#Update: 12/10/2015, I'm making it more simple and removing the density stuff.
 #This assumes that the survey simply samples from each polygon, and does not account for different amounts of effort in different polygons.
 #This way, coastwide sampling can be done without worrying about differences in effort across polygons
 
@@ -64,10 +64,10 @@ create_survey <- function(dat, time, species, boxes, effic, selex) {
 
 	#Create final dataframe in same format as input
 	#put time (mean) and layers (NA) back in the dataframe for completeness
-	out <- data.frame(species = surv$species, 
-		              agecl = surv$agecl, 
-		              polygon = surv$polygon, 
-		              layer = NA, 
+	out <- data.frame(species = surv$species,
+		              agecl = surv$agecl,
+		              polygon = surv$polygon,
+		              layer = NA,
 		              time = surv$time,
 		              atoutput = surv$numAtAgeSurv)
 
@@ -83,14 +83,14 @@ create_survey <- function(dat, time, species, boxes, effic, selex) {
 if(F) {
 
 	dat <- data.frame(species = c(rep("spec1",3*3),rep("spec2",5*3)),
-		              agecl = c(rep(1:3,3),rep(3:7,3)), 
-		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)), 
-		              layer = 1:2, 
+		              agecl = c(rep(1:3,3),rep(3:7,3)),
+		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)),
+		              layer = 1:2,
 		              time = 365)
     dat$atoutput <- 10000/dat$agecl
 
-	dat2 <- dat; dat2$time=365*2; 
-	dat2$atoutput <- 20000/dat2$agecl	
+	dat2 <- dat; dat2$time=365*2;
+	dat2$atoutput <- 20000/dat2$agecl
 	dat <- rbind(dat,dat2)
 
 
