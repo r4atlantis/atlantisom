@@ -13,9 +13,7 @@
 #'   argument.
 #' @author Poseidon
 
-#' @param dat 	  The dataframe of numbers-at-age from create_survey or create_fishery_subset
-#'                   columns: species, agecl, polygon, layer, time, atoutput
-#'                     atoutput is numbers-at-age
+#' @template dat
 #' @param prop    Percentage of samples for each species: a matrix with nrow=length(species). Columns:
 #'                 species:  the species name. Matches names in species
 #'                 prop:     the percentage of age samples for each species (for example, 01 if 1 out of every 10 lengthed fish is sampled for age). Max of 1.
