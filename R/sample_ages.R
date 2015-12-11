@@ -5,9 +5,9 @@
 #' @param dat 	  The dataframe of numbers-at-age from create_survey or create_fishery_subset
 #'                   columns: species, agecl, polygon, layer, time, atoutput
 #'                     atoutput is numbers-at-age
-#' @param effN    Efficiency for each species: a matrix with nrow=length(species). Columns:
+#' @param prop    Percentage of samples for each species: a matrix with nrow=length(species). Columns:
 #'                 species:  the species name. Matches names in species
-#'                 effN:     the effective N for each species (effective sample size)
+#'                 prop:     the percentage of age samples for each species (for example, 01 if 1 out of every 10 lengthed fish is sampled for age). Max of 1.
 #' @param ageErr  ageErr is a list with elements containing a matrix for each species
 #'					list element name is species name
 #'                  matrix rows are true age, columns are assigned age
@@ -21,7 +21,7 @@
 #' @details it can also apply ageing error
 
 
-sample_ages <- function(dat,effN,ageErr=NULL) {
+sample_ages <- function(dat,prop,ageErr=NULL) {
 
 #how will a max age be defined for each species. Is this just the max agecl, or will it be something different after appling stage2age
 
@@ -45,15 +45,13 @@ sample_ages <- function(dat,effN,ageErr=NULL) {
 		}
 
 		#do sampling for each species
-		nn <- effN[effN$species==sp,"effN"]
+		pp <- prop[prop$species==sp,"prop"]
 		for(y in unique(dat$time)) {
 			ind <- dat$species == sp & dat$time == y
 
 			totalNums <- sum(dat[ind,]$atoutput)
-			if(nn > totalNums) {
-				cat("effN is greater than total numbers available, so nEff set equal from",nn,"to",totalNums,"\n")
-				nn <- totalNums
-			}
+			nn <- pp * totalNums
+
 			#Ageing Error
 			ageingError <- ageErr[[sp]]
 
@@ -63,9 +61,18 @@ sample_ages <- function(dat,effN,ageErr=NULL) {
 			dat2$time <- y
 			dat2$atoutput[is.na(dat2$atoutput)] <- 0
 
-			probs <- matrix(dat2$atoutput,nrow=1)
-		    dat2$numAtAgeSamp <- (rmultinom(1,nn,probs)[,1]%*%ageingError)[1,]   #this is a quick way to apply ageing error. Could think of each row (true age) as a multinomial sample
+			#want to actually sample from this so that it returns the exact same vector when percentage = 100
+			#this could be expanded in the future to actually provide a sample of individual fish
+			sampVec <- rep(dat2$agecl,times=dat2$atoutput)
+			samp <- sample(sampVec, nn, replace=FALSE)
+			sampTable <- table(samp)
+			dat2$numAtAgeSamp <- sampTable[match(dat2$agecl, names(sampTable))]
+			dat2$numAtAgeSamp[is.na(dat2$numAtAgeSamp)] <- 0
+			#probs <- matrix(dat2$atoutput,nrow=1)
+		    #dat2$numAtAgeSamp <- (rmultinom(1,nn,probs)[,1]%*%ageingError)[1,]   #this is a quick way to apply ageing error. Could think of each row (true age) as a multinomial sample
 		    dat2$ageComp <- dat2$numAtAgeSamp/sum(dat2$numAtAgeSamp)
+
+print(dat2)
 
 		    dat3 <- data.frame(species = dat2$species,
 							   age = dat2$agecl,
@@ -116,8 +123,8 @@ if(F) {
 	tapply(samp$atoutput,list(samp$species,samp$time),sum)
 
 
-	effN <- data.frame(species=c("spec1","spec2"), effN=c(100,1000))
-    sample_ages(samp,effN,ageErr=NULL)
+	prop <- data.frame(species=c("spec1","spec2"), prop=c(0.5,1)) #should be same as input, but with ageing error
+    sample_ages(samp,prop,ageErr=NULL)
 
 
 
