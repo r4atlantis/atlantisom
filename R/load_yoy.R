@@ -4,7 +4,7 @@
 #'   Where young of the year is only available for species that are turned
 #'   on in the \code{functionalGroups.csv} file.
 #' @template dir
-#' @template file_yoytxt
+#' @template file_yoy
 #' @family load functions
 #' @return A data frame of recruitment outputs from the \code{YOY.txt} file.
 #' @author Emma E Hodgson
