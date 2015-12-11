@@ -40,10 +40,16 @@
 calc_stage2age <- function(dir, nums_data, biolprm, YOY_name) {
   # Figure out the groups that have multiple ages classes in each stage (or
   # cohort), will end up only looping over these groups
-  multiple_ages <- fgs$Name[fgs$NumAgeClassSize>1]
-  num_multi_age <- length(multiple_ages)
+  multiple_ages <- fgs[fgs$NumAgeClassSize>1, c(1,4)]
+  num_multi_age <- dim(multiple_ages)[1]
   
+  temp.Zs <- matrix(nrow=40, ncol=99)
   for(i in 1:num_multi_age) {
+    temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
+    temp_Z <- calc_Z(YOY="outputCCV3YOY.txt", Nums=temp_nums, 
+                     species.code=multiple_ages$Code[i])
+    temp.Zs[i,] <- temp_Z$Z[-1]
+    
     
     # now inside of this loop get the calculate Z for each species in the 
     # multipl_ages list
@@ -53,6 +59,10 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY_name) {
     # at age. 
     
   }
+  
+  write.csv(temp.Zs, "~/Desktop/temp_file.csv")
+  
+  
   
   # then outside the for loop, combine the specific age data to the 
   # species with only stage data
