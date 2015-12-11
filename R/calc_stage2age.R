@@ -38,6 +38,11 @@
 
 ## ACTUAL FUNCTION ##
 calc_stage2age <- function(dir, nums_data, biolprm, YOY) {
+  
+  ## Add:
+  # First need to add a check for which stages are turned on and only take
+  # those from the bioprm file
+  
   # Figure out the groups that have multiple ages classes in each stage (or
   # cohort), will end up only looping over these groups
   multiple_ages <- fgs[fgs$NumAgeClassSize>1, c(1,4,10)]
@@ -45,23 +50,58 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY) {
 
   ntimesteps <- length(unique(nums_data$time))
 
-  # loop through species that have multiple ages in a cohort -- to expand
-  # their information to include:
-  # species, agecl, trueage, polygon, layer, time, atoutput
+  
+
+  # loop through species that have multiple ages in a cohort, to calculate
+  # their Z values over time
+  
+  ## Add: 
+  # create some empty data frame that will add each output from calc_Z to
+  # in the for loop
+  Z.dataframe <- ()
+>>>>>>> change on stage2age
   for(i in 1:num_multi_age) {
     temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
     temp_Z <- calc_Z(YOY=YOY, Nums=temp_nums,
                      species_info=multiple_ages[i,1:2])
     num_ages <- multiple_ages$NumAgeClassSize[i]
 
-  }
-
 
 
     # need to consider each time step -- that is where I am leaving it, but
     # for a time step, something like the following needs to occur:
     for(j in 1:(ntimesteps-1)) { # won't work to skip 0 but I have to think a bit
+    ## Add:
+    # to the data frame that was created above, tack this new temp_Z onto the end
+    Z.dataframe[i] <- temp_Z # this is not right, but is a place holder
+  }
+  
+  new_nums <- () # merge together nums_data and the output Z.dataframe from the
+  # calc_Z function loop
+  
+  empty <- list() # create list that is empty and we will add to
+  # loop through species and time
+  for(i in 1:dim(new_nums)[1]) { # looping species -- both those that have multiple
+    # true ages and those that do not
+    temp_nums <- new_nums[new_nums$species==biolprm$Name[i],] # might need to 
+    # change the 'biolprm' to be whatever is the list of groups that were turned on
+    
+    for(j in 1:ntimesteps) { # now loop through all the time steps
+      
+      if() # if statement to check if the species in selected in this loop has
+        # multiple true ages
+        # if it does NOT have multiple ages
+        empty[[length(empty)+1]] <- temp_nums
+      
+      else () {
+      # if the species DOES have multipel true ages
+      
+      # to determine the number of ages for each group that has multipel true ages:  
+      num_ages <- multiple_ages$NumAgeClassSize[i]
       Zval <- temp_Z$Z[j]
+      
+      # horribly named, but below is a subet of the species specific data frame 
+      # and taking out only the time of interest
       nums_time_sub <- temp_nums[temp_nums$time==j, ]
       nums_vec <- 1
       for(k in 1:(num_ages-1)) {
@@ -79,7 +119,6 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY) {
 
       # maybe a better way than so many for loops can be figured out?
 
-    }
 
 
 
