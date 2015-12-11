@@ -1,5 +1,10 @@
 #' @title Create fishery data from an Altantis scenario
 #'
+#' @description Create fishery data for an Atlantis scenario, where
+#'   observation error will be added and certain boxes and species will
+#'   be sampled.
+#'   todo: add more information here.
+#'
 #' @details The function works for a vector of defined species
 #'   and only returns information in boxes that are sampled.
 #'

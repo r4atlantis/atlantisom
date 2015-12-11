@@ -5,7 +5,7 @@
 \title{Approximating the true numbers at age within each box, functional group and
 time step.}
 \usage{
-calc_stage2age(dir, nums_data, biolprm)
+calc_stage2age(dir, nums_data, biolprm, YOY_name)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
@@ -41,11 +41,14 @@ nums_data <- load_nc(dir = dir,
                      select_variable = "Nums",
                      check_acronyms = TRUE, bboxes = bboxes)
 biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
+recruits <- as.data.table(read.table(YOY, header = T))
 }
 \author{
 Emma Hodgson
 }
 \seealso{
-Other calc functions: \code{\link{calc_biomass_age}}
+Other calc functions: \code{\link{calc_Z}},
+  \code{\link{calc_biomass_age}},
+  \code{\link{convert_time}}
 }
 

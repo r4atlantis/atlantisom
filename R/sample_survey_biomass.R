@@ -1,18 +1,18 @@
-#sample_survey_biomass R function for Atlantis Summitt Poseidon adventure
-
+#' @title Sample survey biomass from an Atlantis scenario
+#'
+#' @description Create a biomass estimate from the survey with error incorporated
+#'   todo: add more here later
+#'   todo: add in posibility of strata (boxes)
+#'   todo: figure out what year is
+#'
 #' @author Poseidon
-
-#' @param dat 	  The dataframe of numbers-at-age from create_survey or create_fishery_subset
-#'                   columns: species, agecl, polygon, layer, time, atoutput
+#' @export
+#'
+#' @template dat
 #' @param cv      Coefficient of variation for the entire species specific biomass
 #'                    a matrix with columns: species, cv
 #' @param wtAtAge Weight-at-age by species. a matrix with columns:
-#'                   species, agecl, wtAtAge 
-
-#' @details Create a biomass estimate from the survey with error incorporated
-#' @details Need to add in possibility of strata (boxes)
-#' @details Need to figure out what year is
-
+#'                   species, agecl, wtAtAge
 #' @examples
 #'	directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #'	scenario <- "SETAS"
@@ -46,7 +46,7 @@
 
 sample_survey_biomass <- function(dat,cv,wtAtAge) {
 
-	#calculate total biomass estimate and partition to boxes 
+	#calculate total biomass estimate and partition to boxes
 	###  otherwise some assumptions about box-specific cv have to be made
 	###  this makes sure that box-specific biomasses add up to total observed biomass
     ### use create_survey to subset the boxes and time

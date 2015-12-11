@@ -1,6 +1,6 @@
 #' @title Aggregate and select data from Atlantis output
 #'
-#' @details The function returns a subsetted matrix with the same columns
+#' @description The function returns a subsetted matrix with the same columns
 #'   as the input data, i.e.,:
 #'   \itemize{
 #'     \item{species}

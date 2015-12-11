@@ -1,5 +1,9 @@
 #' @title Create survey data from an Altantis scenario
 #'
+#' @description Creates survey data from an Atlantis scenario where the survey
+#'   has its own selectivity.
+#'   todo: add more information here.
+#'
 #' @details The function works for a vector of defined species
 #'   and only returns information in boxes that are sampled.
 #'
