@@ -26,7 +26,7 @@ get_groups <- function(fgs){
 #' @export
 #' @rdname get_groups
 get_age_groups <- function(fgs){
-  result <- gfs$Name[fgs$NumCohorts == 10]
+  result <- fgs$Name[fgs$NumCohorts == 10]
   return(result)
 }
 
