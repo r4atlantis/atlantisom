@@ -2,20 +2,21 @@
 % Please edit documentation in R/calc_age2length.R
 \name{calc_age2length}
 \alias{calc_age2length}
-\title{Code to get size at age and plot}
+\title{Calculate length from ages}
 \usage{
-calc_age2length(natage, structn, reserven, nums, biolprm, ncfile, fgs,
-  CVlenage = 0.01)
+calc_age2length(structn, resn, nums, biolprm, fgs, CVlenage = 0.1,
+  remove.zeroes = TRUE)
 }
 \arguments{
-\item{natage}{dataframe of numbers at age by species, age class, box, depth,
-and time}
+\item{structn}{A \code{data.frame} containing the structural nitrogen per functional-group
+("species") per timestep, ageclass, layer and polygon.
+The \code{data.frame} has to origininate from \code{\link{load_nc}} using
+\code{select_variable = "StructN"}.}
 
-\item{structn}{dataframe of structural n by species, age class, box, depth,
-and time}
-
-\item{reserven}{dataframe of reserve n by species, age class, box, depth,
-and time}
+\item{resn}{A \code{data.frame} containing the reserve nitrogen per functional-group
+("species") per timestep, ageclass, layer and polygon.
+The \code{data.frame} has to origininate from \code{\link{load_nc}} using
+\code{select_variable = "ResN"}.}
 
 \item{nums}{A \code{data.frame} containing the numbers per functional-group
 ("species") per timesetp, ageclass, layer and polygon.
@@ -25,35 +26,39 @@ The \code{data.frame} has to origininate from \code{\link{load_nc}} using
 \item{biolprm}{A list of biological parameters available from the
 \code{[...]_Biol.prm} file, as read in by \code{\link{load_biolprm}}.}
 
-\item{ncfile}{full path and filename of biology .prm file}
-
 \item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
 \item{CVlenage}{The variability in length at age (currently same for all species)}
 
-\item{resn}{A \code{data.frame} containing the reserve nitrogen per functional-group
-("species") per timestep, ageclass, layer and polygon.
-The \code{data.frame} has to origininate from \code{\link{load_nc}} using
-\code{select_variable = "ResN"}.}
-
-\item{structn}{A \code{data.frame} containing the structural nitrogen per functional-group
-("species") per timestep, ageclass, layer and polygon.
-The \code{data.frame} has to origininate from \code{\link{load_nc}} using
-\code{select_variable = "StructN"}.}
+\item{remove.zeroes}{Logical asking whether to only return numbers at length for
+combinations of species, age, box, depth, etc that have numbers>0.
+The default value is \code{TRUE}.}
+}
+\value{
+A \code{list} containing three \code{data.frame}s, mulen (mean length at age),
+muweight (mean weight at age), and natlength (numbers at length). natlength is in the
+same format as other dataframes in the atlantisom package except has two additional
+columns to include the length bin information.
 }
 \description{
-Code to get size at age and plot
-}
-\details{
-The above should  be changed to only pass the pieces from these that
-we need.
-}
-\author{
-Gavin Fay
 calculate length composition from Atlantis output (st)age data
 Uses numbers at age, plus weight at age, and weight-length relationships to
 generate size comps
+}
+\examples{
+
+directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+load(file.path(directory, "outputSETASrun_atlantis.RData"))
+
+lenout <- calc_age2length(
+  structn=result$structn, resn=result$resn, nums=result$nums,
+  biolprm = result$biolprm, fgs = result$fgs,
+  CVlenage = 0.1, remove.zeroes=TRUE)
+
+}
+\author{
+Gavin Fay
 }
 

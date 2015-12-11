@@ -42,7 +42,8 @@ This functions converts the ATLANTIS output to a \code{data.frame}
 Alexander Keth
 }
 \seealso{
-Other calc functions: \code{\link{calc_stage2age}}
+Other calc functions: \code{\link{calc_Z}},
+  \code{\link{calc_stage2age}}, \code{\link{convert_time}}
 }
 \keyword{gen}
 

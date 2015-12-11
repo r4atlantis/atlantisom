@@ -1,5 +1,9 @@
 #' @title Sample numbers-at-age to create composition data
 #'
+#' @description Create sampled data from numbers-at-age data to create
+#'   composition data from and Atlantis scenario.
+#'   todo: add more information here later
+#'
 #' @details The function takes numbers-at-age data from an Atlantis scenario
 #'   where the data was read in from Atlantis output using \code{\link{load_nc}}
 #'   within \code{\link{run_atlantis}}. One does not need to use these functions
