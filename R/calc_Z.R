@@ -33,9 +33,24 @@ calc_Z <- function(YOY, Nums, species.code){
   #Calculate survivors
   totnums[, survive := (atoutput - recruits) / shift(atoutput)]
   
-  # adding something here
+  # Find the first positive value in the column of 'survive'
+  pos_survive <- totnums$survive[totnums$survive>0][2] # the first will always
+  # be NA so just take the second
+  final_survival <- pos_survive
+  
+  # make sure that all values for 'final_survival' are positive, otherwise
+  # there is an error in the output since the 'survival' is logged to convert
+  # to Z.
+  for(i in 2:dim(totnums)[1]) {
+    if(totnums$survive[i] > 0) {
+      print("yes")
+      pos_survive <- totnums$survive[i]}
+    final_survival <- c(final_survival, pos_survive)
+  }
+  
+  totnums <- cbind(totnums, final_survival)
   
   #Calculate Z
-  totnums[, Z := -1 * log(survive)]
+  totnums[, Z := -1 * log(final_survival)]  
   return(totnums[, list(Time, Z)])
 }
