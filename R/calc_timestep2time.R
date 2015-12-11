@@ -27,9 +27,9 @@ convert_time <- function(dir, data, file_runprm, modelstart){
   toutinc <- toutinc[grep(pattern = "toutinc", x = toutinc)]
   toutinc <- str_split_twice(char = toutinc)
   if (any(names(data) == "time")) {
-    years <- trunc(data$time * toutinc / 365) + years(modelstart)
-    # use months() to extract months
-    # use days() to extract days
+    years <- trunc(data$time * toutinc / 365) + chron::years(modelstart)
+    # use chron::months() to extract months
+    # use chron::days() to extract days
     # convert to dates object in dataframe
   }
   return(data)
