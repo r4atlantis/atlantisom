@@ -59,7 +59,6 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY) {
   # create some empty data frame that will add each output from calc_Z to
   # in the for loop
   Z.dataframe <- ()
->>>>>>> change on stage2age
   for(i in 1:num_multi_age) {
     temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
     temp_Z <- calc_Z(YOY=YOY, Nums=temp_nums,
