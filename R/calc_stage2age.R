@@ -2,15 +2,19 @@
 #' time step.
 #'
 #' Will be called in the run_atlantis file, and requires inputs from
-#' \code{\link{load_nc}} for the "Nums" variable, and the \code{\link{load_meta}}
-#' and finally the \code{\link{load_biolprm}}.
+#' \code{\link{load_nc}} for the "Nums" variable, and the 
+#' \code{\link{load_biolprm}}.
 #'
 #' @family calc functions
-#' @author Emma Hodgson
+#' @author Emma E Hodgson and Kelli Faye Johnson
 #'
 #' @template dir
 #' @return A \code{data.frame} in long format with the following coumn names:
-#'   Species, timestep, polygon, TRUEagecl, and atoutput (i.e., variable).
+#'   Species, timestep, polygon, agecl, and atoutput (i.e., variable). This is 
+#'   the same as the input Nums data frame however, agecl will be TRUE numbers
+#'   by age class -- just named the same as the input to ensure make it work 
+#'   with the other functions
+#'   
 #' @export
 #'
 #' @examples
@@ -34,98 +38,95 @@
 #'                      select_variable = "Nums",
 #'                      check_acronyms = TRUE, bboxes = bboxes)
 #' biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
-#' YOY <- load_yoy(dir, file_yoytxt="outputSETASYOY.txt")
+#' YOY <- load_yoy(dir, file_yoy="outputSETASYOY.txt")
 
 ## ACTUAL FUNCTION ##
-calc_stage2age <- function(dir, nums_data, biolprm, YOY) {
-  
-  ## Add:
-  # First need to add a check for which stages are turned on and only take
-  # those from the bioprm file
+calc_stage2age <- function(dir, nums_data, biolprm, YOY, fgs) {
+
+  # subset the yoy for those species that are included in the fgs file
+  # that are turned on
+  species.code <- fgs$Code
+  turnedon <- fgs[fgs$IsTurnedOn > 0, ]
+  names <- turnedon$Code
   
   # Figure out the groups that have multiple ages classes in each stage (or
   # cohort), will end up only looping over these groups
-  multiple_ages <- fgs[fgs$NumAgeClassSize>1, c(1,4,10)]
+  multiple_ages <- turnedon[turnedon$NumAgeClassSize>1, c(1,4,10)]
   num_multi_age <- dim(multiple_ages)[1]
 
-  ntimesteps <- length(unique(nums_data$time))
-
+  ntimesteps <- length(unique(nums_data$time))  
   
-
-  # loop through species that have multiple ages in a cohort, to calculate
-  # their Z values over time
-  
-  ## Add: 
-  # create some empty data frame that will add each output from calc_Z to
-  # in the for loop
-  Z.dataframe <- ()
+  # For each species with multiple ages, use the calc_Z function to get time
+  # varying Z values and put that all into one dataframe
+  Z.dataframe <- data.frame()
   for(i in 1:num_multi_age) {
     temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
     temp_Z <- calc_Z(YOY=YOY, Nums=temp_nums,
                      species_info=multiple_ages[i,1:2])
-    num_ages <- multiple_ages$NumAgeClassSize[i]
-
-
-
-    # need to consider each time step -- that is where I am leaving it, but
-    # for a time step, something like the following needs to occur:
-    for(j in 1:(ntimesteps-1)) { # won't work to skip 0 but I have to think a bit
-    ## Add:
-    # to the data frame that was created above, tack this new temp_Z onto the end
-    Z.dataframe[i] <- temp_Z # this is not right, but is a place holder
+    Z.dataframe <- rbind(Z.dataframe, temp_Z)
   }
   
-  new_nums <- () # merge together nums_data and the output Z.dataframe from the
-  # calc_Z function loop
+  #### Check ####
+  # The following merge() may or may not work -- test when the Z loop works
   
-  empty <- list() # create list that is empty and we will add to
-  # loop through species and time
-  for(i in 1:dim(new_nums)[1]) { # looping species -- both those that have multiple
-    # true ages and those that do not
-    temp_nums <- new_nums[new_nums$species==biolprm$Name[i],] # might need to 
-    # change the 'biolprm' to be whatever is the list of groups that were turned on
+  # merge together nums_data and the output Z.dataframe from the
+  new_nums <- merge(nums_data, Z.dataframe, by="species")
+  
+  
+  # since we have to expand the number of rows for groups with multiple true
+  # age classes, we will loop through species and time, creating a new list
+  # that each element will be a single species in a single time step but 
+  # across ages and boxes (these wil all be put together in the end)
+  temp.list <- list() 
+  
+  for(i in 1:dim(new_nums)[1]) { 
+    # looping species -- both those that have multiple true ages and those that 
+    # do not
+    group.i <- turnedon$Name[i]
+    temp_nums <- new_nums[new_nums$species==group.i,] # might need to 
+    num_ages <- turnedon$NumAgeClassSize[i]
     
-    for(j in 1:ntimesteps) { # now loop through all the time steps
+    # Only need to loop through time for species that do have multiple true 
+    # ages, so check that. If they do not, then just add the temp_nums to 
+    # the list for that group.i
+    if(num_ages==1) { temp.list[[length(temp.list)+1]] <- temp_nums
+    } else (if num_ages>1) {
+      for(j in 1:ntimesteps) { # now loop through all the time steps for those
+        # species with multiple age classes in a stage
       
-      if() # if statement to check if the species in selected in this loop has
-        # multiple true ages
-        # if it does NOT have multiple ages
-        empty[[length(empty)+1]] <- temp_nums
-      
-      else () {
-      # if the species DOES have multipel true ages
-      
-      # to determine the number of ages for each group that has multipel true ages:  
-      num_ages <- multiple_ages$NumAgeClassSize[i]
-      Zval <- temp_Z$Z[j]
-      
-      # horribly named, but below is a subet of the species specific data frame 
-      # and taking out only the time of interest
-      nums_time_sub <- temp_nums[temp_nums$time==j, ]
-      nums_vec <- 1
-      for(k in 1:(num_ages-1)) {
-        nums_vec <- c(nums_vec, exp(-Zval*k))
-      }
-      nums_proportion <- nums_vec/sum(nums_vec)
-      # stopping in here -- there needs to be some interesting multiplications
-      # to make all 'atoutput' multiply by the nums_proportion to break it into pieces
-
-      # not sure the best way to do that.
-      nums_vec <- rep(nums_proportion, dim(nums_time_sub)[1]*2)
-      # this probably needs to change to not be 10, since in the new code some
-      # species can have less than 10 cohorts? Butthis is it for now
+        # to determine the number of ages for each group that has multipel true ages:  
+        num_ages <- multiple_ages$NumAgeClassSize[i]
+        Zval <- temp_Z$Z[j]
+        
+        # horribly named, but below is a subet of the species specific data frame 
+        # and taking out only the time of interest
+        nums_time_sub <- temp_nums[temp_nums$time==j, ]
+        nums_vec <- 1
+        for(k in 1:(num_ages-1)) {
+          nums_vec <- c(nums_vec, exp(-Zval*k))
+        }
+        nums_proportion <- nums_vec/sum(nums_vec)
+        # stopping in here -- there needs to be some interesting multiplications
+        # to make all 'atoutput' multiply by the nums_proportion to break it into pieces
+  
+        # not sure the best way to do that.
+        nums_vec <- rep(nums_proportion, dim(nums_time_sub)[1]*2)
+        # this probably needs to change to not be 10, since in the new code some
+        # species can have less than 10 cohorts? Butthis is it for now
+  
+  
+        # maybe a better way than so many for loops can be figured out?
 
 
-      # maybe a better way than so many for loops can be figured out?
-
-
-
+  }}}
 
   # then outside the for loop, combine the specific age data to the
   # species with only stage data
+  output <- () # combine the list into one object
 
   # one possible issue: number of columns might be larger than the other data
   # frames
-
+  
+  return(output)
 
 }
