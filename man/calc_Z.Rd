@@ -4,20 +4,64 @@
 \alias{calc_Z}
 \title{Calculate total mortality for age structured groups}
 \usage{
-calc_Z(YOY, Nums, species.code)
+calc_Z(yoy, nums, fgs, biolprm)
 }
 \arguments{
-\item{YOY}{File name of the YOY.txt file}
+\item{yoy}{Output from \code{\link{load_yoy}}, which is a \code{data.frame}
+providing information on recruitment for those species that are turned
+on in an Atlantis run.}
 
-\item{Nums}{Object containing the number at stage.}
+\item{nums}{Object containing the number at stage.}
 
-\item{species.code}{Species specific code to extract the data from YOY.}
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
+reads in the csv file containing functional group names, usually
+\code{"functionalGroups.csv"}.}
+
+\item{biolprm}{A list of biological parameters available from the
+\code{[...]_Biol.prm} file, as read in by \code{\link{load_biolprm}}.}
 }
 \value{
-A data table with the time varying Z.
+A \code{data.frame} of time-varying Z values.
 }
 \description{
+
+}
+\details{
+Steps included when translating from stages (i.e.,
+  multiple age classes in a single group) to individual age
+  classes are:
+  \itemize{
+    \item obtain numbers at age from each time-step
+    \item obtain numbers of recruits for each time-step, where the
+      information provided in the \code{[...]YOY.txt} or \code{yoy}
+      object is provided in biomass and must be converted to numbers.
+    \item calculate total mortality for each time step, where
+      \deqn{survival_{t} = (\sum(nastage_{t}) - recruits_{t}) / \sum{nastage_{t-1}}}
+      \deqn{Z_{t} = -1 * ln(survival_{t})}
+
+  }
 This function uses the YOY.txt and Nums to calculate Z.
+}
+\examples{
+dir <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+file_nc <- "outputSETAS.nc"
+fgs <- load_fgs(dir = dir, "functionalGroups.csv")
+file_init <- "INIT_VMPA_Jan2015.nc"
+bps <- load_bps(dir = dir, fgs, file_init)
+select_groups <- fgs$Name[fgs$IsTurnedOn > 0]
+select_variable <- "Nums"
+box.info <- load_box(dir = dir, file_bgm="VMPA_setas.bgm")
+bboxes <- get_boundary(box.info)
+#when calc_stage2age is run in the run_atlantis, it will need to have the nums
+#data frame and the bioprm already read in:
+nums_data <- load_nc(dir = dir,
+                     file_nc="outputSETAS.nc",
+                     bps=bps, fgs=fgs, select_groups=select_groups,
+                     select_variable = "Nums",
+                     check_acronyms = TRUE, bboxes = bboxes)
+biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
+yoy <- load_yoy(dir = dir, file_yoy = "outputSETASYOY.txt")
+calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm)
 }
 \author{
 Sean Lucey
