@@ -90,6 +90,10 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   # step listed in the .nc file
   recruits$Time <- recruits$Time / 365
 
+
+  #G.Fay 1/6/16, expand to num of recruits
+  recruits$recruits <- recruits$recruits/k_wetdry/x_cn
+
   # Sum over all boxes/depth/cohorts
   totnums <- aggregate(atoutput ~ species + time, data = nums, sum)
 
@@ -102,13 +106,24 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   totnums$recruits[is.na(totnums$recruits)] <- 0
 
   # Calculate survivors for each species group
-  totnums$survival <- totnums$atoutput - totnums$recruits
+  totnums$survivors <- totnums$atoutput - totnums$recruits
   # Make sure time is in order
   totnums <- totnums[order(totnums$species, totnums$time), ]
   # x[n+1] / x[n]
-  totnums$survival <- unlist(aggregate(survival ~ species, data = totnums,
-        function(x) {
-          c(NA, x[-length(x)]) / x})$survival)
+  #totnums$survival <- unlist(aggregate(survival ~ species, data = totnums,
+  #      function(x) {
+  #        c(NA, x[-length(x)]) / x})$survival)
+  #G.Fay 1/6/16, changed totnums$survival calc as above was calculating x[n]/x[n+1]
+  #instead of x[n+1]/nums[n]   where x = nums-recruits
+
+  totnums$survival <- totnums$survivors
+  for (group in totnums$group)
+   {
+    pick <- which(totnums$group==group)
+    totnums$survival[pick] <- c(NA,
+        totnums$survivors[pick[-1]]/totnums$atoutput[pick[-length(pick)]])
+   }
+
   # Use first positive value to replace the initial year and all negative vals
   for(i in seq(NROW(totnums))) {
     totnums$survival[i] <- ifelse(is.na(totnums$survival[i]),
