@@ -91,42 +91,43 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY, fgs) {
     # the list for that group.i
     if(num_ages==1) { temp.list[[length(temp.list)+1]] <- temp_nums
     } else (if num_ages>1) {
+      # take out the part of the Z.dataframe for the group in this i
+      Zvals <- Z.dataframe[Z.dataframe$species==group.i,]
       for(j in 1:ntimesteps) { # now loop through all the time steps for those
         # species with multiple age classes in a stage
-      
-        # to determine the number of ages for each group that has multipel true ages:  
-        num_ages <- multiple_ages$NumAgeClassSize[i]
-        Zval <- temp_Z$Z[j]
         
-        # horribly named, but below is a subet of the species specific data frame 
-        # and taking out only the time of interest
-        nums_time_sub <- temp_nums[temp_nums$time==j, ]
+        # get the Z val for the timestep in question
+        Zval.j <- Zvals$time[Zvals$time==j]
+        
+        # take out the species numbers only for time step j
+        nums_subset <- temp_nums[temp_nums$time==j, ]
         nums_vec <- 1
         for(k in 1:(num_ages-1)) {
-          nums_vec <- c(nums_vec, exp(-Zval*k))
+          nums_vec <- c(nums_vec, exp(-Zval.j*k))
         }
         nums_proportion <- nums_vec/sum(nums_vec)
+        
+        ##### STUCK #####
         # stopping in here -- there needs to be some interesting multiplications
-        # to make all 'atoutput' multiply by the nums_proportion to break it into pieces
+        # to make all 'atoutput' multiply by the nums_proportion to break it into 
+        # pieces and to make those pieces be different rows in the data.frame
+        # essentially all 'atoutput' elements for the species within this loop
+        # need to be multiplied by the nums_proportions and each of those need
+        # to be a row in the data frame... all other column entries will remain
+        # the same, except for the the agecl column that needs to be subdivided
+        
+        out.nums <- ()
+        
+        temp.list[[length(temp.list)+1]] <- out.nums
+      }
+    }
+  }
   
-        # not sure the best way to do that.
-        nums_vec <- rep(nums_proportion, dim(nums_time_sub)[1]*2)
-        # this probably needs to change to not be 10, since in the new code some
-        # species can have less than 10 cohorts? Butthis is it for now
-  
-  
-        # maybe a better way than so many for loops can be figured out?
-
-
-  }}}
-
-  # then outside the for loop, combine the specific age data to the
-  # species with only stage data
+  # then there needs to be some way to combine the list pieces so that 
   output <- () # combine the list into one object
-
-  # one possible issue: number of columns might be larger than the other data
-  # frames
+  
   
   return(output)
-
+  
 }
+
