@@ -79,52 +79,52 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY, fgs) {
   # across ages and boxes (these wil all be put together in the end)
   temp.list <- list() 
   
-  for(i in 1:dim(new_nums)[1]) { 
-    # looping species -- both those that have multiple true ages and those that 
-    # do not
-    group.i <- turnedon$Name[i]
-    temp_nums <- new_nums[new_nums$species==group.i,] # might need to 
-    num_ages <- turnedon$NumAgeClassSize[i]
-    
-    # Only need to loop through time for species that do have multiple true 
-    # ages, so check that. If they do not, then just add the temp_nums to 
-    # the list for that group.i
-    if(num_ages==1) { temp.list[[length(temp.list)+1]] <- temp_nums
-    } else (if num_ages>1) {
-      # take out the part of the Z.dataframe for the group in this i
-      Zvals <- Z.dataframe[Z.dataframe$species==group.i,]
-      for(j in 1:ntimesteps) { # now loop through all the time steps for those
-        # species with multiple age classes in a stage
-        
-        # get the Z val for the timestep in question
-        Zval.j <- Zvals$time[Zvals$time==j]
-        
-        # take out the species numbers only for time step j
-        nums_subset <- temp_nums[temp_nums$time==j, ]
-        nums_vec <- 1
-        for(k in 1:(num_ages-1)) {
-          nums_vec <- c(nums_vec, exp(-Zval.j*k))
-        }
-        nums_proportion <- nums_vec/sum(nums_vec)
-        
-        ##### STUCK #####
-        # stopping in here -- there needs to be some interesting multiplications
-        # to make all 'atoutput' multiply by the nums_proportion to break it into 
-        # pieces and to make those pieces be different rows in the data.frame
-        # essentially all 'atoutput' elements for the species within this loop
-        # need to be multiplied by the nums_proportions and each of those need
-        # to be a row in the data frame... all other column entries will remain
-        # the same, except for the the agecl column that needs to be subdivided
-        
-        out.nums <- ()
-        
-        temp.list[[length(temp.list)+1]] <- out.nums
-      }
-    }
-  }
+#   for(i in 1:dim(new_nums)[1]) { 
+#     # looping species -- both those that have multiple true ages and those that 
+#     # do not
+#     group.i <- turnedon$Name[i]
+#     temp_nums <- new_nums[new_nums$species==group.i,] # might need to 
+#     num_ages <- turnedon$NumAgeClassSize[i]
+#     
+#     # Only need to loop through time for species that do have multiple true 
+#     # ages, so check that. If they do not, then just add the temp_nums to 
+#     # the list for that group.i
+#     if(num_ages==1) { temp.list[[length(temp.list)+1]] <- temp_nums
+#     } else (if num_ages>1) {
+#       # take out the part of the Z.dataframe for the group in this i
+#       Zvals <- Z.dataframe[Z.dataframe$species==group.i,]
+#       for(j in 1:ntimesteps) { # now loop through all the time steps for those
+#         # species with multiple age classes in a stage
+#         
+#         # get the Z val for the timestep in question
+#         Zval.j <- Zvals$time[Zvals$time==j]
+#         
+#         # take out the species numbers only for time step j
+#         nums_subset <- temp_nums[temp_nums$time==j, ]
+#         nums_vec <- 1
+#         for(k in 1:(num_ages-1)) {
+#           nums_vec <- c(nums_vec, exp(-Zval.j*k))
+#         }
+#         nums_proportion <- nums_vec/sum(nums_vec)
+#         
+#         ##### STUCK #####
+#         # stopping in here -- there needs to be some interesting multiplications
+#         # to make all 'atoutput' multiply by the nums_proportion to break it into 
+#         # pieces and to make those pieces be different rows in the data.frame
+#         # essentially all 'atoutput' elements for the species within this loop
+#         # need to be multiplied by the nums_proportions and each of those need
+#         # to be a row in the data frame... all other column entries will remain
+#         # the same, except for the the agecl column that needs to be subdivided
+#         
+#         out.nums <- ()
+#         
+#         temp.list[[length(temp.list)+1]] <- out.nums
+#       }
+#     }
+#   }
   
   # then there needs to be some way to combine the list pieces so that 
-  output <- () # combine the list into one object
+  #output <- () # combine the list into one object
   
   
   return(output)
