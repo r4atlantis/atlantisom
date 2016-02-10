@@ -109,12 +109,6 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   totnums$survivors <- totnums$atoutput - totnums$recruits
   # Make sure time is in order
   totnums <- totnums[order(totnums$species, totnums$time), ]
-  # x[n+1] / x[n]
-  #totnums$survival <- unlist(aggregate(survival ~ species, data = totnums,
-  #      function(x) {
-  #        c(NA, x[-length(x)]) / x})$survival)
-  #G.Fay 1/6/16, changed totnums$survival calc as above was calculating x[n]/x[n+1]
-  #instead of x[n+1]/nums[n]   where x = nums-recruits
 
   totnums$survival <- totnums$survivors
   for (group in totnums$group)
