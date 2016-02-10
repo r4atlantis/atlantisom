@@ -119,19 +119,17 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
       totnums$survivors[pick[-1]]/totnums$atoutput[pick[-length(pick)]])
     survival_temp[survival_temp < 0] <- NA
     # Use first positive value to replace the initial year and all negative vals
+    firstgood <- which(!is.na(survival_temp))[1]
+    survival_temp[1:firstgood] <- survival_temp[firstgood]
+    for(ii in seq_along(survival_temp)) {
+      if (survival_temp[ii] < 0) {
+        nonzero <- which(which(survival_temp > 0) > ii)
+        if (length(nonzero) == 0) nonzero <- which(survival_temp > 0)
+        survival_temp[ii] <- survival_temp[which.min(abs(nonzero - ii))]
+      }
+    }
     totnums$survival[pick] <- survival_temp
    }
-
-  # Use first positive value to replace the initial year and all negative vals
-  for(i in seq(NROW(totnums))) {
-    totnums$survival[i] <- ifelse(is.na(totnums$survival[i]),
-      totnums$survival[i + 1], totnums$survival[i])
-    temp <- totnums[i:NROW(totnums), ]
-    temp <- temp[temp$species == totnums$species[i], "survival"]
-    temp <- temp[temp > 0][1]
-    totnums$survival[i] <- ifelse(totnums$survival[i] < 0, temp,
-      totnums$survival[i])
-  }
 
   #Calculate Z
   totnums$Z <- -1 * log(totnums$survival)
