@@ -38,7 +38,7 @@
 #' columns: species, agecl, polygon, layer, time, atoutput
 #' --will sum over layers, but enter NA as layer to indicate all layers
 
-#Update: 12/10/2015, I'm making it more simple and removing the density stuff. 
+#Update: 12/10/2015, I'm making it more simple and removing the density stuff.
 #This assumes that the survey simply samples from each polygon, and does not account for different amounts of effort in different polygons.
 #This way, coastwide sampling can be done without worrying about differences in effort across polygons
 
@@ -76,10 +76,10 @@ create_survey <- function(dat, time, species, boxes, effic, selex) {
 
 	#Create final dataframe in same format as input
 	#put time (mean) and layers (NA) back in the dataframe for completeness
-	out <- data.frame(species = surv$species, 
-		              agecl = surv$agecl, 
-		              polygon = surv$polygon, 
-		              layer = NA, 
+	out <- data.frame(species = surv$species,
+		              agecl = surv$agecl,
+		              polygon = surv$polygon,
+		              layer = NA,
 		              time = surv$time,
 		              atoutput = surv$numAtAgeSurv)
 
@@ -95,14 +95,14 @@ create_survey <- function(dat, time, species, boxes, effic, selex) {
 if(F) {
 
 	dat <- data.frame(species = c(rep("spec1",3*3),rep("spec2",5*3)),
-		              agecl = c(rep(1:3,3),rep(3:7,3)), 
-		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)), 
-		              layer = 1:2, 
+		              agecl = c(rep(1:3,3),rep(3:7,3)),
+		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)),
+		              layer = 1:2,
 		              time = 365)
     dat$atoutput <- 10000/dat$agecl
 
-	dat2 <- dat; dat2$time=365*2; 
-	dat2$atoutput <- 20000/dat2$agecl	
+	dat2 <- dat; dat2$time=365*2;
+	dat2$atoutput <- 20000/dat2$agecl
 	dat <- rbind(dat,dat2)
 
 
