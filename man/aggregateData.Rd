@@ -16,7 +16,7 @@ aggregateData(dat, time, species, boxes, keepColumns = c("species", "agecl",
 
 \item{boxes}{A vector of box numbers}
 }
-\description{
+\value{
 The function returns a subsetted matrix with the same columns
   as the input data, i.e.,:
   \itemize{
@@ -27,9 +27,12 @@ The function returns a subsetted matrix with the same columns
     \item{time}
     \item{atoutput}
   }
-  The function will sum over layers, but enter \code{NA} for layers to
+}
+\description{
+subsets data based on defined columns, and sums over 
+layers, but enter \code{NA} for layers to
   keep the column names the same.
-  Currently, the function works for a vector of defined species.
+  Currently, the function works for a vector of defined species and polygons.
 }
 \author{
 Poseidon

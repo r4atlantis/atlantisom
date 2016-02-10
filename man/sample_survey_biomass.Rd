@@ -2,7 +2,7 @@
 % Please edit documentation in R/sample_survey_biomass.R
 \name{sample_survey_biomass}
 \alias{sample_survey_biomass}
-\title{Sample survey biomass from an Atlantis scenario}
+\title{Sample a biomass index of abundance from an atlantis scenario}
 \usage{
 sample_survey_biomass(dat, cv, wtAtAge)
 }
@@ -25,18 +25,31 @@ a matrix with columns: species, cv}
 \item{wtAtAge}{Weight-at-age by species. a matrix with columns:
 species, agecl, wtAtAge}
 }
+\value{
+The standard dataframe as specified used in \code{dat}.
+  The function sums over layers and makes \code{$layers} is {NA}.
+}
 \description{
-Create a biomass estimate from the survey with error incorporated
-  todo: add more here later
-  todo: add in posibility of strata (boxes)
-  todo: figure out what year is
+The function takes numbers-at-age data from an Atlantis scenario
+  where the data was read in from Atlantis output using \code{\link{load_nc}}
+  within \code{\link{run_truth}}. One does not need to use these functions
+  to create \code{dat}, rather you must only ensure that the structure of
+  \code{dat} is the same.
+}
+\details{
+This function simply calculates biomass-at-age by applying a weight-at-age
+  vector, sums over polygons,
+  and then applies user defined error to the biomass.
+  The result is a coastwide biomass estimate from the survey
+  Improvements could be to provide polygon specific biomass,
+  but the cv will need to be thought about.
 }
 \examples{
 directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 scenario <- "SETAS"
 groups <- load_fgs(dir = directory, "functionalGroups.csv")
 groups <- groups[groups$IsTurnedOn > 0, "Name"]
-results <- run_atlantis(scenario = scenario,
+results <- run_truth(scenario = scenario,
 dir = directory,
 file_fgs = "functionalGroups.csv",
 file_bgm = "VMPA_setas.bgm",

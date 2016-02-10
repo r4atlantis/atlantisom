@@ -5,7 +5,7 @@
 \title{Approximating the true numbers at age within each box, functional group and
 time step.}
 \usage{
-calc_stage2age(dir, nums_data, biolprm, YOY_name)
+calc_stage2age(dir, nums_data, biolprm, YOY, fgs)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
@@ -13,12 +13,15 @@ default is \code{getwd()}.}
 }
 \value{
 A \code{data.frame} in long format with the following coumn names:
-  Species, timestep, polygon, TRUEagecl, and atoutput (i.e., variable).
+  Species, timestep, polygon, agecl, and atoutput (i.e., variable). This is
+  the same as the input Nums data frame however, agecl will be TRUE numbers
+  by age class -- just named the same as the input to ensure make it work
+  with the other functions
 }
 \description{
-Will be called in the run_atlantis file, and requires inputs from
-\code{\link{load_nc}} for the "Nums" variable, and the \code{\link{load_meta}}
-and finally the \code{\link{load_biolprm}}.
+Will be called in the run_truth file, and requires inputs from
+\code{\link{load_nc}} for the "Nums" variable, and the
+\code{\link{load_biolprm}}.
 }
 \examples{
 #This is just to bring in an example data frame I can use to write the code,
@@ -33,7 +36,7 @@ select_groups=fgs$Name[fgs$IsTurnedOn > 0]
 select_variable="Nums"
 box.info=load_box(dir = dir, file_bgm="VMPA_setas.bgm")
 bboxes=get_boundary(box.info)
-#when calc_stage2age is run in the run_atlantis, it will need to have the nums
+#when calc_stage2age is run in the run_truth, it will need to have the nums
 #data frame and the bioprm already read in:
 nums_data <- load_nc(dir = dir,
                      file_nc="outputSETAS.nc",
@@ -41,10 +44,10 @@ nums_data <- load_nc(dir = dir,
                      select_variable = "Nums",
                      check_acronyms = TRUE, bboxes = bboxes)
 biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
-recruits <- as.data.table(read.table(YOY, header = T))
+YOY <- load_yoy(dir, file_yoy="outputSETASYOY.txt")
 }
 \author{
-Emma Hodgson
+Emma E Hodgson and Kelli Faye Johnson
 }
 \seealso{
 Other calc functions: \code{\link{calc_Z}},

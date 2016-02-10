@@ -31,7 +31,7 @@ Converts timestep from Atlantis output to actual time!
 \examples{
 testscenario <- "INIT_VMPA_Jan2015"
 d <- system.file("extdata", testscenario, package = "atlantisom")
-load(file = file.path(d, "outputSETASrun_atlantis.RData"))
+load(file = file.path(d, "outputSETASrun_truth.RData"))
 data <- result$biomass_ages
 #runfile <- ".prm"
 #test <- convert_time(dir = d, data = data, file_runprm = runfile)

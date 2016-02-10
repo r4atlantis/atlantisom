@@ -50,7 +50,7 @@ generate size comps
 \examples{
 
 directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-load(file.path(directory, "outputSETASrun_atlantis.RData"))
+load(file.path(directory, "outputSETASrun_truth.RData"))
 
 lenout <- calc_age2length(
   structn=result$structn, resn=result$resn, nums=result$nums,
