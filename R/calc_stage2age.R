@@ -50,7 +50,7 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY, fgs) {
   names <- turnedon$Code
   
   # Figure out the groups that have multiple ages classes in each stage (or
-  # cohort), will end up only looping over these groups
+  # cohort)
   multiple_ages <- turnedon[turnedon$NumAgeClassSize>1, c(1,4,10)]
   num_multi_age <- dim(multiple_ages)[1]
 
@@ -61,16 +61,22 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY, fgs) {
   Z.dataframe <- data.frame()
   for(i in 1:num_multi_age) {
     temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
-    temp_Z <- calc_Z(YOY=YOY, Nums=temp_nums,
-                     species_info=multiple_ages[i,1:2])
+    temp_Z <- calc_Z(yoy=yoy, nums=temp_nums, fgs=fgs, biolprm=biolprm)
     Z.dataframe <- rbind(Z.dataframe, temp_Z)
   }
   
-  #### Check ####
-  # The following merge() may or may not work -- test when the Z loop works
+  # HACK for now, since some Z values are negative, I am replacing them
+  # with a random number
+  randomZ <- runif(length(which(Z.dataframe$atoutput<0)))
+  Z.dataframe[which(Z.dataframe$atoutput<0),c("atoutput")] <- randomZ
   
-  # merge together nums_data and the output Z.dataframe from the
-  new_nums <- merge(nums_data, Z.dataframe, by="species")
+  # rename the "atoutput" column, since it is really just the mortality, and
+  # we want to retain it for the next step of merging
+  colnames(Z.dataframe)[6] <- c("Z")
+  
+  # merge together nums_data and the output Z.dataframe:
+  new_nums <- merge(nums_data, Z.dataframe[,c("species", "time", "Z")], 
+                    by=c("species", "time"), all.x=TRUE)
   
   
   # since we have to expand the number of rows for groups with multiple true
@@ -79,55 +85,85 @@ calc_stage2age <- function(dir, nums_data, biolprm, YOY, fgs) {
   # across ages and boxes (these wil all be put together in the end)
   temp.list <- list() 
   
-#   for(i in 1:dim(new_nums)[1]) { 
-#     # looping species -- both those that have multiple true ages and those that 
-#     # do not
-#     group.i <- turnedon$Name[i]
-#     temp_nums <- new_nums[new_nums$species==group.i,] # might need to 
-#     num_ages <- turnedon$NumAgeClassSize[i]
-#     
-#     # Only need to loop through time for species that do have multiple true 
-#     # ages, so check that. If they do not, then just add the temp_nums to 
-#     # the list for that group.i
-#     if(num_ages==1) { temp.list[[length(temp.list)+1]] <- temp_nums
-#     } else (if num_ages>1) {
-#       # take out the part of the Z.dataframe for the group in this i
-#       Zvals <- Z.dataframe[Z.dataframe$species==group.i,]
-#       for(j in 1:ntimesteps) { # now loop through all the time steps for those
-#         # species with multiple age classes in a stage
-#         
-#         # get the Z val for the timestep in question
-#         Zval.j <- Zvals$time[Zvals$time==j]
-#         
-#         # take out the species numbers only for time step j
-#         nums_subset <- temp_nums[temp_nums$time==j, ]
-#         nums_vec <- 1
-#         for(k in 1:(num_ages-1)) {
-#           nums_vec <- c(nums_vec, exp(-Zval.j*k))
-#         }
-#         nums_proportion <- nums_vec/sum(nums_vec)
-#         
-#         ##### STUCK #####
-#         # stopping in here -- there needs to be some interesting multiplications
-#         # to make all 'atoutput' multiply by the nums_proportion to break it into 
-#         # pieces and to make those pieces be different rows in the data.frame
-#         # essentially all 'atoutput' elements for the species within this loop
-#         # need to be multiplied by the nums_proportions and each of those need
-#         # to be a row in the data frame... all other column entries will remain
-#         # the same, except for the the agecl column that needs to be subdivided
-#         
-#         out.nums <- ()
-#         
-#         temp.list[[length(temp.list)+1]] <- out.nums
-#       }
-#     }
-#   }
+  for(i in 1:length(names)) { 
+    # looping all species -- those with or without multiple true ages
+    
+    group.i <- turnedon$Name[i]
+    nums_species <- new_nums[new_nums$species==group.i,] # might need to 
+    num_ages <- turnedon$NumAgeClassSize[i]
+    sp_times <- unique(nums_species$time)
+    n_sp_tsteps <- length(sp_times)
+    # these last pieces are needed because not all species are present at all times
+    
+    # Check if multiple true ages, if not then just save species_nums to list
+    if(num_ages==1) { temp.list[[length(temp.list)+1]] <- nums_species
+    } else if(num_ages>1) {
+      # take out the part of the Z.dataframe for species group i
+      Zvals <- Z.dataframe[Z.dataframe$species==group.i,]
+      
+      # create empty list for this species i, each element in the list will be
+      # a different time step 
+      list_species <- list()
+      
+      for(j in sp_times) { # looping through time
+        # get the Z val for the timestep in question
+        Zval.j <- Zvals$time[Zvals$time==j]
+        
+        # and turn the Z value into a vector of survival values across the 
+        # number of true ages for each age class for this species
+        nums_vec <- 1
+        for(k in 1:(num_ages-1)) {
+          nums_vec <- c(nums_vec, exp(-Zval.j*k))
+        }
+        nums_proportion <- nums_vec/sum(nums_vec)
+        
+        # take out the species numbers only for time step j
+        nums_sp_subset <- nums_species[nums_species$time==j, ]
+        
+        # create an empty list, each element of this list will be a row from
+        # the nums_sp_subset data frame that is split into multiple pieces
+        # to make the atoutput column have the correct dimensions
+        list_ages <- list()
+        
+        # loop through all the rows in nums_sp_subset
+        for(l in 1:nrow(nums_sp_subset)) { 
+          nums_row <- nums_sp_subset[l,]
+          # create new data frame with same columns, but just more rows to 
+          # account for all the true ages
+          new_rows <- data.frame(species=nums_row$species,
+                                 time=nums_row$time,
+                                 agecl=seq((nums_row$agecl*num_ages - num_ages+1),
+                                           nums_row$agecl*num_ages),
+                                 polygon=nums_row$polygon,
+                                 layer=nums_row$layer,
+                                 atoutput=nums_row$atoutput*nums_proportion,
+                                 Z=nums_row$Z
+                                 )
+          
+          ### NOTE: the agecl piece is funny -- because now we are making many
+          # more age classes for some... I think this works? But might want
+          # another set of eyes to check my logic
+          
+          list_ages[[length(list_ages)+1]] <- new_rows
+        }
+        
+        # now combine all the elements of the list for different rows and make
+        # it an element of the list_species (to represent one time step)
+        list_species[[length(list_species)+1]] <- do.call("rbind", list_ages)
+      }
+      temp.list[[length(temp.list)+1]] <- do.call("rbind", list_species)
+    }
+  }
   
-  # then there needs to be some way to combine the list pieces so that 
-  #output <- () # combine the list into one object
+  # Now just create the output
+  finalout_withZ <- do.call("rbind", temp.list)
+        
+  ### CHECK: 
+  # do we want to remove the column of Z values? I think so
+  finalout <- finalout_withZ[,-7]
   
   
-  return(output)
+  return(finalout) 
   
 }
 
