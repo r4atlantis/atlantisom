@@ -111,11 +111,15 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   totnums <- totnums[order(totnums$species, totnums$time), ]
 
   totnums$survival <- totnums$survivors
-  for (group in totnums$group)
-   {
-    pick <- which(totnums$group==group)
-    totnums$survival[pick] <- c(NA,
-        totnums$survivors[pick[-1]]/totnums$atoutput[pick[-length(pick)]])
+  # Calculate survival for each group
+  for (group in unique(totnums$group)) {
+    if (is.na(group)) next
+    pick <- which(totnums$group == group)
+    survival_temp <- c(NA,
+      totnums$survivors[pick[-1]]/totnums$atoutput[pick[-length(pick)]])
+    survival_temp[survival_temp < 0] <- NA
+    # Use first positive value to replace the initial year and all negative vals
+    totnums$survival[pick] <- survival_temp
    }
 
   # Use first positive value to replace the initial year and all negative vals
