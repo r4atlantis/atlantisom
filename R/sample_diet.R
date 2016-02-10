@@ -1,9 +1,9 @@
 # Install the latest package from GitHub
-devtools::install_github("r4atlantis/atlantisom")
-load(atlantisom)
-dat <- read.csv(paste0("/Users/rwildermuth/Dropbox/PhD_UMass/MultiSpp Modeling/dietcomps_20151006.csv"), header=TRUE, 
-                     skip=1, stringsAsFactors=FALSE)
-head(dat)
+#devtools::install_github("r4atlantis/atlantisom")
+#load(atlantisom)
+#dat <- read.csv(paste0("/Users/rwildermuth/Dropbox/PhD_UMass/MultiSpp Modeling/dietcomps_20151006.csv"), header=TRUE, 
+#                     skip=1, stringsAsFactors=FALSE)
+#head(dat)
 
 #' @title Sample total consumption to create diet composition data
 #'
