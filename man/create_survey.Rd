@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_survey.R
 \name{create_survey}
 \alias{create_survey}
-\title{Create survey data from an Altantis scenario}
+\title{Create survey observations from Atlantis output}
 \usage{
 create_survey(dat, time, species, boxes, effic, selex)
 }
@@ -43,17 +43,22 @@ for now, from load_boxarea a dataframe with polygon and area column names}
 2) survArea: area sampled in that box}
 }
 \value{
-A \code{matrix} in the same format as the \code{dat} summed
-  over layers, with \code{NA} in the layer column.
-}
-\description{
-Creates survey data from an Atlantis scenario where the survey
-  has its own selectivity.
-  todo: add more information here.
+Returns a matrix similar to the input matrix
+columns: species, agecl, polygon, layer, time, atoutput
+--will sum over layers, but enter NA as layer to indicate all layers
 }
 \details{
-The function works for a vector of defined species
-  and only returns information in boxes that are sampled.
+The function takes numbers-at-age data from an Atlantis scenario
+  where the data was read in from Atlantis output using \code{\link{load_nc}}
+  within \code{\link{run_truth}}. One does not need to use these functions
+  to create \code{dat}, rather you must only ensure that the structure of
+  \code{dat} is the same.
+  Currently, the function subsets the data by polygon and time,
+  and sums over layers.  An efficiency (\code{effic}) parameter is applied
+  that determines that proportion of fully selected fish that are captured
+  by the survey, then selectivity-at-age is applied.
+  This function works for specific defined species, specific defined polygons,
+  and specific defined time.
 }
 \author{
 Poseidon

@@ -6,11 +6,11 @@
 #'
 #' @details The function takes numbers-at-age data from an Atlantis scenario
 #'   where the data was read in from Atlantis output using \code{\link{load_nc}}
-#'   within \code{\link{run_atlantis}}, and then run through \code{\link{sample_fish}}. 
-#'   One does not need to use these functions 
+#'   within \code{\link{run_truth}}, and then run through \code{\link{sample_fish}}.
+#'   One does not need to use these functions
 #'   to create \code{dat}, rather you must only ensure that the structure of
 #'   \code{dat} is the same.
-#'   Currently, the function takes output from \code{\link{sample_fish}} 
+#'   Currently, the function takes output from \code{\link{sample_fish}}
 #'   and subsamples those fish given the proportion supplied by \code{prop}.
 #'   You can also apply ageing error to the data, using the \code{ageErr}
 #'   argument.
@@ -33,7 +33,7 @@
 #'		scenario <- "SETAS"
 #'		groups <- load_fgs(dir = directory, "functionalGroups.csv")
 #'		groups <- groups[groups$IsTurnedOn > 0, "Name"]
-#'		results <- run_atlantis(scenario = scenario,
+#'		results <- run_truth(scenario = scenario,
 #'		dir = directory,
 #'		file_fgs = "functionalGroups.csv",
 #'		file_bgm = "VMPA_setas.bgm",
@@ -123,14 +123,14 @@ sample_ages <- function(dat,prop,ageErr=NULL) {
 if(F) {
 
 	dat <- data.frame(species = c(rep("spec1",3*3),rep("spec2",5*3)),
-		              agecl = c(rep(1:3,3),rep(3:7,3)), 
-		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)), 
-		              layer = 1:2, 
+		              agecl = c(rep(1:3,3),rep(3:7,3)),
+		              polygon = c(rep(1:3,each=3),rep(1:3,each=5)),
+		              layer = 1:2,
 		              time = 365)
     dat$atoutput <- 10000/dat$agecl
 
-	dat2 <- dat; dat2$time=365*2; 
-	dat2$atoutput <- 20000/dat2$agecl	
+	dat2 <- dat; dat2$time=365*2;
+	dat2$atoutput <- 20000/dat2$agecl
 	dat <- rbind(dat,dat2)
 
 
@@ -149,7 +149,7 @@ if(F) {
 	tmp <- create_survey(dat=dat, time=c(365,2*365), species=c("spec1","spec2"), effic=effic, selex=selex)
 
 	effN <- data.frame(species=c("spec1","spec2"), effN=c(200, 500))
-	#wts number of samples is assumed proportional to area surveyed. In other words, it assumes that a single survey sample is a specific size of area sampled. 
+	#wts number of samples is assumed proportional to area surveyed. In other words, it assumes that a single survey sample is a specific size of area sampled.
 
 	samp <- sample_fish(tmp, effN=effN)
 	tapply(samp$atoutput,list(samp$species,samp$time),sum)
@@ -165,7 +165,7 @@ if(F) {
 	scenario <- "SETAS"
 	groups <- load_fgs(dir = directory, "functionalGroups.csv")
 	groups <- groups[groups$IsTurnedOn > 0, "Name"]
-	results <- run_atlantis(scenario = scenario,
+	results <- run_truth(scenario = scenario,
 	dir = directory,
 	file_fgs = "functionalGroups.csv",
 	file_bgm = "VMPA_setas.bgm",

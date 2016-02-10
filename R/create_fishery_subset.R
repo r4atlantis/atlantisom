@@ -4,7 +4,7 @@
 
 #' @details The function takes numbers-at-age data from an Atlantis scenario
 #'   where the data was read in from Atlantis output using \code{\link{load_nc}}
-#'   within \code{\link{run_atlantis}}. One does not need to use these functions
+#'   within \code{\link{run_truth}}. One does not need to use these functions
 #'   to create \code{dat}, rather you must only ensure that the structure of
 #'   \code{dat} is the same.
 #'   Currently, the function subsets the data by polygon and time,
@@ -39,17 +39,17 @@ create_fishery_subset <- function(dat, time, species, boxes) {
 	#Do some vector length tests (species=effic, column names, )
 
 	#first select the appropriate rows (time and box)
-	#first select the appropriate rows and 
+	#first select the appropriate rows and
 	aggDat <- aggregateData(dat, time, species, boxes, keepColumns=c("species","agecl","polygon","time"))
 
 	#Should I be checking for NA's along the way to identify problems?
 
 	#Create final dataframe in same format as input
 	#put time (mean) and layers (NA) back in the dataframe for completeness
-	out <- data.frame(species = aggData$species, 
-		              agecl = aggData$agecl, 
-		              polygon = aggData$polygon, 
-		              layer = NA, 
+	out <- data.frame(species = aggData$species,
+		              agecl = aggData$agecl,
+		              polygon = aggData$polygon,
+		              layer = NA,
 		              time = aggData$time,
 		              atoutput = aggData$numAtAge)
 

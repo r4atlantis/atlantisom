@@ -35,7 +35,7 @@
 #' select_variable <- "Nums"
 #' box.info <- load_box(dir = dir, file_bgm="VMPA_setas.bgm")
 #' bboxes <- get_boundary(box.info)
-#' #when calc_stage2age is run in the run_atlantis, it will need to have the nums
+#' #when calc_stage2age is run in the run_truth, it will need to have the nums
 #' #data frame and the bioprm already read in:
 #' nums_data <- load_nc(dir = dir,
 #'                      file_nc="outputSETAS.nc",
@@ -109,31 +109,28 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   totnums$survivors <- totnums$atoutput - totnums$recruits
   # Make sure time is in order
   totnums <- totnums[order(totnums$species, totnums$time), ]
-  # x[n+1] / x[n]
-  #totnums$survival <- unlist(aggregate(survival ~ species, data = totnums,
-  #      function(x) {
-  #        c(NA, x[-length(x)]) / x})$survival)
-  #G.Fay 1/6/16, changed totnums$survival calc as above was calculating x[n]/x[n+1]
-  #instead of x[n+1]/nums[n]   where x = nums-recruits
 
   totnums$survival <- totnums$survivors
-  for (group in totnums$group)
-   {
-    pick <- which(totnums$group==group)
-    totnums$survival[pick] <- c(NA,
-        totnums$survivors[pick[-1]]/totnums$atoutput[pick[-length(pick)]])
-   }
+  # Calculate survival for each group
+  for (group in unique(totnums$group)) {
+    if (is.na(group)) next
+    pick <- which(totnums$group == group)
+    survival_temp <- c(NA,
+      totnums$survivors[pick[-1]]/totnums$atoutput[pick[-length(pick)]])
+    survival_temp[survival_temp < 0] <- NA
+    # Use first positive value to replace the initial year and all negative vals
+    firstgood <- which(!is.na(survival_temp))[1]
 
-  # Use first positive value to replace the initial year and all negative vals
-  for(i in seq(NROW(totnums))) {
-    totnums$survival[i] <- ifelse(is.na(totnums$survival[i]),
-      totnums$survival[i + 1], totnums$survival[i])
-    temp <- totnums[i:NROW(totnums), ]
-    temp <- temp[temp$species == totnums$species[i], "survival"]
-    temp <- temp[temp > 0][1]
-    totnums$survival[i] <- ifelse(totnums$survival[i] < 0, temp,
-      totnums$survival[i])
-  }
+    survival_temp[1:firstgood] <- survival_temp[firstgood]
+    for(ii in seq_along(survival_temp)) {
+      if (survival_temp[ii] < 0) {
+        nonzero <- which(which(survival_temp > 0) > ii)
+        if (length(nonzero) == 0) nonzero <- which(survival_temp > 0)
+        survival_temp[ii] <- survival_temp[which.min(abs(nonzero - ii))]
+      }
+    }
+    totnums$survival[pick] <- survival_temp
+   }
 
   #Calculate Z
   totnums$Z <- -1 * log(totnums$survival)

@@ -52,7 +52,7 @@ select_groups <- fgs$Name[fgs$IsTurnedOn > 0]
 select_variable <- "Nums"
 box.info <- load_box(dir = dir, file_bgm="VMPA_setas.bgm")
 bboxes <- get_boundary(box.info)
-#when calc_stage2age is run in the run_atlantis, it will need to have the nums
+#when calc_stage2age is run in the run_truth, it will need to have the nums
 #data frame and the bioprm already read in:
 nums_data <- load_nc(dir = dir,
                      file_nc="outputSETAS.nc",

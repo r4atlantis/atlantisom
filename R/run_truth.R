@@ -4,7 +4,7 @@
 #' containing the desired information. The list contains the 'truth' as known
 #' from the Atlantis scenario. The truth can later be sampled
 #' from to create a data set with observation error.
-#' Currently, the \code{run_atlantis} depends on the following files
+#' Currently, the \code{run_truth} depends on the following files
 #' being in your working directory:
 #' \itemize{
 #'  \item{"functionalGroups.csv"}
@@ -31,7 +31,7 @@
 #' scenario <- "SETAS"
 #' groups <- load_fgs(dir = directory, "functionalGroups.csv")
 #' groups <- groups[groups$IsTurnedOn > 0, "Name"]
-#' run_atlantis(scenario = scenario,
+#' run_truth(scenario = scenario,
 #'   dir = directory,
 #'   file_fgs = "functionalGroups.csv",
 #'   file_bgm = "VMPA_setas.bgm",
@@ -39,7 +39,7 @@
 #'   file_init = "INIT_VMPA_Jan2015.nc",
 #'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
 #'
-run_atlantis <- function(scenario, dir = getwd(),
+run_truth <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm){
 
   # Create file names
@@ -179,7 +179,7 @@ run_atlantis <- function(scenario, dir = getwd(),
                  "fgs" = fgs)
 
   print("***Start writing to HDD.")
-  save(result, file = file.path(dir, paste0("output", scenario, "run_atlantis.RData")))
+  save(result, file = file.path(dir, paste0("output", scenario, "run_truth.RData")))
 
   print("Hurray, done!")
   return(result)
