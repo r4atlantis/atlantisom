@@ -1,8 +1,8 @@
 #' Approximating the true numbers at age within each box, functional group and
 #' time step.
 #'
-#' Will be called in the run_atlantis file, and requires inputs from
-#' \code{\link{load_nc}} for the "Nums" variable, and the 
+#' Will be called in the run_truth file, and requires inputs from
+#' \code{\link{load_nc}} for the "Nums" variable, and the
 #' \code{\link{load_biolprm}}.
 #'
 #' @family calc functions
@@ -30,7 +30,7 @@
 #' select_variable="Nums"
 #' box.info=load_box(dir = dir, file_bgm="VMPA_setas.bgm")
 #' bboxes=get_boundary(box.info)
-#' #when calc_stage2age is run in the run_atlantis, it will need to have the nums
+#' #when calc_stage2age is run in the run_truth, it will need to have the nums
 #' #data frame and the bioprm already read in:
 #' nums_data <- load_nc(dir = dir,
 #'                      file_nc="outputSETAS.nc",

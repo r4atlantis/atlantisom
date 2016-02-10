@@ -35,7 +35,7 @@
 #' select_variable <- "Nums"
 #' box.info <- load_box(dir = dir, file_bgm="VMPA_setas.bgm")
 #' bboxes <- get_boundary(box.info)
-#' #when calc_stage2age is run in the run_atlantis, it will need to have the nums
+#' #when calc_stage2age is run in the run_truth, it will need to have the nums
 #' #data frame and the bioprm already read in:
 #' nums_data <- load_nc(dir = dir,
 #'                      file_nc="outputSETAS.nc",
@@ -120,6 +120,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
     survival_temp[survival_temp < 0] <- NA
     # Use first positive value to replace the initial year and all negative vals
     firstgood <- which(!is.na(survival_temp))[1]
+
     survival_temp[1:firstgood] <- survival_temp[firstgood]
     for(ii in seq_along(survival_temp)) {
       if (survival_temp[ii] < 0) {

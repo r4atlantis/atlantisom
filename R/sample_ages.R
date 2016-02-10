@@ -6,8 +6,8 @@
 #'
 #' @details The function takes numbers-at-age data from an Atlantis scenario
 #'   where the data was read in from Atlantis output using \code{\link{load_nc}}
-#'   within \code{\link{run_atlantis}}, and then run through \code{\link{sample_fish}}. 
-#'   One does not need to use these functions 
+#'   within \code{\link{run_truth}}, and then run through \code{\link{sample_fish}}.
+#'   One does not need to use these functions
 #'   to create \code{dat}, rather you must only ensure that the structure of
 #'   \code{dat} is the same.
 #'   Currently, the function takes output from \code{\link{sample_fish}} 
@@ -33,7 +33,7 @@
 #'		scenario <- "SETAS"
 #'		groups <- load_fgs(dir = directory, "functionalGroups.csv")
 #'		groups <- groups[groups$IsTurnedOn > 0, "Name"]
-#'		results <- run_atlantis(scenario = scenario,
+#'		results <- run_truth(scenario = scenario,
 #'		dir = directory,
 #'		file_fgs = "functionalGroups.csv",
 #'		file_bgm = "VMPA_setas.bgm",
@@ -165,7 +165,7 @@ if(F) {
 	scenario <- "SETAS"
 	groups <- load_fgs(dir = directory, "functionalGroups.csv")
 	groups <- groups[groups$IsTurnedOn > 0, "Name"]
-	results <- run_atlantis(scenario = scenario,
+	results <- run_truth(scenario = scenario,
 	dir = directory,
 	file_fgs = "functionalGroups.csv",
 	file_bgm = "VMPA_setas.bgm",

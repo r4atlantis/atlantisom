@@ -4,7 +4,7 @@
 
 #' @details The function takes numbers-at-age data from an Atlantis scenario
 #'   where the data was read in from Atlantis output using \code{\link{load_nc}}
-#'   within \code{\link{run_atlantis}}. One does not need to use these functions
+#'   within \code{\link{run_truth}}. One does not need to use these functions
 #'   to create \code{dat}, rather you must only ensure that the structure of
 #'   \code{dat} is the same.
 #'   Currently, the function subsets the data by polygon and time,
