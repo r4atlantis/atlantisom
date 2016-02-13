@@ -27,7 +27,14 @@ load_diet_comp <- function(dir = getwd(), dietfile, fgs){
   # cannot be added as NA columns! We should also keep in mind that hardcoding
   # the removal of the column stock may result in bugs when models actually
   # work woth multiple stocks (the CaCu model only has 1 stock per functional group).
+  if (length(unique(diet$Stock)) > 1) {
+    table(diet$Group, diet$Stock)
+    stop(paste("There is more than one stock for a functional group\n",
+      "in your diet data, and load_diet_comp only works with one stock\n",
+      "per functional group:\n"))
+  } else {
     diet <- diet[, -which(colnames(diet) == "Stock")]
+  }
 
   # Change column order
   diet <- diet[, c("Group", "Cohort", "Time",
