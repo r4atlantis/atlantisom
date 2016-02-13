@@ -46,12 +46,12 @@ load_diet_comp <- function(dir = getwd(), dietfile, fgs){
 
   names(diet) <- tolower(names(diet))
 
-  diet$species <- as.character(diet$species)
   diet$prey <- as.character(diet$prey)
+  diet$group <- as.character(diet$group)
 
   # Change species acronyms to actual names.
   species_names <- fgs[, c("Name", "Code")]
-  diet <- dplyr::left_join(diet, species_names, by = c("species" = "Code"))
+  diet <- dplyr::left_join(diet, species_names, by = c("group" = "Code"))
   diet$species <- NULL
   names(diet)[names(diet) == "Name"] <- "species"
 
