@@ -23,7 +23,6 @@
 #' @export
 
 #' @author Robert Wildermuth
-#' @template 
 #' @param dat A \code{data.frame} containing sampled predator species
 #'   identifiers  in the first
 #'   column and prey species consumption proportions in the remaining columns.
