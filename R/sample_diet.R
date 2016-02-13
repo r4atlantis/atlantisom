@@ -20,9 +20,9 @@
 #'   selecting common species group identifiers to remove from the table.
 #'   Also, more realistic observation error and bias distributions
 #'   could be applied to obtain realistic diet composition data.
-#' @export
 
 #' @author Robert Wildermuth
+#' @export
 #' @param dat A \code{data.frame} containing sampled predator species
 #'   identifiers  in the first
 #'   column and prey species consumption proportions in the remaining columns.
@@ -51,30 +51,30 @@
 #'
 
 sample_diet <- function(dat) {
-  
+
   # first remove species not sampled and not quantified in gut analyses
   # !!!RW: Will need some way to generalize this to the diff ecosystems
-  nonSampled <- c("SB", "PIN", "REP", "RWH", "BWH", "SWH", "TWH", "INV", "LSQ", 
-                  "ISQ", "SCA", "QHG", "CLA", "BFF", "BG", "LOB", "RCB", "BMS", 
-                  "NPW", "OPW", "ZL", "BD", "MA", "MB", "SG", "BC", "ZG", "PL", 
+  nonSampled <- c("SB", "PIN", "REP", "RWH", "BWH", "SWH", "TWH", "INV", "LSQ",
+                  "ISQ", "SCA", "QHG", "CLA", "BFF", "BG", "LOB", "RCB", "BMS",
+                  "NPW", "OPW", "ZL", "BD", "MA", "MB", "SG", "BC", "ZG", "PL",
                   "DF", "PS", "ZM", "ZS", "PB", "BB", "BO", "DL", "DR", "DC")
-  
-  notEnum <- c("SB", "PIN", "REP", "RWH", "BWH", "SWH", "TWH", "INV", "LSQ", "ISQ", "BFF", "BG", 
-               "ZL", "BD", "MA", "MB", "SG", "BC", "ZG", "PL", "DF", "PS", "ZM", "ZS", "PB", 
+
+  notEnum <- c("SB", "PIN", "REP", "RWH", "BWH", "SWH", "TWH", "INV", "LSQ", "ISQ", "BFF", "BG",
+               "ZL", "BD", "MA", "MB", "SG", "BC", "ZG", "PL", "DF", "PS", "ZM", "ZS", "PB",
                "BB", "BO", "DL", "DR")
-  
+
   dat <- dat[!(dat$Predator %in% nonSampled), !(colnames(dat) %in% notEnum)]
-  
+
   # add uniform error to half of the "observations"
   nPreyObs <- nrow(dat) * (ncol(dat)-1)
   for(obs in 1:(nPreyObs/2)){
     # determine row and column indices
     rowR <- sample(1:nrow(dat), 1)
     colC <- sample(2:ncol(dat), 1)
-    
+
     dat[rowR, colC] <- dat[rowR, colC] + runif(1, -0.1, 0.1)
   }
-  
+
   # add bias by removing little-observed prey at random
   for(i in 1:nrow(dat)){
     for(j in 2:ncol(dat)){
@@ -83,12 +83,12 @@ sample_diet <- function(dat) {
       }
     }
   }
-  
+
   # recalibrate so that rows add to 1
   # first need to adjust/account for negative values
   baseAdd <- min(dat[,2:ncol(dat)])
   if(baseAdd < 0){
-    
+
     for(i in 1:nrow(dat)){
       for(j in 2:ncol(dat)){
         if(dat[i,j] != 0){
@@ -96,17 +96,17 @@ sample_diet <- function(dat) {
         }
       }
     }
-    
+
   }
-  
-  
+
+
   for(r in 1:nrow(dat)){
-    
+
     denom <- rowSums(dat[r,2:ncol(dat)])
     dat[r,2:ncol(dat)] <- (dat[r,2:ncol(dat)])/denom
   }
-  
+
   return(dat)
 }
-  
-  
+
+
