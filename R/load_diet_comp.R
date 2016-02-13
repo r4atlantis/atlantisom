@@ -52,11 +52,9 @@ load_diet_comp <- function(dir = getwd(), dietfile, fgs){
   # Change species acronyms to actual names.
   species_names <- fgs[, c("Name", "Code")]
   diet <- dplyr::left_join(diet, species_names, by = c("group" = "Code"))
-  diet$species <- NULL
   names(diet)[names(diet) == "Name"] <- "species"
 
   diet <- dplyr::left_join(diet, species_names, by = c("prey" = "Code"))
-  diet$prey <- NULL
   names(diet)[names(diet) == "Name"] <- "prey"
 
   # Convert days to timesteps
