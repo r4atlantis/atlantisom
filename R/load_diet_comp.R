@@ -58,6 +58,7 @@ load_diet_comp <- function(dir = getwd(), dietfile, fgs){
   names(diet)[names(diet) == "Name"] <- "prey"
 
   # Convert days to timesteps
+  # todo: use toutinc to get this value
   # NOTE: This is hardcoded as we do not have access to the run.prm file at
   # the moment. The timestep used in the model-run has be extracted from this
   # file to make sure the code is running with other models.
