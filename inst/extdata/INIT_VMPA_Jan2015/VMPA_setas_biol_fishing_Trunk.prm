@@ -2916,6 +2916,66 @@ PS_maxdepth      5000
 PB_maxdepth      5000
 BB_maxdepth      5000
 
+FPS_maxtotdepth     100000 
+FPL_maxtotdepth     100000 
+FPO_maxtotdepth     100000 
+FVD_maxtotdepth     100000 
+FVV_maxtotdepth     100000 
+FVS_maxtotdepth     100000 
+FVT_maxtotdepth     100000 
+FVO_maxtotdepth     100000 
+FVB_maxtotdepth     100000 
+FMM_maxtotdepth     100000 
+FMN_maxtotdepth     100000 
+FBP_maxtotdepth     100000 
+FDD_maxtotdepth     100000 
+FDS_maxtotdepth     100000 
+FDB_maxtotdepth     100000 
+FDC_maxtotdepth     100000 
+FDO_maxtotdepth     100000 
+FDE_maxtotdepth     100000 
+FDF_maxtotdepth     100000 
+FDM_maxtotdepth     100000 
+FDP_maxtotdepth     100000 
+SHD_maxtotdepth     100000 
+SHC_maxtotdepth     100000
+SHP_maxtotdepth     100000 
+SHB_maxtotdepth     100000 
+SHR_maxtotdepth     100000 
+SSK_maxtotdepth     100000 
+SB_maxtotdepth      100000 
+SP_maxtotdepth      100000 
+PIN_maxtotdepth     100000
+REP_maxtotdepth     100000 
+WDG_maxtotdepth     100000 
+WHB_maxtotdepth     100000 
+WHS_maxtotdepth     100000 
+WHT_maxtotdepth     100000 
+CEP_maxtotdepth     100000
+PWN_maxtotdepth     100000
+BML_maxtotdepth     100000
+BMS_maxtotdepth     100000
+BMD_maxtotdepth     100000
+ZL_maxtotdepth      100000
+ZM_maxtotdepth      100000
+ZS_maxtotdepth      100000
+DF_maxtotdepth      100000
+BD_maxtotdepth      100000
+BO_maxtotdepth      100000
+BC_maxtotdepth      100000
+BFF_maxtotdepth     100000 
+BFS_maxtotdepth     100000
+BFD_maxtotdepth     100000 
+BG_maxtotdepth      100000
+MA_maxtotdepth      100000
+SG_maxtotdepth      100000
+ZG_maxtotdepth      100000
+PL_maxtotdepth      100000
+PS_maxtotdepth      100000
+PB_maxtotdepth      100000
+BB_maxtotdepth      100000
+
+
 # Home range radius (m) for each group
 FPS_homerangerad     1 
 FPL_homerangerad     1 
@@ -10381,7 +10441,11 @@ WHT_age_mat  2  First mature age class of toothed whales 2
 #90 231
 
 Time_Age_CEP     2
-90 366
+9 23
+
+#Time_Age_CEP     2
+#90 231
+
 
 # Spawning season                        
 FPL_Time_Spawn  210  Time of year large planktivores spawn d 210 - 330               
@@ -10422,11 +10486,14 @@ WHT_Time_Spawn  280  Time of year toothed whales mate d 0 - 360
 
 #date of spawning, first entry is the autumn cohort, second is the spring
 
-CEP_Time_Spawn 90
+#CEP_Time_Spawn 90
 
+CEP_Time_Spawn 2
+12 30
+           
 #CEP_Time_Spawn 2
-#90 231
-              
+#90 300
+   
 FPL_spawn_period  14  Period of spawning for large planktivores d 1 - 365               
 FPS_spawn_period  14  Period of spawning for small planktivores d 1 - 365               
 FPO_spawn_period  180  Period of spawning for other planktivores d 1 - 365               
@@ -10616,10 +10683,11 @@ FSP_WHS  0.16   Fraction used in spawning formulation for small toothed whales 0
 FSP_WHT  0.16   Fraction used in spawning formulation for toothed whales 0.16                
               
 FSP_CEP          1.0       Fraction of biomass contributing to spawn for cephalopods          1.0
-        
+#FSP_CEP          0.5       Fraction of biomass contributing to spawn for cephalopods          1.0  
 ## Proportion of the biomass of age structured biomass pool lost to spawning (i.e. what proportion of the spawning adult biomass is lost via gamete release)
 ## Simplest case is to set to 0.0, this is effectively what it was in the original Atlantis code
 prop_spawn_lost_CEP  0.0
+prop_spawn_lost_PWN  0.0
                       
 ## Proportion of the population (per age) spawning. One value per cohort, number of cohorts defined in your functional group definition file.                  
 FSPB_FPL 10                         
@@ -14212,5 +14280,13 @@ flagstockingBML 0
 flagstockingCEP 0
 flagstockingPWN 0
 
-flag_do_var_express 0
+#Terminal (senescence mortality) for biomass pools (proportion of terminal age group dying)
+mT_PWN 1.0
+mT_CEP 1.0
+
 flag_evolvar_capped 0
+flag_do_var_express 0
+
+
+flagPHmortcase 0
+flag_satiation 0
