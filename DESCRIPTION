@@ -23,7 +23,6 @@ Description: The atlantisom package develops data sets for use in other
 License: What license is it under?
 LazyData: TRUE
 Imports:
-    data.table,
     RNetCDF,
     stringr,
     dplyr,
