@@ -1,36 +1,32 @@
-# Install the latest package from GitHub
-#devtools::install_github("r4atlantis/atlantisom")
-#load(atlantisom)
-#dat <- read.csv(paste0("/Users/rwildermuth/Dropbox/PhD_UMass/MultiSpp Modeling/dietcomps_20151006.csv"), header=TRUE, 
-#                     skip=1, stringsAsFactors=FALSE)
-#head(dat)
-
 #' @title Sample total consumption to create diet composition data
 #'
-#' @description Create sampled diet composition data from the total consumption in an
-#'   Atlantis scenario. Observation error and bias are added.
+#' @description Create sampled diet composition data from the total consumption
+#'    in an Atlantis scenario. Observation error and bias are added.
 #'
 #' @details The function takes total consumption data from an Atlantis scenario
-#'   where the data was read in from Atlantis output using \code{???}. One does 
-#'   not need to use these functions to create \code{dat}, rather you must only 
+#'   where the data was read in from Atlantis output using \code{???}. One does
+#'   not need to use these functions to create \code{dat}, rather you must only
 #'   ensure that the structure of \code{dat} is the same.
-#'   Currently, the function creates sampled diet composition by removing non-sampled
-#'   and non-enumerated species groups from the total consumption table from Atlantis.
-#'   Bias is added by setting infrequently consumed (<0.25) prey groups to zero at random.
-#'   Error is incorporated into proportional composition entries by adding uniform error 
-#'   to true values to half of the observations. The function adjusts the remaining table
-#'   so that each row sums to one before returning the "observed" mean diet composition 
-#'   summary table.
-#'   The function needs to be generalized to any Atlantis system by selecting common 
-#'   species group identifiers to remove from the table. Also, more realistic observation 
-#'   error and bias distributions could be applied to obtain realistic diet composition data.
-
+#'   Currently, the function creates sampled diet composition by removing
+#'   non-sampled and non-enumerated species groups from the total
+#'   consumption table from Atlantis.
+#'   Bias is added by setting infrequently consumed (<0.25) prey groups to
+#'   zero at random.
+#'   Error is incorporated into proportional composition entries by
+#'   adding uniform error to true values to half of the observations.
+#'   The function adjusts the remaining table so each row sums to one
+#'   before returning the "observed" mean diet composition summary table.
+#'   The function needs to be generalized to any Atlantis system by
+#'   selecting common species group identifiers to remove from the table.
+#'   Also, more realistic observation error and bias distributions
+#'   could be applied to obtain realistic diet composition data.
 #' @author Poseidon
 #' @export
 
 #' @template 
-#' @param dat    A data frame containing sampled predator species identifiers in the first 
-#'               column and prey species consumption proportions in the remaining columns.
+#' @param dat A \code{data.frame} containing sampled predator species
+#'   identifiers  in the first
+#'   column and prey species consumption proportions in the remaining columns.
 #' @examples
 #'    !!! RW: this may need editing:
 #' 		setwd(file.path(system.file( package = "atlantisom"),".."))
