@@ -11,9 +11,7 @@
 #'
 #'@return Returns a data frame of the data to be exported to the AtlantisOM list
 #'  object.
-#'@import data.table
 #'@export
-
 load_diet_comp <- function(dir = getwd(), dietfile, fgs){
 
   if (is.null(dir)) {
@@ -21,7 +19,7 @@ load_diet_comp <- function(dir = getwd(), dietfile, fgs){
   } else {
     diet.file <- file.path(dir, dietfile)
   }
-  diet <- as.data.table(read.table(diet.file, header = TRUE))
+  diet <- read.table(diet.file, header = TRUE)
 
   # remove unnessesary columns and add ones that aren't present in the data
   # Adding polygon and layer results in serious isses when we combine this dataset
@@ -29,13 +27,11 @@ load_diet_comp <- function(dir = getwd(), dietfile, fgs){
   # cannot be added as NA columns! We should also keep in mind that hardcoding
   # the removal of the column stock may result in bugs when models actually
   # work woth multiple stocks (the CaCu model only has 1 stock per functional group).
-  diet[, Stock   := NULL]
+    diet <- diet[, -which(colnames(diet) == "Stock")]
 
   # Change column order
-  columns <- names(diet)[which(!names(diet) %in% c('Time', 'Group', 'Cohort'))]
-  setcolorder(diet, c('Group', 'Cohort','Time', columns))
-  setnames(diet, c('Group', 'Cohort'), c('Species', 'agecl'))
-  diet <- as.data.frame(diet)
+  diet <- diet[, c("Group", "Cohort", "Time",
+    names(diet)[which(!names(diet) %in% c("Group", "Cohort", "Time"))])]
 
   # Convert to tidy dataframe to allow joining/merging with other dataframes.
   diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
