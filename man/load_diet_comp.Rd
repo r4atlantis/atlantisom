@@ -24,6 +24,14 @@ Returns a data frame of the data to be exported to the AtlantisOM list
 Uses the diet_check.txt output from Atlantis to be used in the Atlantis
 Operating model.
 }
+\examples{
+dir <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+file_diet <- grep("DietCheck", dir(dir), value = TRUE)
+fgs <- load_fgs(dir = dir, "functionalGroups.csv")
+temp <- load_diet_comp(dir = dir, dietfile = file_diet, fgs = fgs)
+rm(temp)
+
+}
 \seealso{
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_box}},

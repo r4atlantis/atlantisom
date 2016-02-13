@@ -12,6 +12,14 @@
 #'@return Returns a data frame of the data to be exported to the AtlantisOM list
 #'  object.
 #'@export
+#'
+#' @examples
+#' dir <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' file_diet <- grep("DietCheck", dir(dir), value = TRUE)
+#' fgs <- load_fgs(dir = dir, "functionalGroups.csv")
+#' temp <- load_diet_comp(dir = dir, dietfile = file_diet, fgs = fgs)
+#' rm(temp)
+#'
 load_diet_comp <- function(dir = getwd(), dietfile, fgs){
 
   if (is.null(dir)) {
