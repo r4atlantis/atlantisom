@@ -13,9 +13,9 @@ default is \code{getwd()}.}
 }
 \value{
 A \code{data.frame} in long format with the following coumn names:
-  Species, timestep, polygon, agecl, and atoutput (i.e., variable). This is
+  Species, timestep, polygon, agecl, and atoutput (i.e., variable). This is 
   the same as the input Nums data frame however, agecl will be TRUE numbers
-  by age class -- just named the same as the input to ensure make it work
+  by age class -- just named the same as the input to ensure make it work 
   with the other functions
 }
 \description{

@@ -24,7 +24,9 @@ reads in the csv file containing functional group names, usually
 A \code{data.frame} of time-varying Z values.
 }
 \description{
-
+Calculate total mortality for all age-structured groups
+  in an Atlantis model. The mortality values are then used in other
+  functions to translate stages to ages: \code{\link{calc_stage2age}}.
 }
 \details{
 Steps included when translating from stages (i.e.,

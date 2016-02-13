@@ -1,6 +1,8 @@
 #' Calculate total mortality for age structured groups
 #'
-#' @description
+#' @description Calculate total mortality for all age-structured groups
+#'   in an Atlantis model. The mortality values are then used in other
+#'   functions to translate stages to ages: \code{\link{calc_stage2age}}.
 #'
 #' @details Steps included when translating from stages (i.e.,
 #'   multiple age classes in a single group) to individual age
