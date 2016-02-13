@@ -20,9 +20,9 @@
 #'   selecting common species group identifiers to remove from the table.
 #'   Also, more realistic observation error and bias distributions
 #'   could be applied to obtain realistic diet composition data.
-#' @author Poseidon
 #' @export
 
+#' @author Robert Wildermuth
 #' @template 
 #' @param dat A \code{data.frame} containing sampled predator species
 #'   identifiers  in the first
