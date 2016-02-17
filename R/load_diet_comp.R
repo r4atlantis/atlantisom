@@ -1,9 +1,12 @@
-#'Load Atlantis Diet Composition
+#' Load Atlantis diet composition data from \code{diet_check.txt}
 #'
-#'Uses the diet_check.txt output from Atlantis to be used in the Atlantis
-#'Operating model.
+#' Imports the \code{diet_check.txt} output file from an Atlantis run
+#' and converts the file from wide format to long, where there are five
+#' columns: age class, time, diet composition, predator species, and
+#' prey species.
 #'
-#'@family load functions
+#' @family load functions
+#' @author Kelli Faye Johnson
 #'
 #' @template dir
 #' @param file_diet A character value, specifying the file name of the
