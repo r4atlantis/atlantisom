@@ -16,7 +16,21 @@
 
 #' @export
 #' @author Alexander Keth
-
+#'
+#' @examples
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' fgs <- load_fgs(d, "functionalGroups.csv")
+#' dietcomp <- load_diet_comp(dir = d, file_diet = "outputSETASDietCheck.txt",
+#'   fgs = fgs)
+#' eat <- NULL
+#' grazing <- NULL
+#' vol <- NULL
+#' biolprm <- load_biolprm(dir = d,
+#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#' calcs <- calc_pred_diet(dietcomp = dietcomp, eat = eat, grazing = grazing,
+#'   vol = vol, biolprm = biolprm)
+#' rm(calcs)
+#'
 calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
   dietcomp <- dplyr::filter(dietcomp, dietcomp > 0)
 
