@@ -1,8 +1,10 @@
-#' Calculate eaten biomass in t for each functional group.
+#' Calculate eaten biomass in tonnes for each functional group.
 #'
-#' Function to calculate the eaten biomass in t for each functional group per
-#' time, polygon, ageclass and preyitem. Please note, that the function
-#' produces unrealistic high consumption values at the momemt.
+#' Function to calculate the eaten biomass in tonnes for each functional group
+#' per time, polygon, ageclass, and prey item.
+#' todo: fix calc_pred_diet, which currently
+#' produces unrealistic high consumption values.
+#'
 #' @param dietcomp Dataframe containing the diet proportion for each functional group
 #' per prey, time and ageclass. The dataframe has to origin from load_diet_comp using the
 #' diet_check.txt as input.
@@ -10,10 +12,12 @@
 #' per timesetp, ageclass, and polygon. The dataframe has to origin from load_nc using "Eat" as select variable.
 #' @param grazing Dataframe containing the consumed biomass in mg N for each functional-group ("species")
 #' per timesetp, ageclass, and polygon. The dataframe has to origin from load_nc using "Grazing" as select variable.
+#' @param vol todo: describe volume, not sure where this comes from.
 #' @template biolprm
 #' @return Dataframe in tidy format with the following columns: species, agecl, polygon, time,
 #' atoutput, vol, dietcomp, prey, bio_eaten.
-
+#'
+#' @family calc functions
 #' @export
 #' @author Alexander Keth
 #'
