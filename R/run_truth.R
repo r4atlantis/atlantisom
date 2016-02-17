@@ -143,7 +143,7 @@ run_truth <- function(scenario, dir = getwd(),
   }
   print("catch read in.")
 
-  diet <- load_diet_comp(dir = dir, dietfile = dietcheck, fgs = fgs)
+  diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs)
 
   print("***Start calc_functions")
   biomass_eaten <- calc_pred_diet(dietcomp = diet, eat = eat, grazing = grazing, vol = vol, biolprm = biol)

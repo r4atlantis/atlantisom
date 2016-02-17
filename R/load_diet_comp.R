@@ -6,7 +6,11 @@
 #'@family load functions
 #'
 #' @template dir
-#'@param dietfile file name of the diet_check.txt output from Atlantis.
+#' @param file_diet A character value, specifying the file name of the
+#'   \code{diet_check.txt} output file from Atlantis.
+#'   If \code{is.null(dir)}, then \code{file_diet} can be the full file
+#'   path or a file in your current working directory, or the \code{file_diet}
+#'   will be appended to \code{dir} using \code{file.path}.
 #' @template fgs
 #'
 #'@return Returns a data frame of the data to be exported to the AtlantisOM list
@@ -20,12 +24,13 @@
 #' temp <- load_diet_comp(dir = dir, dietfile = file_diet, fgs = fgs)
 #' rm(temp)
 #'
-load_diet_comp <- function(dir = getwd(), dietfile, fgs){
+
+load_diet_comp <- function(dir = getwd(), file_diet, fgs){
 
   if (is.null(dir)) {
-    diet.file <- dietfile
+    diet.file <- file_diet
   } else {
-    diet.file <- file.path(dir, dietfile)
+    diet.file <- file.path(dir, file_diet)
   }
   diet <- read.table(diet.file, header = TRUE)
 
