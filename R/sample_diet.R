@@ -27,7 +27,6 @@
 #'   identifiers  in the first
 #'   column and prey species consumption proportions in the remaining columns.
 #' @examples
-#'    !!! RW: this may need editing:
 #' 		setwd(file.path(system.file( package = "atlantisom"),".."))
 #'
 #'		directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
