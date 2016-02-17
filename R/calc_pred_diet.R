@@ -34,11 +34,13 @@
 calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
   dietcomp <- dplyr::filter(dietcomp, dietcomp > 0)
 
-  # Eat and razing is given per species, agecl, polygon and time.
-  # Therefore, we need to aggreate the vol over layers.
+  # Eat and grazing are per species, agecl, polygon, and time.
+  # Therefore, we need to aggregate the vol over layers.
   vol <- vol %>%
     dplyr::group_by(polygon, time) %>%
     dplyr::summarise(vol = sum(atoutput))
+  # todo: change to aggregate
+  # vol <- aggregate(atoutput ~ polygon + time, data = vol, sum)
 
   # Combine eat and grazing! Calculte eaten biomass
   biomass_eaten <- rbind(eat, grazing) %>%
