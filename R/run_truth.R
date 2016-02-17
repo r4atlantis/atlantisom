@@ -5,7 +5,7 @@
 #' from the Atlantis scenario. The truth can later be sampled
 #' from to create a data set with observation error.
 #' Currently, the \code{run_truth} depends on the following files
-#' being in your working directory:
+#' being in your working directory (\code{dir}):
 #' \itemize{
 #'  \item{"functionalGroups.csv"}
 #'  \item{"[...]TOTCATCH.nc"}
@@ -14,7 +14,7 @@
 #' where [...] specifies the entry used for the \code{scenario} argument.
 #'
 #' @family run functions
-#' @author Sean Lucey
+#' @author Sean Lucey, Kelli Faye Johnson
 #'
 #' @template scenario
 #' @template dir
@@ -22,25 +22,28 @@
 #' @template file_bgm
 #' @template select_groups
 #' @template file_init
+#' @template file_biolprm
+#' @template file_runprm
+#' @template verbose
+#' @template save
 #'
 #' @return Returns a list object.
 #' @export
 #' @examples
-#' #load_all()
-#' directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' scenario <- "SETAS"
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' groups <- load_fgs(dir = directory, "functionalGroups.csv")
-#' groups <- groups[groups$IsTurnedOn > 0, "Name"]
-#' run_truth(scenario = scenario,
-#'   dir = directory,
+#' run_truth(scenario = "SETAS",
+#'   dir = d,
 #'   file_fgs = "functionalGroups.csv",
 #'   file_bgm = "VMPA_setas.bgm",
-#'   select_groups = groups,
+#'   select_groups = groups[groups$IsTurnedOn > 0, "Name"],
 #'   file_init = "INIT_VMPA_Jan2015.nc",
-#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm",
+#'   file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml")
 #'
 run_truth <- function(scenario, dir = getwd(),
-  file_fgs, file_bgm, select_groups, file_init, file_biolprm){
+  file_fgs, file_bgm, select_groups, file_init, file_biolprm, file_runprm,
+  verbose = FALSE, save = TRUE){
 
   # Create file names
   if (is.null(dir)) {
@@ -56,6 +59,8 @@ run_truth <- function(scenario, dir = getwd(),
   bps <- load_bps(dir = dir, fgs = fgs, file_init = file_init)
   # Read in the biological parameters
   biol <- load_biolprm(dir = dir, file_biolprm = file_biolprm)
+  # Read in the run parameters
+  runprm <- load_runprm(dir = dir, file_runprm = file_runprm)
 
   nc_catch <- paste0("output", scenario, 'CATCH.nc')
   dietcheck <- paste0("output", scenario, 'DietCheck.txt')
@@ -143,7 +148,8 @@ run_truth <- function(scenario, dir = getwd(),
   }
   print("catch read in.")
 
-  diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs)
+  diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs,
+    toutinc = runprm$toutinc)
 
   print("***Start calc_functions")
   biomass_eaten <- calc_pred_diet(dietcomp = diet, eat = eat, grazing = grazing, vol = vol, biolprm = biol)

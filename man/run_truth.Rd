@@ -5,7 +5,7 @@
 \title{Load Atlantis scenario output}
 \usage{
 run_truth(scenario, dir = getwd(), file_fgs, file_bgm, select_groups,
-  file_init, file_biolprm)
+  file_init, file_biolprm, file_runprm, verbose = FALSE, save = TRUE)
 }
 \arguments{
 \item{scenario}{A character value, specifying the Atlantis scenario name.
@@ -40,6 +40,30 @@ folder you specify in \code{dir}.
 The argument can also be specified as the full path name, just as long as
 argument \code{dir} is specified as \code{NULL}.
 Usually the file is named \code{"init[...].nc".}, but it must end in \code{.nc}.}
+
+\item{file_biolprm}{A character value giving the file name of the biology
+\code{.prm} file.
+The file should be located in your current working directory or the
+folder you specify in \code{dir}.
+The argument can also be specified as the full path name, just as long as
+argument \code{dir} is specified as \code{NULL}.
+Usually the file is named \code{"[...]_Biol.prm".}.}
+
+\item{file_runprm}{A character value giving the file name of the biology
+\code{.xml} file.
+The file should be located in your current working directory or the
+folder you specify in \code{dir}.
+The argument can also be specified as the full path name, just as long as
+argument \code{dir} is specified as \code{NULL}.
+Usually the file is named \code{"[...]_run.xml".}.
+This file is output from an Atlantis run in a standard format and is based
+on input from the \code{"[...]_run.prm"} file.}
+
+\item{verbose}{A logical value specifying if output should be written
+to the screen or not. The default value is \code{FALSE}.}
+
+\item{A}{logical value specifying if the function should save the output
+to the disk or not. The default is \code{TRUE}.}
 }
 \value{
 Returns a list object.
@@ -50,7 +74,7 @@ containing the desired information. The list contains the 'truth' as known
 from the Atlantis scenario. The truth can later be sampled
 from to create a data set with observation error.
 Currently, the \code{run_truth} depends on the following files
-being in your working directory:
+being in your working directory (\code{dir}):
 \itemize{
  \item{"functionalGroups.csv"}
  \item{"[...]TOTCATCH.nc"}
@@ -59,21 +83,19 @@ being in your working directory:
 where [...] specifies the entry used for the \code{scenario} argument.
 }
 \examples{
-#load_all()
-directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-scenario <- "SETAS"
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 groups <- load_fgs(dir = directory, "functionalGroups.csv")
-groups <- groups[groups$IsTurnedOn > 0, "Name"]
-run_truth(scenario = scenario,
-  dir = directory,
+run_truth(scenario = "SETAS",
+  dir = d,
   file_fgs = "functionalGroups.csv",
   file_bgm = "VMPA_setas.bgm",
-  select_groups = groups,
+  select_groups = groups[groups$IsTurnedOn > 0, "Name"],
   file_init = "INIT_VMPA_Jan2015.nc",
-  file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+  file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm",
+  file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml")
 
 }
 \author{
-Sean Lucey
+Sean Lucey, Kelli Faye Johnson
 }
 
