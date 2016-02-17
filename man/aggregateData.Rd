@@ -19,6 +19,10 @@ entry is a species name that is sampled in the survey.}
 
 \item{boxes}{A \code{vector} of polygons where the survey samples
 within each specified polygon.}
+
+\item{keepColumns}{A \code{vector} of character values, specifying
+which columns to keep for the returned \code{data.frame}.
+The default is \code{c("species", "agecl", "polygon", "time")}.}
 }
 \value{
 The function returns a subsetted matrix with the same columns

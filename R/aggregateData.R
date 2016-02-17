@@ -15,6 +15,9 @@
 #'   entry is a species name that is sampled in the survey.
 #' @param boxes A \code{vector} of polygons where the survey samples
 #'   within each specified polygon.
+#' @param keepColumns A \code{vector} of character values, specifying
+#'   which columns to keep for the returned \code{data.frame}.
+#'   The default is \code{c("species", "agecl", "polygon", "time")}.
 #'
 #' @return The function returns a subsetted matrix with the same columns
 #'   as the input data, i.e.,:
