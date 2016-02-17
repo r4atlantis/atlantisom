@@ -41,7 +41,6 @@
 #'		select_groups = groups,
 #'		file_init = "INIT_VMPA_Jan2015.nc",
 #'		file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
-#'
 #'		# rows should each sum to one:
 #'		rowSums(dat[,2:NCOL(dat)])
 #'		dim(dat)
@@ -53,15 +52,21 @@
 sample_diet <- function(dat, fgs) {
 
   # first remove species not sampled and not quantified in gut analyses
-  # !!!RW: Will need some way to generalize this to the diff ecosystems
-  nonSampled <- c("SB", "PIN", "REP", "RWH", "BWH", "SWH", "TWH", "INV", "LSQ",
-                  "ISQ", "SCA", "QHG", "CLA", "BFF", "BG", "LOB", "RCB", "BMS",
-                  "NPW", "OPW", "ZL", "BD", "MA", "MB", "SG", "BC", "ZG", "PL",
-                  "DF", "PS", "ZM", "ZS", "PB", "BB", "BO", "DL", "DR", "DC")
-
-  notEnum <- c("SB", "PIN", "REP", "RWH", "BWH", "SWH", "TWH", "INV", "LSQ", "ISQ", "BFF", "BG",
-               "ZL", "BD", "MA", "MB", "SG", "BC", "ZG", "PL", "DF", "PS", "ZM", "ZS", "PB",
-               "BB", "BO", "DL", "DR")
+  colnames(fgs) <- tolower(colnames(fgs))
+  # check for GroupType
+  if (!"grouptype" %in% colnames(fgs)) {
+    stop(paste("The column GroupType is not in your functional groups\n",
+      "file and thus sample_diet does not know which groups to sample.\n",
+      "The column InvertType might work but needs to be renamed GroupType."))
+  }
+  fgs$grouptype <- tolower(fgs$grouptype)
+  nonsampledtypes <- c("bird", "mammal", "cep", "sed_ep_ff", "sed_ep_other",
+    "mob_ep_other", "pwn", "lg_zoo", "lg_inf", "phytoben")
+  nonSampled <- subset(fgs, isfished == 0 | grouptype %in% nonsampledtypes |
+    code == "REP")
+  notenumeratedtypes <- c("bird", "mammal", "cep", "sed_ep_other", "lg_zoo",
+    "lg_inf", "phytoben")
+  notEnum <- subset(fgs, grouptype %in% notenumeratedtypes | code == "BFF")
 
   dat <- dat[!(dat$Predator %in% nonSampled), !(colnames(dat) %in% notEnum)]
 
