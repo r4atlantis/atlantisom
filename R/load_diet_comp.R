@@ -40,12 +40,12 @@ load_diet_comp <- function(dir = getwd(), file_diet, fgs, toutinc){
   }
   diet <- read.table(diet.file, header = TRUE)
 
-  # remove unnessesary columns and add ones that aren't present in the data
-  # Adding polygon and layer results in serious isses when we combine this dataset
+  # remove unnecessary columns and add ones that aren't present in the data
+  # Adding polygon and layer results in serious issues when we combine this dataset
   # with other datasets which have this information. Therefore those columns
-  # cannot be added as NA columns! We should also keep in mind that hardcoding
+  # cannot be added as NA columns! We should also keep in mind that hard-coding
   # the removal of the column stock may result in bugs when models actually
-  # work woth multiple stocks (the CaCu model only has 1 stock per functional group).
+  # work with multiple stocks (the CaCu model only has 1 stock per functional group).
   if (length(unique(diet$Stock)) > 1) {
     table(diet$Group, diet$Stock)
     stop(paste("There is more than one stock for a functional group\n",
@@ -61,7 +61,7 @@ load_diet_comp <- function(dir = getwd(), file_diet, fgs, toutinc){
 
   # Convert to tidy dataframe to allow joining/merging with other dataframes.
   diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
-                         gather_cols = names(diet)[(which(names(diet) == "Time") + 1):length(names(diet))])
+    gather_cols = names(diet)[(which(names(diet) == "Time") + 1):NCOL(diet)])
 
   names(diet) <- tolower(names(diet))
 
@@ -75,6 +75,7 @@ load_diet_comp <- function(dir = getwd(), file_diet, fgs, toutinc){
   diet <- diet[, -which(colnames(diet) == "group")]
 
   diet$time <- diet$time / toutinc
+  #todo: fix cohort to agecl
 
   return(diet)
 }
