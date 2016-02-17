@@ -2,34 +2,75 @@
 % Please edit documentation in R/calc_pred_diet.R
 \name{calc_pred_diet}
 \alias{calc_pred_diet}
-\title{Calculate eaten biomass in t for each functional group.}
+\title{Calculate eaten biomass in tonnes for each functional group.}
 \usage{
 calc_pred_diet(dietcomp, eat, grazing, vol, biolprm)
 }
 \arguments{
-\item{dietcomp}{Dataframe containing the diet proportion for each functional group
-per prey, time and ageclass. The dataframe has to origin from load_diet_comp using the
-diet_check.txt as input.}
+\item{dietcomp}{A \code{data.frame} containing the diet proportions for
+each functional group, prey functional group, time, and ageclass.
+The \code{data.frame} must originate from \code{\link{load_diet_comp}}
+using the \code{diet_check.txt} as input.}
 
-\item{eat}{Dataframe containing the consumed biomass in mg N for each functional-group ("species")
-per timesetp, ageclass, and polygon. The dataframe has to origin from load_nc using "Eat" as select variable.}
+\item{eat}{A \code{data.frame} containing the consumed biomass in mg N for
+each functional group, time, ageclass, and polygon.
+The \code{data.frame} must originate from \code{\link{load_nc}}
+using \code{select_variable = "Eat"}.}
 
-\item{grazing}{Dataframe containing the consumed biomass in mg N for each functional-group ("species")
-per timesetp, ageclass, and polygon. The dataframe has to origin from load_nc using "Grazing" as select variable.}
+\item{grazing}{A \code{data.frame} containing the consumed biomass in mg N for
+each functional group, time, ageclass, and polygon.
+The \code{data.frame} must originate from \code{\link{load_nc}}
+using \code{select_variable = "Grazing"}.}
+
+\item{vol}{A \code{data.frame} containing the volume for
+each time, polygon, and layer.
+The \code{data.frame} must originate from \code{\link{load_nc_physics}}
+using \code{physic_variables = "volume"}.}
 
 \item{biolprm}{A list of biological parameters available from the
 \code{[...]_Biol.prm} file, as read in by \code{\link{load_biolprm}}.}
 }
 \value{
-Dataframe in tidy format with the following columns: species, agecl, polygon, time,
-atoutput, vol, dietcomp, prey, bio_eaten.
+A code{data.frame} in tidy format with the following columns:
+  species, agecl, time, polygon, atoutput, vol, prey, dietcomp, bio_eaten
 }
 \description{
-Function to calculate the eaten biomass in t for each functional group per
-time, polygon, ageclass and preyitem. Please note, that the function
-produces unrealistic high consumption values at the momemt.
+Function to calculate the eaten biomass in tonnes for each functional group
+per time, polygon, ageclass, and prey item.
+}
+\examples{
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+fgs <- load_fgs(d, "functionalGroups.csv")
+runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
+dietcomp <- load_diet_comp(dir = d, file_diet = "outputSETASDietCheck.txt",
+  fgs = fgs, toutinc = runprm$toutinc)
+boxes <- get_boundary(load_box(dir = d, file_bgm = "VMPA_setas.bgm"))
+groups <- load_fgs(dir = directory, "functionalGroups.csv")
+groups <- groups[groups$IsTurnedOn > 0, "Name"]
+eat <- load_nc(dir = d, file_nc = "outputSETASPROD.nc",
+  bps = bps, fgs = fgs, select_groups = groups,
+  select_variable = "Eat", check_acronyms = TRUE,
+  bboxes = boxes)
+grazing <- load_nc(dir = d, file_nc = "outputSETASPROD.nc",
+  bps = bps, fgs = fgs, select_groups = groups,
+  select_variable = "Grazing", check_acronyms = TRUE,
+  bboxes = boxes)
+vol <- load_nc_physics(dir = d, file_nc = "outputSETAS.nc",
+  physic_variables = "volume", aggregate_layers = FALSE,
+  bboxes = boxes)
+biolprm <- load_biolprm(dir = d,
+  file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+calcs <- calc_pred_diet(dietcomp = dietcomp, eat = eat, grazing = grazing,
+  vol = vol, biolprm = biolprm)
+rm(calcs)
+
 }
 \author{
 Alexander Keth
+}
+\seealso{
+Other calc functions: \code{\link{calc_Z}},
+  \code{\link{calc_biomass_age}},
+  \code{\link{calc_stage2age}}, \code{\link{convert_time}}
 }
 
