@@ -10,7 +10,8 @@
 #' @export
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
+#' runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
+#' rm(runprm)
 #'
 load_runprm <- function(dir = getwd(), file_runprm) {
   if (is.null(dir)) {
