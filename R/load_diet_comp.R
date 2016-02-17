@@ -22,10 +22,11 @@
 #'@export
 #'
 #' @examples
-#' dir <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' file_diet <- grep("DietCheck", dir(dir), value = TRUE)
-#' fgs <- load_fgs(dir = dir, "functionalGroups.csv")
-#' temp <- load_diet_comp(dir = dir, file_diet = file_diet, fgs = fgs)
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' file_diet <- grep("DietCheck", dir(d), value = TRUE)
+#' fgs <- load_fgs(dir = d, "functionalGroups.csv")
+#' runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
+#' temp <- load_diet_comp(dir = d, file_diet = file_diet, fgs = fgs,
 #'   toutinc = runprm$toutinc)
 #' rm(temp)
 #'
