@@ -69,11 +69,9 @@ load_diet_comp <- function(dir = getwd(), file_diet, fgs, toutinc){
 
   # Change species acronyms to actual names.
   species_names <- fgs[, c("Name", "Code")]
-  diet <- dplyr::left_join(diet, species_names, by = c("group" = "Code"))
-  names(diet)[names(diet) == "Name"] <- "species"
-
-  diet <- dplyr::left_join(diet, species_names, by = c("prey" = "Code"))
-  names(diet)[names(diet) == "Name"] <- "prey"
+  diet$species <- species_names$Name[match(diet$group, species_names$Code)]
+  diet$prey <- species_names$Name[match(diet$prey, species_names$Code)]
+  diet <- diet[, -which(colnames(diet) == "group")]
 
   diet$time <- diet$time / toutinc
 
