@@ -26,6 +26,8 @@
 #' @param dat A \code{data.frame} containing sampled predator species
 #'   identifiers  in the first
 #'   column and prey species consumption proportions in the remaining columns.
+#' @template fgs
+#'
 #' @examples
 #' 		setwd(file.path(system.file( package = "atlantisom"),".."))
 #'
@@ -48,7 +50,7 @@
 #'		dim(obsDietComp)
 #'
 
-sample_diet <- function(dat) {
+sample_diet <- function(dat, fgs) {
 
   # first remove species not sampled and not quantified in gut analyses
   # !!!RW: Will need some way to generalize this to the diff ecosystems
