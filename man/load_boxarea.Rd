@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_boxarea.R
 \name{load_boxarea}
 \alias{load_boxarea}
-\title{Extract the box area from the bgm-file!}
+\title{Extract the box area from the bgm-file}
 \usage{
 load_boxarea(dir = getwd(), file_bgm)
 }
@@ -18,8 +18,8 @@ The argument can also be specified as the full path name, just as long as
 argument \code{dir} is specified as \code{NULL}.}
 }
 \value{
-dataframe with the columns polygon and area. Polygon gives the box id as integer and area
-is the box size in m².
+dataframe with the columns polygon and area.
+  Polygon gives the box id as integer and area is the box size in m^2.
 }
 \description{
 This function extracts the box area for each polygon from the atlantis bgm-file.

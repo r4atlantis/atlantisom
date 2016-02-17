@@ -1,11 +1,11 @@
-#' Extract the box area from the bgm-file!
-#'
+#' Extract the box area from the bgm-file
 #'
 #' This function extracts the box area for each polygon from the atlantis bgm-file.
+#'
 #' @template dir
 #' @template file_bgm
-#' @return dataframe with the columns polygon and area. Polygon gives the box id as integer and area
-#' is the box size in m².
+#' @return dataframe with the columns polygon and area.
+#'   Polygon gives the box id as integer and area is the box size in m^2.
 #'
 #' @family load functions
 #' @export
