@@ -24,11 +24,11 @@
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' runprm <-
 #' load(file = file.path(d, "outputSETASrun_truth.RData"))
-#' test <- convert_time(dir = d, data = result$biomass_ages,
+#' test <- calc_timestep2time(dir = d, data = result$biomass_ages,
 #'   file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml")
 #' rm(test)
 #'
-convert_time <- function(dir = getwd(), data, file_runprm){
+calc_timestep2time <- function(dir = getwd(), data, file_runprm){
   if (!is.null(dir)) file_runprm <- file.path(dir, file_runprm)
 
   # Exract timestep from Parameterfile!
