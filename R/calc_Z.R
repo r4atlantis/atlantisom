@@ -22,6 +22,7 @@
 #' @param nums Object containing the number at stage.
 #' @template fgs
 #' @template biolprm
+#' @template toutinc
 #' @family calc functions
 #' @return A \code{data.frame} of time-varying Z values.
 #' @author Sean Lucey

@@ -19,6 +19,10 @@ reads in the csv file containing functional group names, usually
 
 \item{biolprm}{A list of biological parameters available from the
 \code{[...]_Biol.prm} file, as read in by \code{\link{load_biolprm}}.}
+
+\item{toutinc}{The  periodicity specified for the output of the Atlantis
+model. The value can either be specified manually or read in from the
+\code{[...]_run.xml} file using \code{\link{load_runprm}}.}
 }
 \value{
 A \code{data.frame} of time-varying Z values.
@@ -74,6 +78,7 @@ Sean Lucey
 \seealso{
 Other calc functions: \code{\link{calc_biomass_age}},
   \code{\link{calc_pred_diet}},
-  \code{\link{calc_stage2age}}, \code{\link{convert_time}}
+  \code{\link{calc_stage2age}},
+  \code{\link{calc_timestep2time}}
 }
 
