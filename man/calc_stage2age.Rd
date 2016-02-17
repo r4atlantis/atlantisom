@@ -52,6 +52,6 @@ Emma E Hodgson and Kelli Faye Johnson
 \seealso{
 Other calc functions: \code{\link{calc_Z}},
   \code{\link{calc_biomass_age}},
-  \code{\link{convert_time}}
+  \code{\link{calc_pred_diet}}, \code{\link{convert_time}}
 }
 

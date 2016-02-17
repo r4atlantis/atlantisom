@@ -73,6 +73,7 @@ Sean Lucey
 }
 \seealso{
 Other calc functions: \code{\link{calc_biomass_age}},
+  \code{\link{calc_pred_diet}},
   \code{\link{calc_stage2age}}, \code{\link{convert_time}}
 }
 

@@ -43,6 +43,7 @@ Alexander Keth
 }
 \seealso{
 Other calc functions: \code{\link{calc_Z}},
+  \code{\link{calc_pred_diet}},
   \code{\link{calc_stage2age}}, \code{\link{convert_time}}
 }
 \keyword{gen}
