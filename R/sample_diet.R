@@ -29,12 +29,11 @@
 #' @examples
 #' 		setwd(file.path(system.file( package = "atlantisom"),".."))
 #'
-#'		directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#'		scenario <- "SETAS"
+#'		d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #'		groups <- load_fgs(dir = directory, "functionalGroups.csv")
 #'		groups <- groups[groups$IsTurnedOn > 0, "Name"]
-#'		results <- run_atlantis(scenario = scenario,
-#'		dir = directory,
+#'		results <- run_truth(scenario = "SETAS",
+#'		dir = d,
 #'		file_fgs = "functionalGroups.csv",
 #'		file_bgm = "VMPA_setas.bgm",
 #'		select_groups = groups,
