@@ -4,7 +4,7 @@
 \alias{load_yoy}
 \title{Load Atlantis \code{[...]YOY.txt} file}
 \usage{
-load_yoy(dir, file_yoy)
+load_yoy(dir, file_yoy, verbose = FALSE)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
@@ -13,6 +13,9 @@ default is \code{getwd()}.}
 \item{file_yoy}{A character value specifying the name of the text file
 that contains young of the year output for an Atlantis scenario.
 An example entry would be \code{"outputSETASYOY.txt"}.}
+
+\item{verbose}{A logical value specifying if output should be written
+to the screen or not. The default value is \code{FALSE}.}
 }
 \value{
 A data frame of recruitment outputs from the \code{YOY.txt} file.

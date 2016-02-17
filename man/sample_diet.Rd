@@ -4,12 +4,16 @@
 \alias{sample_diet}
 \title{Sample total consumption to create diet composition data}
 \usage{
-sample_diet(dat)
+sample_diet(dat, fgs)
 }
 \arguments{
 \item{dat}{A \code{data.frame} containing sampled predator species
 identifiers  in the first
 column and prey species consumption proportions in the remaining columns.}
+
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
+reads in the csv file containing functional group names, usually
+\code{"functionalGroups.csv"}.}
 }
 \description{
 Create sampled diet composition data from the total consumption
@@ -35,23 +39,20 @@ The function takes total consumption data from an Atlantis scenario
   could be applied to obtain realistic diet composition data.
 }
 \examples{
-   !!! RW: this may need editing:
 		setwd(file.path(system.file( package = "atlantisom"),".."))
 
-	directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-	scenario <- "SETAS"
+	d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 	groups <- load_fgs(dir = directory, "functionalGroups.csv")
 	groups <- groups[groups$IsTurnedOn > 0, "Name"]
-	results <- run_atlantis(scenario = scenario,
-	dir = directory,
+	results <- run_truth(scenario = "SETAS",
+	dir = d,
 	file_fgs = "functionalGroups.csv",
 	file_bgm = "VMPA_setas.bgm",
 	select_groups = groups,
 	file_init = "INIT_VMPA_Jan2015.nc",
 	file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
-
 	# rows should each sum to one:
-	rowSums(dat[,2:ncol(dat)])
+	rowSums(dat[,2:NCOL(dat)])
 	dim(dat)
 
 	obsDietComp <- sample_diet(dat)
