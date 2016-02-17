@@ -30,19 +30,17 @@ calc_biomass_age <- function(nums, resn, structn, biolprm){
     names(resn)[names(resn) == "atoutput"] <- "resn"
     names(structn)[names(structn) == "atoutput"] <- "structn"
     if (!any(is.element(names(nums), "layer"))) {
-      # Calculate mean individual weight over layers when catch data is used for numbers!
-#       structn <- structn %>%
-#         dplyr::group_by(species, agecl, polygon, time) %>%
-#         dplyr::summarise(structn = mean(structn))
-#       resn <- resn %>%
-#         dplyr::group_by(species, agecl, polygon, time) %>%
-#         dplyr::summarise(resn = mean(resn))
+      # Calculate median individual weight over layers when catch data is used for numbers!
+      structn <- aggregate(structn ~ species + agecl + polygon + time,
+        data = structn, median)
+      resn <- aggregate(resn ~ species + agecl + polygon + time,
+        data = resn, median)
     }
     structn <- dplyr::left_join(nums, structn)
     structn <- dplyr::left_join(structn, resn)
-    structn$biomass_ind <- with(structn, (structn + resn) * atoutput * bio_conv)
+    structn$atoutput <- with(structn, (structn + resn) * atoutput * bio_conv)
 
-    biomass_ages <- aggregate(biomass_ind ~ species, agecl, time, polygon,
+    biomass_ages <- aggregate(atoutput ~ species + agecl + time + polygon,
       data = structn, sum)
   } else {
     stop(paste("Dataframe names do not match with", data_names))
