@@ -2,35 +2,50 @@
 % Please edit documentation in R/load_diet_comp.R
 \name{load_diet_comp}
 \alias{load_diet_comp}
-\title{Load Atlantis Diet Composition}
+\title{Load Atlantis diet composition data from \code{diet_check.txt}}
 \usage{
-load_diet_comp(dir = getwd(), dietfile, fgs)
+load_diet_comp(dir = getwd(), file_diet, fgs, toutinc)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
 default is \code{getwd()}.}
 
-\item{dietfile}{file name of the diet_check.txt output from Atlantis.}
+\item{file_diet}{A character value, specifying the file name of the
+\code{diet_check.txt} output file from Atlantis.
+If \code{is.null(dir)}, then \code{file_diet} can be the full file
+path or a file in your current working directory, or the \code{file_diet}
+will be appended to \code{dir} using \code{file.path}.}
 
 \item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
+
+\item{toutinc}{The  periodicity specified for the output of the Atlantis
+model. The value can either be specified manually or read in from the
+\code{[...]_run.xml} file using \code{\link{load_runprm}}.}
 }
 \value{
 Returns a data frame of the data to be exported to the AtlantisOM list
  object.
 }
 \description{
-Uses the diet_check.txt output from Atlantis to be used in the Atlantis
-Operating model.
+Imports the \code{diet_check.txt} output file from an Atlantis run
+and converts the file from wide format to long, where there are five
+columns: age class, time, diet composition, predator species, and
+prey species.
 }
 \examples{
-dir <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-file_diet <- grep("DietCheck", dir(dir), value = TRUE)
-fgs <- load_fgs(dir = dir, "functionalGroups.csv")
-temp <- load_diet_comp(dir = dir, dietfile = file_diet, fgs = fgs)
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+file_diet <- grep("DietCheck", dir(d), value = TRUE)
+fgs <- load_fgs(dir = d, "functionalGroups.csv")
+runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
+temp <- load_diet_comp(dir = d, file_diet = file_diet, fgs = fgs,
+  toutinc = runprm$toutinc)
 rm(temp)
 
+}
+\author{
+Kelli Faye Johnson
 }
 \seealso{
 Other load functions: \code{\link{load_biolprm}},
