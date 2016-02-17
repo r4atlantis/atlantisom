@@ -12,6 +12,11 @@
 #' @return A \code{vector} specifying which boxes are on the boundary.
 #' @export
 #'
+#' @examples
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' boxes <- get_boundary(load_box(dir = d, file_bgm = "VMPA_setas.bgm"))
+#' rm(boxes)
+#'
 get_boundary <- function(boxinfo) {
   new <- vector()
   boxes <- sapply(boxinfo$boxes, "[[", "vert")
