@@ -24,6 +24,12 @@ A list of biological parameters from the \code{_Biol.prm} file.
 \description{
 This function loads the Atlantis biology parameter output file.
 }
+\examples{
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+biolprm <- load_biolprm(d, "VMPA_setas_biol_fishing_Trunk.prm")
+rm(biolprm)
+
+}
 \author{
 Kelli Faye Johnson
 }

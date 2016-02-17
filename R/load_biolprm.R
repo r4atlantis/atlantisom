@@ -7,7 +7,12 @@
 #' @return A list of biological parameters from the \code{_Biol.prm} file.
 #' @author Kelli Faye Johnson
 #' @export
-
+#'
+#' @examples
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' biolprm <- load_biolprm(d, "VMPA_setas_biol_fishing_Trunk.prm")
+#' rm(biolprm)
+#'
 load_biolprm <- function(dir = getwd(), file_biolprm) {
   if (is.null(dir)) {
     file.biolprm <- file_biolprm
