@@ -31,7 +31,7 @@
 #' @export
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' groups <- load_fgs(dir = directory, "functionalGroups.csv")
+#' groups <- load_fgs(dir = d, "functionalGroups.csv")
 #' run_truth(scenario = "SETAS",
 #'   dir = d,
 #'   file_fgs = "functionalGroups.csv",
@@ -44,13 +44,6 @@
 run_truth <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm, file_runprm,
   verbose = FALSE, save = TRUE){
-
-  # Create file names
-  if (is.null(dir)) {
-    file.fgs <- file_fgs
-  } else {
-    file.fgs <- file.path(dir, file_fgs)
-  }
 
   # Read in information
   # Read in the functional groups csv since that is used by many functions
@@ -66,6 +59,11 @@ run_truth <- function(scenario, dir = getwd(),
   dietcheck <- paste0("output", scenario, 'DietCheck.txt')
   nc_out <- paste0("output", scenario, ".nc")
   nc_prod <- paste0("output", scenario, "PROD.nc")
+  file_catchfish <- file.path(dir,
+    paste0("output", scenario, "CatchPerFishery.txt"))
+  file_catch <- file.path(dir,
+    paste0("output", scenario, "Catch.txt"))
+
   # Get the boundary boxes
   allboxes <- load_box(dir = dir, file_bgm = file_bgm)
   boxes <- get_boundary(allboxes)
@@ -81,7 +79,7 @@ run_truth <- function(scenario, dir = getwd(),
                   select_variable = "Nums",
                   check_acronyms = TRUE,
                   bboxes = boxes)
-  print("Numbers read in.")
+  if(verbose) message("Numbers read in.")
 
   resn <- load_nc(dir = dir,
                   file_nc = nc_out,
@@ -91,7 +89,7 @@ run_truth <- function(scenario, dir = getwd(),
                   select_variable = "ResN",
                   check_acronyms = TRUE,
                   bboxes = boxes)
-  print("Reserve nitrogen read in.")
+  if(verbose) message("Reserve nitrogen read in.")
 
   structn <- load_nc(dir = dir,
                   file_nc = nc_out,
@@ -101,7 +99,7 @@ run_truth <- function(scenario, dir = getwd(),
                   select_variable = "StructN",
                   check_acronyms = TRUE,
                   bboxes = boxes)
-  print("Structural nitrogen read in.")
+  if(verbose) message("Structural nitrogen read in.")
 
   eat <- load_nc(dir = dir,
                      file_nc = nc_prod,
@@ -111,6 +109,7 @@ run_truth <- function(scenario, dir = getwd(),
                      select_variable = "Eat",
                      check_acronyms = TRUE,
                      bboxes = boxes)
+  if(verbose) message("Eaten read in.")
 
   grazing <- load_nc(dir = dir,
                  file_nc = nc_prod,
@@ -120,12 +119,14 @@ run_truth <- function(scenario, dir = getwd(),
                  select_variable = "Grazing",
                  check_acronyms = TRUE,
                  bboxes = boxes)
+  if(verbose) message("Grazing read in.")
 
   vol <- load_nc_physics(dir = dir,
                          file_nc = nc_out,
                          physic_variables = "volume",
                          aggregate_layers = FALSE,
                          bboxes = boxes)
+  if(verbose) message("Volume read in.")
 
   catch <- load_nc(dir = dir,
                  file_nc = nc_catch,
@@ -135,44 +136,56 @@ run_truth <- function(scenario, dir = getwd(),
                  select_variable = "Catch",
                  check_acronyms = TRUE,
                  bboxes = boxes)
-  if (TRUE) {
-    file_catch.txt <- paste0("output", scenario, "CatchPerFishery.txt")
-    if (!is.null(dir)) {
-      file_catch.txt <- file.path(dir, file_catch.txt)
-    }
-    catchtxt <- read.table(file_catch.txt, header = TRUE)
-    catchbio <- calc_biomass_age(nums = catch,
-      resn = resn, structn = structn, biolprm = biol)
-    # test <- lapply(grep("FPS", var_names_ncdf),
-      # RNetCDF::var.get.nc, ncfile = at_out)
-  }
-  print("catch read in.")
+  if(verbose) message("Catch read in.")
+
+  catchfish <- read.table(file_catchfish, header = TRUE)
+  over <- colnames(catchfish)[-(1:2)]
+  catchfish <- reshape(catchfish, direction = "long",
+    varying = over, v.names = "catch",
+    timevar = "species", times = over)
+  rownames(catchfish) <- 1:NROW(catchfish)
+  catchfish <- catchfish[catchfish$catch > 0,
+    -which(colnames(catchfish) == "id")]
+  catchfish$species <- fgs$Name[match(catchfish$species, fgs$Code)]
+  colnames(catchfish) <- tolower(colnames(catchfish))
+  catchfish$time <- catchfish$time / runprm$toutfinc
+  if(verbose) message("Catch per fishery read in.")
+
+  # Get catch from txt. Sum per species and compare with values from nc-file!
+  catch_all <- read.table(file = file_catch, header = TRUE, sep = " ")
+  over <- colnames(catch_all)[(colnames(catch_all) %in% fgs$Code)]
+  catch_all <- reshape(catch_all[, c("Time", over)], direction = "long",
+    varying = over, v.names = "catch",
+    timevar = "species", times = over)
+  rownames(catch_all) <- 1:NROW(catch_all)
+  catch_all <- catch_all[catch_all$catch > 0,
+    -which(colnames(catch_all) == "id")]
+  catch_all$species <- fgs$Name[match(catch_all$species, fgs$Code)]
+  colnames(catch_all) <- tolower(colnames(catch_all))
+  catch_all$time <- catch_all$time / runprm$toutfinc
+  if(verbose) message("Catch for all fisheries in biomass read in.")
 
   diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs,
     toutinc = runprm$toutinc)
 
-  print("***Start calc_functions")
-  biomass_eaten <- calc_pred_diet(dietcomp = diet, eat = eat, grazing = grazing, vol = vol, biolprm = biol)
+  if(verbose) message("Start calc_functions")
+  catchbio <- calc_biomass_age(nums = catch,
+    resn = resn, structn = structn, biolprm = biol)
+  biomass_eaten <- calc_pred_diet(dietcomp = diet,
+    eat = eat, grazing = grazing, vol = vol, biolprm = biol)
+  biomass_ages <- calc_biomass_age(nums = nums,
+    resn = resn, structn = structn, biolprm = biol)
+  bio_catch <- calc_biomass_age(nums = catch,
+    resn = resn, structn = structn, biolprm = biol)
 
-  biomass_ages <- calc_biomass_age(nums = nums, resn = resn, structn = structn, biolprm = biol)
+  bio_catch <- aggregate(atoutput ~ species + time,
+    data = bio_catch, sum)
 
-  bio_catch <- calc_biomass_age(nums = catch, resn = resn, structn = structn, biolprm = biol)
-
-  # Get catch from txt. Sum per species and compare with values from nc-file!
-  catch <- read.table(file = file.path("inst/extdata/INIT_VMPA_Jan2015/outputSETASCatch.txt"), header = T, sep = " ")
-  catch <- tidyr::gather(catch, key = code, value = catch, FPS:ZG)
-  catch <- dplyr::filter(catch, catch > 0)
-  catch <- dplyr::select(catch, Time, code, catch)
-  catch <- dplyr::left_join(catch, fgs[, c("Code", "Name")], by = c("code" = "Code"))
-  names(catch) <- tolower(names(catch))
-  catch$time <- catch$time / 365
-  names(catch)[names(catch) == "name"] <- "species"
-
-  bio_catch <- bio_catch %>%
-    dplyr::group_by(species, time) %>%
-    dplyr::summarise(atoutput = sum(atoutput))
-
-  check <- dplyr::left_join(catch, bio_catch)
+  # todo: check that the biomass of the catches are correct
+  # also should catch in biomass be exported as well
+  # as catch in numbers?
+  check <- merge(catch_all, bio_catch,
+    by = c("species", "time"))
   check$check <- with(check, atoutput / catch)
 
   result <- list("biomass_eaten" = biomass_eaten,
@@ -184,9 +197,11 @@ run_truth <- function(scenario, dir = getwd(),
                  "biolprm" = biol,
                  "fgs" = fgs)
 
-  print("***Start writing to HDD.")
-  save(result, file = file.path(dir, paste0("output", scenario, "run_truth.RData")))
+  if(verbose) message("Start writing to HDD.")
+  if(save) {
+    save(result,
+      file = file.path(dir, paste0("output", scenario, "run_truth.RData")))
+  }
 
-  print("Hurray, done!")
-  return(result)
+  invisible(result)
 }

@@ -84,7 +84,7 @@ where [...] specifies the entry used for the \code{scenario} argument.
 }
 \examples{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-groups <- load_fgs(dir = directory, "functionalGroups.csv")
+groups <- load_fgs(dir = d, "functionalGroups.csv")
 run_truth(scenario = "SETAS",
   dir = d,
   file_fgs = "functionalGroups.csv",
