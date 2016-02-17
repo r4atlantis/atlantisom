@@ -19,13 +19,10 @@
 calc_biomass_age <- function(nums, resn, structn, biolprm){
   datalist <- list(nums, resn, structn)
 
-  x_cn <- as.numeric(as.character(biolprm$redfieldcn))
-  k_wetdry <- as.numeric(as.character(biolprm$kgw2d))
-
   # Conversion factor from mg N to t wet-weight
   # should only use conversion for non vertebrates
   # also need volume of cell info
-  bio_conv <- x_cn * k_wetdry / 1000000000
+  bio_conv <- biolprm$redfieldcn * biolprm$kgw2d / 1000000000
 
   data_names <- c("species", "agecl", "polygon", "layer", "time", "atoutput")
 
@@ -45,9 +42,8 @@ calc_biomass_age <- function(nums, resn, structn, biolprm){
     structn <- dplyr::left_join(structn, resn)
     structn$biomass_ind <- with(structn, (structn + resn) * atoutput * bio_conv)
 
-    biomass_ages <- structn %>%
-      dplyr::group_by(species, agecl, time, polygon) %>%
-      dplyr::summarise(atoutput = sum(biomass_ind))
+    biomass_ages <- aggregate(biomass_ind ~ species, agecl, time, polygon,
+      data = structn, sum)
   } else {
     stop(paste("Dataframe names do not match with", data_names))
   }
