@@ -15,6 +15,7 @@
 #'   path or a file in your current working directory, or the \code{file_diet}
 #'   will be appended to \code{dir} using \code{file.path}.
 #' @template fgs
+#' @template toutinc
 #'
 #'@return Returns a data frame of the data to be exported to the AtlantisOM list
 #'  object.
@@ -25,10 +26,11 @@
 #' file_diet <- grep("DietCheck", dir(dir), value = TRUE)
 #' fgs <- load_fgs(dir = dir, "functionalGroups.csv")
 #' temp <- load_diet_comp(dir = dir, file_diet = file_diet, fgs = fgs)
+#'   toutinc = runprm$toutinc)
 #' rm(temp)
 #'
 
-load_diet_comp <- function(dir = getwd(), file_diet, fgs){
+load_diet_comp <- function(dir = getwd(), file_diet, fgs, toutinc){
 
   if (is.null(dir)) {
     diet.file <- file_diet
@@ -73,12 +75,7 @@ load_diet_comp <- function(dir = getwd(), file_diet, fgs){
   diet <- dplyr::left_join(diet, species_names, by = c("prey" = "Code"))
   names(diet)[names(diet) == "Name"] <- "prey"
 
-  # Convert days to timesteps
-  # todo: use toutinc to get this value
-  # NOTE: This is hardcoded as we do not have access to the run.prm file at
-  # the moment. The timestep used in the model-run has be extracted from this
-  # file to make sure the code is running with other models.
-  diet$time <- diet$time / 365
+  diet$time <- diet$time / toutinc
 
   return(diet)
 }
