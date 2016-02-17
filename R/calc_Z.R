@@ -45,22 +45,37 @@
 #'                      select_variable = "Nums",
 #'                      check_acronyms = TRUE, bboxes = bboxes)
 #' biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
+#' run <- load_runprm(dir, "VMPA_setas_run_fishing_F_Trunk.xml")
 #' yoy <- load_yoy(dir = dir, file_yoy = "outputSETASYOY.txt")
-#' calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm)
-calc_Z <- function(yoy, nums, fgs, biolprm) {
+#' calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm,
+#'   toutinc = run$toutinc)
+#'
+calc_Z <- function(yoy, nums, fgs, biolprm, toutinc = 73) {
 
-  # subset the yoy for those species that are included in the fgs file
+  # subset the yoy for species included in the fgs file
   # that are turned on
-  species.code <- fgs$Code
+  # colnames of the recruit data are "Time" and a column for each
+  # species where the name is the functional group with an additional .0
   turnedon <- fgs[fgs$IsTurnedOn > 0, ]
-  names <- paste0(turnedon$Code, ".0")
-  recruits <- yoy[, colnames(yoy) %in% c("Time", names)]
+  recruits <- yoy[, colnames(yoy) %in% c("Time", paste0(turnedon$Code, ".0"))]
 
-  # Redfield ratio of carbon to nitrogen
-  x_cn <- as.numeric(as.character(biolprm$redfieldcn))
   # mg carbon converted to wet weight in tonnes
-  k_wetdry <- as.numeric(as.character(biolprm$kgw2d))
-  k_wetdry <- k_wetdry / 1000000000
+  k_wetdry <- biolprm$kgw2d / 1000000000
+  # Sum of structural and reserve nitrogen (KWSR_RN + KWSR_SN)
+  nitro <- merge(biolprm$kswr, biolprm$kwrr, by = "1")
+  nitro$sum <- apply(nitro[, 2:3], 1, sum)
+
+  # legacy: If output is from legacy code there will be an error in the
+  # yoy data, where the first row is in a different unit.
+  # yoy.txt is the biomass in tonnes per spawning event summed over the total
+  # model domain.
+  # The first row (< Nov/Dec 2015) is stored as biomass and the remaining rows
+  # are stored in numbers, must convert the entire matrix to biomass
+  # Check if legacy code and if so convert the numbers to biomass
+  if (abs(yoy[1, 2] / yoy[2, 2]) > 10) {
+    yoy[2:NROW(yoy), 2:NCOL(yoy)] <- yoy[2:NROW(yoy), 2:NCOL(yoy)] *
+    nitro[match(gsub(".0", "", colnames(yoy)[-1]), nitro[, 1]), "sum"]
+  }
 
   # Wide to long
   recruits <- reshape(data = recruits, direction = "long",
@@ -75,26 +90,20 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   recruits <- merge(recruits, fgs[, c("Code", "Name")],
     by.x = "group", by.y = "Code")
 
-  # yoy first row is big number, other rows are smaller numbers
-  # convert to same units give absolute # of recruits
-  # If 1st time step: divide by (KWSR_RN + KWSR_SN)  # From biol.prm file
   # merge recruits with strucn and resn of recruits from biol.prm file
-  # todo: add more notes here especially those from the Atlantis wiki
-  nitro <- merge(biolprm$kswr, biolprm$kwrr, by = "1")
-  nitro$sum <- apply(nitro[, 2:3], 1, sum)
   recruits <- merge(recruits, nitro[, c(1, 4)],
     by.x = "group", by.y = "1", all.x = TRUE, all.y = FALSE)
   colnames(recruits)[which(colnames(recruits) == "recruits")] <- "recruitsbio"
+  # Get recruits in numbers rather than biomass
   recruits$recruits <- recruits$recruitsbio / recruits$sum
 
-  # todo: check if all models will be in this time step
-  # todo: determine how to match these times with the time
-  # step listed in the .nc file
-  recruits$Time <- recruits$Time / 365
-
+  # match "Time" of the young of the year with the time-step periodicity
+  # listed in the run.prm or run.xml file
+  recruits$Time <- recruits$Time / toutinc
 
   #G.Fay 1/6/16, expand to num of recruits
-  recruits$recruits <- recruits$recruits/k_wetdry/x_cn
+  # Recruit / mg C converted to wet weight in tonnes / redfield ratio of C:N
+  recruits$recruits <- recruits$recruits/k_wetdry/biolprm$redfieldcn
 
   # Sum over all boxes/depth/cohorts
   totnums <- aggregate(atoutput ~ species + time, data = nums, sum)
@@ -105,6 +114,8 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   totnums <- merge(totnums, recruits,
     by.x = c("time", "species"), by.y = c("Time", "Name"),
     all.x = TRUE, all.y = FALSE)
+  totnums$group <- recruits$group[match(totnums$species, recruits$Name)]
+  # For all time increments where there
   totnums$recruits[is.na(totnums$recruits)] <- 0
 
   # Calculate survivors for each species group
@@ -115,7 +126,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   totnums$survival <- totnums$survivors
   # Calculate survival for each group
   for (group in unique(totnums$group)) {
-    if (is.na(group)) next
+    if(group == "SHD") browser()
     pick <- which(totnums$group == group)
     survival_temp <- c(NA,
       totnums$survivors[pick[-1]]/totnums$atoutput[pick[-length(pick)]])
@@ -125,7 +136,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
 
     survival_temp[1:firstgood] <- survival_temp[firstgood]
     for(ii in seq_along(survival_temp)) {
-      if (survival_temp[ii] < 0) {
+      if (is.na(survival_temp[ii])) {
         nonzero <- which(which(survival_temp > 0) > ii)
         if (length(nonzero) == 0) nonzero <- which(survival_temp > 0)
         survival_temp[ii] <- survival_temp[which.min(abs(nonzero - ii))]
@@ -138,7 +149,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm) {
   totnums$Z <- -1 * log(totnums$survival)
   finaldata <- data.frame("species" = totnums$species,
     "agecl" = NA, "polygon" = NA, "layer" = NA,
-   "time" = totnums$time, "atoutput" = totnums$Z)
+    "time" = totnums$time, "atoutput" = totnums$Z)
 
   return(finaldata)
 }

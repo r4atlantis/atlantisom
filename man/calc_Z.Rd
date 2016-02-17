@@ -4,7 +4,7 @@
 \alias{calc_Z}
 \title{Calculate total mortality for age structured groups}
 \usage{
-calc_Z(yoy, nums, fgs, biolprm)
+calc_Z(yoy, nums, fgs, biolprm, toutinc = 73)
 }
 \arguments{
 \item{yoy}{Output from \code{\link{load_yoy}}, which is a \code{data.frame}
@@ -62,8 +62,11 @@ nums_data <- load_nc(dir = dir,
                      select_variable = "Nums",
                      check_acronyms = TRUE, bboxes = bboxes)
 biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
+run <- load_runprm(dir, "VMPA_setas_run_fishing_F_Trunk.xml")
 yoy <- load_yoy(dir = dir, file_yoy = "outputSETASYOY.txt")
-calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm)
+calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm,
+  toutinc = run$toutinc)
+
 }
 \author{
 Sean Lucey
