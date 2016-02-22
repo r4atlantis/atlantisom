@@ -73,10 +73,13 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc = 73) {
   # The first row (< Nov/Dec 2015) is stored as biomass and the remaining rows
   # are stored in numbers, must convert the entire matrix to biomass
   # Check if legacy code and if so convert the numbers to biomass
-  if (abs(yoy[1, 2] / yoy[2, 2]) > 10) {
-    yoy[2:NROW(yoy), 2:NCOL(yoy)] <- yoy[2:NROW(yoy), 2:NCOL(yoy)] *
-    nitro[match(gsub(".0", "", colnames(yoy)[-1]), nitro[, 1]), "sum"]
+
+  # G.Fay 2/21/16 : changed yoy to recruits in below loop.
+  if (abs(recruits[1, 2] / recruits[2, 2]) > 10) {
+    recruits[2:NROW(recruits), 2:NCOL(recruits)] <- recruits[2:NROW(recruits), 2:NCOL(recruits)] *
+    nitro[match(gsub(".0", "", colnames(recruits)[-1]), nitro[, 1]), "sum"]
   }
+
 
   # Wide to long
   recruits <- reshape(data = recruits, direction = "long",
@@ -97,6 +100,50 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc = 73) {
   colnames(recruits)[which(colnames(recruits) == "recruits")] <- "recruitsbio"
   # Get recruits in numbers rather than biomass
   recruits$recruits <- recruits$recruitsbio / recruits$sum
+
+  # G.Fay 2/21/16
+  # UGLY code below tries to align fraction of annual yoy with timing of recruitment
+  # values in YOY.txt are total YOY that year waiting to recruit.
+  # seems to get rid of most of 'issues' - some v.minor survival >1,
+  #perhaps due to averaging of survival over toutinc days
+  nyrs <- ceiling(max(yoy$Time)/365)
+  times <- unique(yoy$Time)
+  recstart_temp <- biolprm$recruit_time
+  recstart_temp[,2] <- biolprm$time_spawn[-(grep('#',
+                       biolprm$time_spawn[,1])),2] + biolprm$recruit_time[,2]
+  recstart_temp <- recstart_temp[recstart_temp[,1]%in%turnedon$Code,]
+  recruits$frac_recruit <- 0
+  for (irow in 1:nrow(recstart_temp)) {
+    group <- recstart_temp[irow,1]
+    pick <- which(recruits$group == group)
+
+    recstart <- seq(recstart_temp[irow,2],by=365,length.out=nyrs)
+    recstart <- recstart[recstart<max(recruits$Time[pick])]
+    recend <- recstart + biolprm$recruit_period[irow,2]
+    #rec_times <- rbind(rec_times,cbind(group,recstart,recend))
+
+    for (i_rec in 1:length(recstart)) {
+      i_tstart <- which(pick==min(pick[recruits$Time[pick]>=recstart[i_rec]]))
+      i_tstop <- which(pick==min(pick[recruits$Time[pick]>=recend[i_rec]]))
+      if (i_rec == length(recstart)) i_tstop <- length(pick)
+      n_t <- 1+i_tstop-i_tstart
+      for (i_t in 1:n_t) {
+        t_temp <- recruits$Time[pick[i_tstart+i_t-1]]
+        num_temp <- t_temp - recstart[i_rec]
+        if (i_t>1) {
+          if ((recend[i_rec]-t_temp)>toutinc) {
+            num_temp <- toutinc
+          }
+          else {
+            num_temp <- recend[i_rec]-(recruits$Time[pick[i_tstart+i_t-2]])
+          }
+        }
+        frac_temp <- max(c(0,num_temp /(recend[i_rec]-recstart[i_rec])))
+        recruits$frac_recruit[pick[i_tstart+i_t-1]] <- frac_temp
+      }
+    }
+  }
+
 
   # match "Time" of the young of the year with the time-step periodicity
   # listed in the run.prm or run.xml file
@@ -120,17 +167,30 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc = 73) {
   totnums$recruits[is.na(totnums$recruits)] <- 0
 
   # Calculate survivors for each species group
-  totnums$survivors <- totnums$atoutput - totnums$recruits
+  totnums$survivors <- totnums$recruits
   # Make sure time is in order
   totnums <- totnums[order(totnums$species, totnums$time), ]
+
+  totnums$recruits <- totnums$recruits*totnums$frac_recruit
 
   totnums$survival <- totnums$survivors
   # Calculate survival for each group
   for (group in unique(totnums$group)) {
-    if(group == "SHD") browser()
+    #if(group == "SHD") browser()
     pick <- which(totnums$group == group)
     survival_temp <- c(NA,
       totnums$survivors[pick[-1]]/totnums$atoutput[pick[-length(pick)]])
+
+    # G.Fay 2/21/16  "think" this is what things should be, recruits don't show up
+    # in numbers at age until time step after the recruitment event.
+     survival_temp <- c(
+       (totnums$atoutput[pick[-1]]-
+          totnums$recruits[pick[-1]])/totnums$atoutput[pick[-length(pick)]],NA)
+
+#     survival_temp <- c(
+#       (totnums$atoutput[pick[-1]])/
+#          (totnums$recruits[pick[-1]]+totnums$atoutput[pick[-length(pick)]]),NA)
+
     survival_temp[survival_temp < 0] <- NA
     # Use first positive value to replace the initial year and all negative vals
     firstgood <- which(!is.na(survival_temp))[1]
