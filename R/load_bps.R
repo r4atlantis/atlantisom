@@ -1,4 +1,5 @@
-#' Extracts the names of the epibenthic biomasspools from the initial conditions file.
+#' Extracts the names of the epibenthic biomasspools
+#' from the initial conditions file.
 #'
 #' Use \code{fgs} \code{data.frame} as read in by \code{\link{load_fgs}}
 #' to get the biomass pool information.
@@ -15,10 +16,8 @@
 #' @return A \code{vector} of biomass pools.
 #'
 #' @examples
-#' testscenario <- "INIT_VMPA_Jan2015"
-#' d <- system.file("extdata", testscenario, package = "atlantisom")
-#' file <- "functionalGroups.csv"
-#' fgs <- load_fgs(d, file)
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' fgs <- load_fgs(d, "functionalGroups.csv")
 #' bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
 #'
 load_bps <- function(dir = getwd(), fgs, file_init){
