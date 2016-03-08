@@ -26,6 +26,12 @@ A \code{list} of metadata pertaining to a single Atlantis scenario.
 Open the necessary files to document the atlantis model used
 for generating data from the scenario
 }
+\examples{
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+temp <- load_meta(d, "SETAS", verbose = FALSE)
+rm(temp)
+
+}
 \author{
 Kelli Faye Johnson
 }

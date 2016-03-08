@@ -12,6 +12,11 @@
 #'
 #' @export
 #'
+#' @examples
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' temp <- load_meta(d, "SETAS", verbose = FALSE)
+#' rm(temp)
+#'
 load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
 
   # Functions used inside load_meta
@@ -58,19 +63,28 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
 
   # Get number of years, timestep, output interval,
   # number of species, and number of fleets
-  file.prm <- dir(dir, pattern = "run\\.prm", full.names = TRUE)
+  file.prm <- dir(dir, pattern = "\\.xml", full.names = TRUE)
   if (length(file.prm) > 1) {
-    warning(paste("There are more than one prm files in your directory:\n",
-      paste(file.prm, collapse = "\n"),
+    temp <- dir(dir, pattern = "run\\.xml", full.names = TRUE)
+    if (length(temp) == 0) {
+      file.prm <- dir(dir, pattern = "\\.xml", full.names = TRUE)[1]
+      warning(paste("There are more than one xml files in your directory:\n",
       "and only the last one, i.e., the one with the largest sequence number",
       "will be used.\n",
-      "load_meta will use the following prm file:\n", tail(file.prm, 1)))
-    file.prm <- tail(file.prm, 1)
+      "load_meta will use the following prm file:\n", file.prm))
+    } else {
+      file.prm <- temp
+      rm(temp)
+    }
   }
-  if (!file.exists(file.prm)) {
+  if (length(file.prm) == 0) {
     warning(paste("The .prm file does not exist in\n", dir, "\n",
       "and consequently the metadata will list the number of years,",
       "timestep, and timestepunit as NA."))
+    data$toutstart <- NA
+    data$toutinc <- NA
+    data$toutfinc <- NA
+    data$tstop <- NA
     data$nyears <- NA
     data$timestep <- NA
     data$timestepunit <- NA
@@ -80,35 +94,8 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
     data$nspp <- NA
     data$nfleet <- NA
   } else { # Only go here if the prm file is available
-    prm <- readLines(file.prm)
-
-    data$nyears <- getsplit("tstop", "[[:space:]]+", prm)[1]
-    data$nyears <- as.numeric(data$nyears) / 365
-
-    data$timestep <- getsplit("^dt", "[[:space:]]+", prm)
-    data$timestepunit <- data$timestep[2]
-    data$timestep <- as.numeric(data$timestep[1])
-
-    data$outputstep <- getsplit("toutinc", "[[:space:]]+", prm)
-    data$outputstepunit <- data$outputstep[2]
-    data$outputstep <- data$outputstep[1]
-
-    data$hemisphere <- grep("flaghemisphere", prm, value = TRUE)
-    data$hemisphere <- strsplit(data$hemisphere, "[[:space:]]+")[[1]]
-    data$hemisphere <- data$hemisphere[
-      which(data$hemisphere == data$hemisphere[2])[2] + 2]
-    data$hemisphere <- gsub("[[:punct:]]", "", data$hemisphere)
-
-    data$nspp <- getsplit("K_num_tot_sp", "[[:space:]]+", prm)[1]
-    data$nspp <- as.numeric(data$nspp)
-
-    fishing <- strsplit(getsplit("fishout", "\\t", prm), "[[:space:]]+")[[1]][1]
-    if (fishing == 1) {
-        data$nfleet <- getsplit("K_num_subfleet", "[[:space:]]+", prm)[1]
-        data$nfleet <- as.numeric(data$nfleet)
-    } else {
-      data$nfleet <- 0
-    }
+    data <- append(data,
+      load_runprm(dir = NULL, file.prm))
   } # Close if for prm file
 
   # Get box number information
