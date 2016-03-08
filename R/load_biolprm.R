@@ -61,19 +61,24 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   vertebrates <- gsub("flagplankfish", "", vertebrates)
 
   # Find time of spawning
-  time_spawn <- biolprm[grep("_Time_Spawn", biolprm[, 1], ignore.case = TRUE), 1:2]
+  time_spawn <- biolprm[grep("_Time_Spawn", biolprm[, 1],
+    ignore.case = TRUE), 1:2]
   time_spawn[, 2] <- as.numeric(as.character(time_spawn[, 2]))
   time_spawn[, 1] <- gsub("_Time_Spawn", "", as.character(time_spawn[, 1]))
 
   # Find length of recruitment period
-  recruit_period <- biolprm[grep("Recruit_Period_", biolprm[, 1], ignore.case = TRUE), 1:2]
+  recruit_period <- biolprm[grep("Recruit_Period_", biolprm[, 1],
+    ignore.case = TRUE), 1:2]
   recruit_period[, 2] <- as.numeric(as.character(recruit_period[, 2]))
-  recruit_period[, 1] <- gsub("Recruit_Period_", "", as.character(recruit_period[, 1]))
+  recruit_period[, 1] <- gsub("Recruit_Period_", "",
+    as.character(recruit_period[, 1]))
 
   # Find length of recruitment period
-  recruit_time <- biolprm[grep("_Recruit_Time", biolprm[, 1], ignore.case = TRUE), 1:2]
+  recruit_time <- biolprm[grep("_Recruit_Time", biolprm[, 1],
+    ignore.case = TRUE), 1:2]
   recruit_time[, 2] <- as.numeric(as.character(recruit_time[, 2]))
-  recruit_time[, 1] <- gsub("_Recruit_Time", "", as.character(recruit_time[, 1]))
+  recruit_time[, 1] <- gsub("_Recruit_Time", "",
+    as.character(recruit_time[, 1]))
 
 
   return(list("wl" = wl, "redfieldcn" = r.cn, "kgw2d" = kgw2d,
