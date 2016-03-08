@@ -12,6 +12,7 @@
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' boxarea <- load_boxarea(dir = d, file_bgm = "VMPA_setas.bgm")
+#' rm("boxarea")
 #'
 load_boxarea <- function(dir = getwd(), file_bgm) {
   if (is.null(dir)) {
