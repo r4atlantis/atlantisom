@@ -6,7 +6,8 @@
 \usage{
 load_nc(dir = getwd(), file_nc, bps, fgs, select_groups,
   select_variable = c("N", "Nums", "ResN", "StructN", "Eat", "Growth",
-  "Prodn", "Grazing", "Catch"), check_acronyms = TRUE, bboxes = c(0))
+  "Prodn", "Grazing", "Catch"), check_acronyms = TRUE, bboxes = c(0),
+  verbose = FALSE)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
@@ -40,13 +41,17 @@ loaded. Only one variable of the options available (i.e., \code{c(
 in the model run. This is used in automated runs.
 All groups are passed when plotting is called via batch-file,
 (which cannot be changed easily) this will result in errors if some
-groups are not active in the model run. By default this argument is \code{TRUE}.}
+groups are not active in the model run.
+By default this argument is \code{TRUE}.}
 
 \item{bboxes}{A vector of boundary boxes.
 The default value is \code{c(0)} because all Atlantis
 models must specify box zero as a boundary box.
 The boundary boxes can automatically be determined using
 \code{get_boundary(load_box())}.}
+
+\item{verbose}{A logical value specifying if output should be written
+to the screen or not. The default value is \code{FALSE}.}
 }
 \value{
 A \code{data.frame} in long format with the following coumn names:
@@ -57,8 +62,7 @@ This function loads Atlantis outputfiles (any netcdf file) and
 converts them to a \code{data.frame}.
 }
 \examples{
-testfolder <- "INIT_VMPA_Jan2015"
-d <- system.file("extdata", testfolder, package = "atlantisom")
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 fgs <- load_fgs(d, "functionalGroups.csv")
 bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
 test <- load_nc(dir = d, file_nc = "outputSETASCATCH.nc",

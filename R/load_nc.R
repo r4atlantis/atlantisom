@@ -15,8 +15,10 @@
 #'   in the model run. This is used in automated runs.
 #'   All groups are passed when plotting is called via batch-file,
 #'   (which cannot be changed easily) this will result in errors if some
-#'   groups are not active in the model run. By default this argument is \code{TRUE}.
+#'   groups are not active in the model run.
+#'   By default this argument is \code{TRUE}.
 #' @template bboxes
+#' @template verbose
 #' @family load functions
 #' @return A \code{data.frame} in long format with the following coumn names:
 #'   Species, timestep, polygon, agecl, and atoutput (i.e., variable).
@@ -25,8 +27,7 @@
 #' @author Alexander Keth
 #'
 #' @examples
-#' testfolder <- "INIT_VMPA_Jan2015"
-#' d <- system.file("extdata", testfolder, package = "atlantisom")
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' fgs <- load_fgs(d, "functionalGroups.csv")
 #' bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
 #' test <- load_nc(dir = d, file_nc = "outputSETASCATCH.nc",
@@ -43,11 +44,13 @@
 load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   select_variable =
   c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn", "Grazing", "Catch"),
-  check_acronyms = TRUE, bboxes = c(0)) {
-  # NOTE: The extraction procedure may look a bit complex... A different approach would be to
-  # create a dataframe for each variable (e.g. GroupAge_Nums) and combine all dataframes
-  # at the end. However, this requires alot more storage and the code wouldn't be highly
-  # vectorised (which it is at the moment...)!
+  check_acronyms = TRUE, bboxes = c(0), verbose = FALSE) {
+  # NOTE: The extraction procedure may look a bit complex...
+  # A different approach would be to
+  # create a dataframe for each variable (e.g. GroupAge_Nums)
+  # and combine all dataframes at the end.
+  # This alternative approach requires a lot more storage
+  # and the code wouldn't be vectorized.
 
   # Check input of the nc file
   if (tail(strsplit(file_nc, "\\.")[[1]], 1) != "nc") {
@@ -65,11 +68,13 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   # Check input structure!
   if (check_acronyms) {
     active_groups <- as.vector(subset(fgs, IsTurnedOn == 1)$Name)
-    inactive_groups <- select_groups[which(!is.element(select_groups, active_groups))]
+    inactive_groups <- select_groups[which(
+      !is.element(select_groups, active_groups))]
     if (length(inactive_groups) >= 1) {
       select_groups <- select_groups[!is.element(select_groups, inactive_groups)]
-      warning(paste(paste("Some selected groups are not active in the model run. Check 'IsTurnedOn' in fgs\n"),
-                    paste(inactive_groups, collapse = "\n")))
+      warning(paste(paste("Some selected groups are not active in the model run.",
+        "Check 'IsTurnedOn' in fgs\n"),
+        paste(inactive_groups, collapse = "\n")))
     }
     if (all(!is.element(select_groups, active_groups))) {
       stop(paste("None of the species selected are active in the model run.",
@@ -83,7 +88,9 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   at_out <- RNetCDF::open.nc(con = file.nc)
   on.exit(RNetCDF::close.nc(at_out))
 
-  if (select_variable != "N" & all(is.element(select_groups, bps))) stop("The only output for Biomasspools is N.")
+  if (select_variable != "N" & all(is.element(select_groups, bps))) {
+    stop("The only output for Biomasspools is N.")
+  }
 
   # Get info from netcdf file! (Filestructure and all variable names)
   var_names_ncdf <- sapply(seq_len(RNetCDF::file.inq.nc(at_out)$nvars - 1),
@@ -92,29 +99,39 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   n_boxes     <- RNetCDF::dim.inq.nc(at_out, 1)$length
   n_layers    <- RNetCDF::dim.inq.nc(at_out, 2)$length
 
-  # Extract data from the ncdf file! Create a vector of all potential variable names first! Only use names which
-  # are available in the ncdf-file as an extraction of missing variables is not possible! Unfortunately variable
-  # names for Prodn and Garzing use a "" instead of "_" as seperator... :)
-  # Create vecotr of available species at the end using search_clean! This is needed to create species-names
-  # lateron! This approach may seem complicate but it turns out that this approach is very robust since no
-  # user input is needed as the variable names are basically extracted from the available names in the ncdf file!
+  # Extract data from the ncdf file
+  # Create a vector of all potential variable names
+  # Only use names which are available in the ncdf-file as an
+  # extraction of missing variables is not possible
+  # variable names for Prodn and Garzing use a "" instead of "_"
+  # as separator
+  # Create vector of available species at the end using search_clean
+  # This is needed to create species-names later on
   # WARNING: Only 10 cohorts are supported at the moment!
-  # In order to make the creation of variables as robust as possible we introduce differtent combinations
-  # of groups, variable and cohort! Only combinations present in the ncdf are used lateron! This makes the
-  # code both robust and fast!
-  # Loop over select_groups to use the same ordering! This is essential otherwise species names
-  # are not assigned correctly lateron!
+  # To make the creation of variables as robust as possible
+  # we introduce different combinations of groups, variable, and cohort
+  # Only combinations present in the ncdf are used later on
+  # Loop over select_groups to use the same ordering
   cohorts <- 1:10
   search <- list()
   for (i in seq_along(select_groups)) {
-    search[[i]] <- c(unlist(lapply(paste0(select_groups[i], cohorts),                   paste0, select_variable)),           # GroupCohortVariable
-                     unlist(lapply(paste0(select_groups[i], select_variable),           paste0, cohorts)),                   # GroupVariableCohort
-                     unlist(lapply(paste0(select_groups[i], cohorts),                   paste, select_variable, sep = "_")), # GroupCohort_Variable
-                     unlist(lapply(paste(select_groups[i], select_variable, sep = "_"), paste0, cohorts)),                   # Group_VariableCohort
-                     unlist(lapply(paste(select_groups[i], cohorts, sep = "_"),         paste, select_variable, sep = "_")), # Group_Cohort_Variable
-                     unlist(lapply(paste(select_groups[i], select_variable, sep = "_"), paste, cohorts, sep = "_")),         # Group_Variable_Cohort
-                     unlist(paste0(select_groups[i], select_variable)),                                                      # GroupVariable
-                     unlist(paste(select_groups[i], select_variable, sep = "_")))                                            # Group_Variable
+    search[[i]] <- c(
+      unlist(lapply(paste0(select_groups[i], cohorts),
+                    paste0, select_variable)),           # GroupCohortVariable
+      unlist(lapply(paste0(select_groups[i], select_variable),
+                    paste0, cohorts)),                   # GroupVariableCohort
+      unlist(lapply(paste0(select_groups[i], cohorts),
+                    paste, select_variable, sep = "_")), # GroupCohort_Variable
+      unlist(lapply(paste(select_groups[i], select_variable, sep = "_"),
+                    paste0, cohorts)),                   # Group_VariableCohort
+      unlist(lapply(paste(select_groups[i], cohorts, sep = "_"),
+                    paste, select_variable, sep = "_")), # Group_Cohort_Variable
+      unlist(lapply(paste(select_groups[i], select_variable, sep = "_"),
+                    paste, cohorts, sep = "_")),         # Group_Variable_Cohort
+      unlist(paste0(select_groups[i], select_variable)),                                                      # GroupVariable
+      unlist(paste(select_groups[i], select_variable,
+                   sep = "_"))                           # Group_Variable
+      )
     search[[i]] <- search[[i]][is.element(search[[i]], var_names_ncdf)]
     search[[i]] <- unique(search[[i]])
   }
@@ -125,10 +142,12 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   at_data <- lapply(search_clean, RNetCDF::var.get.nc, ncfile = at_out)
 
   # Get final species and number of ageclasses per species
-  final_species <- select_groups[sapply(lapply(select_groups, grepl, x = search_clean), any)]
-  final_agecl <- fgs$NumCohorts[sapply(final_species, function(x) which(x == fgs$Name))]
+  final_species <- select_groups[sapply(
+    lapply(select_groups, grepl, x = search_clean), any)]
+  final_agecl <- fgs$NumCohorts[
+    sapply(final_species, function(x) which(x == fgs$Name))]
 
-  num_layers <- RNetCDF::var.get.nc(ncfile = at_out, variable = "numlayers")[,1]
+  num_layers <- RNetCDF::var.get.nc(ncfile = at_out, variable = "numlayers")[, 1]
   # add sediment layer!
   num_layers <- num_layers + ifelse(num_layers == 0, 0, 1)
 
@@ -147,16 +166,19 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
       if (!is.null(bboxes) & is.element((i - 1), bboxes)) {
         layerid[, i] <- 0
       } else {
-        layerid[, i] <- c(rep(0, times = n_layers - num_layers[i]), rep(1, times = num_layers[i]))
+        layerid[, i] <- c(rep(0, times = n_layers - num_layers[i]),
+                          rep(1, times = num_layers[i]))
       }
     }
   }
 
-  # Create vectors for polygons and layers! Each vector has the length equal to one timestep!
-  # All data from islands and non-existent layers is removed! Therefore the length of these
-  # vectors is equal for each extracted variable!
+  # Create vectors for polygons and layers
+  # Each vector has the length equal to one time-step
+  # All data from islands and non-existent layers is removed
+  # Therefore the length of these
+  # vectors is equal for each extracted variable
   boxes <- 0:(n_boxes - 1)
-  # Remove islands! and boundary boxes!
+  # Remove islands and boundary boxes
   island_ids <- num_layers == 0
   if (!is.null(bboxes)) {
     boundary_ids <- is.element(boxes, bboxes)
@@ -166,18 +188,24 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
   num_layers <- num_layers[!island_ids]
 
   polygons <- rep(boxes, times = num_layers)
-  layers <- sapply(num_layers[num_layers != 0] - 2, function(x) c(seq(x, from = 0, by = 1), n_layers - 1))
+  layers <- sapply(num_layers[num_layers != 0] - 2,
+    function(x) c(seq(x, from = 0, by = 1), n_layers - 1))
   if (any(sapply(layers, length) != num_layers[num_layers != 0])) {
-    stop("Number of layers incorrect. Contact package development team.")
+    stop("Number of layers incorrect.")
   }
   layers <- do.call(c, layers)
-  if (length(polygons) != length(layers)) stop("Number of polygons and layers do not match. Contact package development team.")
+  if (length(polygons) != length(layers)) {
+    stop("Number of polygons and layers do not match.")
+  }
 
-  # In the following section the data is transformed to a long dataframe! The code is written for speed!
-  # I haven't found any solution to vectorise the creation of the dataframe columns (species, age, polygons,...)
-  # when data from 2d and 3d arrays (e.g. select_variable = "N" all biomasspools are only present in the
-  # sediment layer.) are read in simultaneausly. Therefore the current "messy" solution splits tha data
-  # in 2 subpopulations: 2d-data and 3d-data!
+  # In the following section the data is transformed to a long dataframe
+  # I haven't found any solution to vectorize the creation of the dataframe
+  # columns (species, age, polygons,...)
+  # when data from 2d and 3d arrays
+  # (e.g. select_variable = "N" all biomasspools are only present in the
+  # sediment layer.) are read in simultaneously.
+  # Therefore the current "messy" solution splits the data
+  # in 2 subpopulations: 2d-data and 3d-data
   at_data3d <- at_data[which(sapply(at_data, function(x) length(dim(x))) == 3)]
   at_data2d <- at_data[which(sapply(at_data, function(x) length(dim(x))) == 2)]
 
@@ -189,10 +217,10 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
     if (select_variable == "N") {
       int_fs <- final_species[!is.element(final_species, bps)]
       int_fa <- final_agecl[!is.element(final_species, bps)]
-      # Note this only works if age-structured vertebrates have 10 ageclasses!
+      # Note this only works if age-structured vertebrates have 10 ageclasses
       int_fa[int_fa == 10] <- 1
     }
-    for (i in seq_along(at_data3d)) {# for loop over all variables!
+    for (i in seq_along(at_data3d)) {# for loop over all variables
       if (i == 1) result3d <- list()
       for (j in 1:n_timesteps) {# loop over timesteps
         if (j == 1) values <- array(dim = c(length(layers), n_timesteps))
@@ -200,15 +228,26 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
       }
       result3d[[i]] <- as.vector(values)
     }
-    result3d <- data.frame(species = unlist(sapply(X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = F, USE.NAMES = F),
-                                                   FUN = rep, each = length(layers) * n_timesteps, simplify = F)),
-                           agecl = unlist(sapply(X = sapply(X = int_fa, FUN = seq, from = 1, by = 1, simplify = F, USE.NAMES = F),
-                                                 FUN = rep, each = length(layers) * n_timesteps, simplify = F)),
-                           polygon = unlist(sapply(X = n_timesteps * int_fa, FUN = rep, x = polygons, simplify = F, USE.NAMES = F)),
-                           layer = unlist(sapply(X = n_timesteps * int_fa, FUN = rep, x = layers, simplify = F, USE.NAMES = F)),
-                           time = unlist(sapply(X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1), each = length(layers)), simplify = F, USE.NAMES = F)),
-                           atoutput = do.call(c, result3d),
-                           stringsAsFactors = F)
+    result3d <- data.frame(
+      species = unlist(sapply(
+        X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = FALSE,
+        USE.NAMES = FALSE),
+        FUN = rep, each = length(layers) * n_timesteps, simplify = FALSE)),
+      agecl = unlist(sapply(
+        X = sapply(X = int_fa, FUN = seq, from = 1, by = 1, simplify = FALSE,
+        USE.NAMES = FALSE),
+        FUN = rep, each = length(layers) * n_timesteps, simplify = FALSE)),
+      polygon = unlist(sapply(
+        X = n_timesteps * int_fa, FUN = rep, x = polygons, simplify = F,
+        USE.NAMES = FALSE)),
+      layer = unlist(sapply(
+        X = n_timesteps * int_fa, FUN = rep, x = layers, simplify = FALSE,
+        USE.NAMES = FALSE)),
+      time = unlist(sapply(
+        X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1), each = length(layers)),
+        simplify = FALSE, USE.NAMES = FALSE)),
+      atoutput = do.call(c, result3d),
+      stringsAsFactors = FALSE)
   }
 
   if (length(at_data2d) >= 1) {
@@ -217,7 +256,8 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
       int_fs <- final_species[is.element(final_species, bps)]
       int_fa <- final_agecl[is.element(final_species, bps)]
     }
-    if (select_variable == "Grazing") int_fa <- 1 # age-structured invert groups are combined in ncdf file!
+    # age-structured invert groups are combined in ncdf file!
+    if (select_variable == "Grazing") int_fa <- 1
     for (i in seq_along(at_data2d)) {# for loop over all variables!
       if (i == 1) result2d <- list()
       for (j in 1:n_timesteps) {# loop over timesteps
@@ -228,49 +268,67 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
     }
 
     # Order of the data in value column = "atoutput".
-    # 1. species  --> rep each with the number of ageclasses and n_timesteps * boxes
+    # 1. species  --> rep each with the number of
+    #                 ageclasses and n_timesteps * boxes
     # 2. age      --> rep each (1:10 for each species) with n_timesteps * boxes
-    # 3. timestep --> rep each timestep (1:n_timesteps) with the number of boxes and final_agecl
+    # 3. timestep --> rep each timestep (1:n_timesteps)
+    #                 with the number of boxes and final_agecl
     #                 (num cohorts per species)
-    # 4. polygon  --> rep boxes times n_timesteps * final_agecl (num cohorts per species)
-    # The code is highly vectorized and therefore quite effective!
-    result2d <- data.frame(species = unlist(sapply(X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = F, USE.NAMES = F),
-                                                   FUN = rep, each = length(boxes) * n_timesteps, simplify = F)),
-                           agecl = unlist(sapply(X = sapply(X = int_fa, FUN = seq, from = 1, by = 1, simplify = F, USE.NAMES = F),
-                                                 FUN = rep, each = length(boxes) * n_timesteps, simplify = F)),
-                           polygon = unlist(sapply(X = n_timesteps * int_fa, FUN = rep, x = boxes, simplify = F, USE.NAMES = F)),
-                           time = unlist(sapply(X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1), each = length(boxes)), simplify = F, USE.NAMES = F)),
-                           atoutput = do.call(c, result2d),
-                           stringsAsFactors = F)
+    # 4. polygon  --> rep boxes times n_timesteps * final_agecl
+    #                 (num cohorts per species)
+    result2d <- data.frame(species = unlist(sapply(
+      X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = FALSE,
+        USE.NAMES = FALSE),
+        FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+      agecl = unlist(sapply(X = sapply(X = int_fa, FUN = seq, from = 1,
+        by = 1, simplify = FALSE, USE.NAMES = FALSE),
+        FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+      polygon = unlist(sapply(X = n_timesteps * int_fa,
+        FUN = rep, x = boxes, simplify = FALSE, USE.NAMES = FALSE)),
+      time = unlist(sapply(X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1),
+        each = length(boxes)), simplify = FALSE, USE.NAMES = FALSE)),
+      atoutput = do.call(c, result2d),
+      stringsAsFactors = F)
     if (select_variable == "N") result2d$layer <- n_layers - 1
   }
 
   # Combine dataframes if necessary!
-  if (all(sapply(lapply(at_data, dim), length) == 3) & select_variable != "N") result <- result3d
-  if (all(sapply(lapply(at_data, dim), length) == 2) & select_variable != "N") result <- result2d
+  if (all(sapply(lapply(at_data, dim), length) == 3) & select_variable != "N") {
+    result <- result3d
+  }
+  if (all(sapply(lapply(at_data, dim), length) == 2) & select_variable != "N") {
+    result <- result2d
+  }
   if (select_variable == "N") {
     if (length(at_data2d) >= 1 & length(at_data3d) == 0) result <- result2d
     if (length(at_data2d) == 0 & length(at_data3d) >= 1) result <- result3d
-    if (length(at_data2d) >= 1 & length(at_data3d) >= 1) result <- rbind(result2d, result3d)
+    if (length(at_data2d) >= 1 & length(at_data3d) >= 1) {
+      result <- rbind(result2d, result3d)
+    }
   }
 
   # Remove min_pools if existent (well, there always are min pools... ;)).
   min_pools <- is.element(result$atoutput, c(0, 1e-08, 1e-16))
   if (length(min_pools) > 0) {
-    # exclude 1st timestep and sediment layer from calculation! They behave differently...
-    print_min_pools <- sum(min_pools) - length(result[min_pools & result$time == 1, 1]) - length(result[min_pools & result$time > 1 & result$layer == 7, 1])
-    if (print_min_pools > 0) warning(paste0(round(print_min_pools/dim(result)[1] * 100), "% of ", select_variable, " are true min-pools (0, 1e-08, 1e-16)"))
+    # exclude 1st timestep and sediment layer from calculation
+    print_min_pools <- sum(min_pools) -
+      length(result[min_pools & result$time == 1, 1]) -
+      length(result[min_pools & result$time > 1 & result$layer == 7, 1])
+    if (print_min_pools > 0 & verbose) {
+      warning(paste0(round(print_min_pools/dim(result)[1] * 100),
+        "% of ", select_variable, " are true min-pools (0, 1e-08, 1e-16)"))
+    }
     result <- result[!min_pools, ]
   }
 
   # Remove non-existent layers.
-  # WARNING: Biomass is build up (very few) in sediment layer for NON sediment groups (e.g. baleen whales)
-  # Therefore, I subset all data from that layer for non biomass groups and groups which cannot penetrate into the sediment!
-  # UPDATE: Doesn't work with layers as species are not distributed through the whole water column and do not appear in
-  # every polygon. Therefore we subset zeros!
-#   if (all(is.element(c("layer", "polygon"), names(result)))) {
-#     result <- dplyr::filter(result, !(layer == n_layers & !is.element(species, union(biomasspools, get_sediment_digger()))))
-#   }
+  # WARNING: Biomass is build up (very few) in sediment layer for
+  # NON sediment groups (e.g. baleen whales)
+  # Therefore, I subset all data from that layer for non biomass groups and
+  # groups which cannot penetrate into the sediment!
+  # UPDATE: Doesn't work with layers as species are not distributed through
+  # the whole water column and do not appear in
+  # every polygon.
 
   # Sum up N for invert cohorts if invert cohorts are present!
   # NOTE: invert cohorts of size 10 are not considered!
