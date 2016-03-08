@@ -60,10 +60,6 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   vertebrates <- as.character(biolprm[grep("^flagplankfish", biolprm[, 1]), 1])
   vertebrates <- gsub("flagplankfish", "", vertebrates)
 
-
-  biolprm$recruit_time
-  biolprm$recruit_period
-  biolprm$time_spawn
   # Find time of spawning
   time_spawn <- biolprm[grep("_Time_Spawn", biolprm[, 1], ignore.case = TRUE), 1:2]
   time_spawn[, 2] <- as.numeric(as.character(time_spawn[, 2]))
