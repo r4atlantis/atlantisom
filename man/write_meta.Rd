@@ -30,6 +30,14 @@ Write a file to the disk of metadata pertaining to a single Atlantis scenario.
 \description{
 Write metadata to the disk.
 }
+\examples{
+d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+meta <- load_meta(d, "SETAS")
+write_meta(meta, dir = d, "test.txt")
+unlink("test.txt")
+rm(meta)
+
+}
 \author{
 Kelli Faye Johnson
 }

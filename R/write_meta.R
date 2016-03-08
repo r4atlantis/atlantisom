@@ -12,6 +12,13 @@
 #'
 #' @export
 #'
+#' @examples
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' meta <- load_meta(d, "SETAS")
+#' write_meta(meta, dir = NULL, "test.txt")
+#' unlink("test.txt")
+#' rm(meta)
+#'
 write_meta <- function(meta, dir = getwd(), file_out = "atlantisom_log.txt",
   verbose = FALSE) {
   # Print the log information to a text file
@@ -19,17 +26,17 @@ write_meta <- function(meta, dir = getwd(), file_out = "atlantisom_log.txt",
     file.out <- file_out
   } else {
     file.out <- file.path(dir, file_out)
-    if (verbose) message("Writing the output from load_meta to:\n", file.out)
-    sink(file.out)
-    on.exit(sink())
-    cat("# Meta data from atlantisom\n")
-    cat(paste("# Written by load_meta on", Sys.time(), "\n"))
-    cat(paste("# by", Sys.info()["user"], "on", Sys.info()["sysname"], "\n"))
-    cat(paste("# using", version$version.string, "\n"))
-    for (x in seq_along(data)) {
-      cat(paste0("#", names(data)[x], "\n"))
-      cat(data[[x]])
-      cat("\n")
-    }
+  }
+  if (verbose) message("Writing the output from load_meta to:\n", file.out)
+  sink(file.out)
+  on.exit(sink())
+  cat("# Meta data from atlantisom\n")
+  cat(paste("# Written by load_meta on", Sys.time(), "\n"))
+  cat(paste("# by", Sys.info()["user"], "on", Sys.info()["sysname"], "\n"))
+  cat(paste("# using", version$version.string, "\n"))
+  for (x in seq_along(meta)) {
+    cat(paste0("#", names(meta)[x], "\n"))
+    cat(meta[[x]])
+    cat("\n")
   }
 }
