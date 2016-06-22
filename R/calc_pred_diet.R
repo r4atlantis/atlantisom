@@ -30,11 +30,13 @@
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' fgs <- load_fgs(d, "functionalGroups.csv")
+#' bps <- load_bps(dir = d, fgs = fgs,
+#'   file_init = paste0(tail(strsplit(d, "/")[[1]], 1), ".nc"))
 #' runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
 #' dietcomp <- load_diet_comp(dir = d, file_diet = "outputSETASDietCheck.txt",
 #'   fgs = fgs, toutinc = runprm$toutinc)
 #' boxes <- get_boundary(load_box(dir = d, file_bgm = "VMPA_setas.bgm"))
-#' groups <- load_fgs(dir = directory, "functionalGroups.csv")
+#' groups <- load_fgs(dir = d, "functionalGroups.csv")
 #' groups <- groups[groups$IsTurnedOn > 0, "Name"]
 #' eat <- load_nc(dir = d, file_nc = "outputSETASPROD.nc",
 #'   bps = bps, fgs = fgs, select_groups = groups,
