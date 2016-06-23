@@ -8,14 +8,39 @@
 #'   species, agecl, time, polygon and atoutput.
 #'   Atoutput is the total biomass in t.
 #'   At this point biomass was aggregated (sum) per layer!
-
+#'
 #' @details This functions converts the ATLANTIS output to a \code{data.frame}
 #'   which can be processed in R.
 #' @keywords gen
 #' @export
 #' @author Alexander Keth
 #' @family calc functions
-
+#'
+#' @examples
+#' # Set up the example with input files
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' fgs <- load_fgs(d, "functionalGroups.csv")
+#' bps <- load_bps(dir = d, fgs = fgs,
+#'   file_init = paste0(tail(strsplit(d, "/")[[1]], 1), ".nc"))
+#' runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
+#' biolprm <- load_biolprm(dir = d,
+#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#' boxes <- get_boundary(load_box(dir = d, file_bgm = "VMPA_setas.bgm"))
+#'
+#' # Get the catch values
+#' catch <- load_nc(dir = d, file_nc = "outputSETASCATCH.nc",
+#'   bps = bps, fgs = fgs, select_groups = fgs[fgs$IsTurnedOn > 0, "Name"],
+#'   select_variable = "Catch", check_acronyms = TRUE, bboxes = boxes)
+#' structn <- load_nc(dir = d, file_nc = "outputSETAS.nc",
+#'   bps = bps, fgs = fgs, select_groups = fgs[fgs$IsTurnedOn > 0, "Name"],
+#'   select_variable = "StructN", check_acronyms = TRUE, bboxes = boxes)
+#' resn <- load_nc(dir = d, file_nc = "outputSETAS.nc",
+#'   bps = bps, fgs = fgs, select_groups = fgs[fgs$IsTurnedOn > 0, "Name"],
+#'   select_variable = "ResN", check_acronyms = TRUE, bboxes = boxes)
+#'
+#' biomassatage <- calc_biomass_age(nums = catch,
+#'   resn = resn, structn = structn, biolprm = biolprm)
+#'
 calc_biomass_age <- function(nums, resn, structn, biolprm){
   datalist <- list(nums, resn, structn)
 
