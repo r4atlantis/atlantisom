@@ -22,14 +22,15 @@ Description: The atlantisom package develops data sets for use in other
     output as well.
 License: What license is it under?
 LazyData: TRUE
-Imports:
+Imports: 
     RNetCDF,
     stringr,
     dplyr,
     tidyr,
     magrittr,
     chron
-Suggests:
-    knitr
+Suggests: 
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1

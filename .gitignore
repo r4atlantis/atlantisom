@@ -13,3 +13,4 @@ tags
 Session.vim
 *.pdfsync
 *.pdf
+inst/doc
