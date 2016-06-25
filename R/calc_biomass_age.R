@@ -54,8 +54,12 @@ calc_biomass_age <- function(nums, resn, structn, biolprm){
   if (all(sapply(datalist, function(x) all(is.element(names(x), data_names))))){
     names(resn)[names(resn) == "atoutput"] <- "resn"
     names(structn)[names(structn) == "atoutput"] <- "structn"
+
     if (!any(is.element(names(nums), "layer"))) {
-      # Calculate median individual weight over layers when catch data is used for numbers!
+      # Calculate median individual weight over layers when catch data
+      # is used for numbers because catch has no "layer" column.
+      # todo: determine if catch always comes from a specific layer,
+      # or if there is information in what later it does come from.
       structn <- aggregate(structn ~ species + agecl + polygon + time,
         data = structn, median)
       resn <- aggregate(resn ~ species + agecl + polygon + time,
@@ -65,6 +69,7 @@ calc_biomass_age <- function(nums, resn, structn, biolprm){
     structn <- merge(structn, resn)
     structn$atoutput <- with(structn, (structn + resn) * atoutput * bio_conv)
 
+    # Sum over layers if layers exist
     biomass_ages <- aggregate(atoutput ~ species + agecl + time + polygon,
       data = structn, sum)
   } else {
