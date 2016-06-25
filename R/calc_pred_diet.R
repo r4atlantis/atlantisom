@@ -82,7 +82,7 @@ calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
   # although there will be observations for eating and grazing,
   # not all rows will have associated diet composition information
   # these rows are removed, but could be added as na if the argument
-  # by.x = TRUE were added to the following function call.
+  # all.x = TRUE were added to the following function call.
   biomass_eaten <- merge(biomass_eaten, dietcomp,
     by.x = c("species", "agecl", "time"),
     by.y = c("species", "cohort", "time"))
