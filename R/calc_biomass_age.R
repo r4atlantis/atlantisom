@@ -61,8 +61,8 @@ calc_biomass_age <- function(nums, resn, structn, biolprm){
       resn <- aggregate(resn ~ species + agecl + polygon + time,
         data = resn, median)
     }
-    structn <- dplyr::left_join(nums, structn)
-    structn <- dplyr::left_join(structn, resn)
+    structn <- merge(nums, structn)
+    structn <- merge(structn, resn)
     structn$atoutput <- with(structn, (structn + resn) * atoutput * bio_conv)
 
     biomass_ages <- aggregate(atoutput ~ species + agecl + time + polygon,
