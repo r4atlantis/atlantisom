@@ -66,4 +66,17 @@ citation("atlantisom")
 atlantisom is an R package to make it relatively quick and easy
 to run simulations with the ATLANTIS output.
 
+# Units of output
+
+In general, ATLANTIS simulates the flow of nitrogen through trophic levels
+in time and space.
+Nitrogen is typically expressed as a concentration (mgN m^-3)
+broken into two components,
+structural (structn; i.e., hard parts) and reserve (resn; i.e., soft parts).
+By breaking the nitrogen into two components, ATLANTIS is able to track
+length and condition separately.
+
+Numbers of individuals are tracked for vertebrates, and can be used to
+calculate biomass with `calc_biomass_age`.
+
 # References
