@@ -55,9 +55,17 @@ load_diet_comp <- function(dir = getwd(), file_diet, fgs, toutinc){
     diet <- diet[, -which(colnames(diet) == "Stock")]
   }
 
+  # Check if column names are the 'old' version with "Group" instead of "Predator"
+  # Replace the new version with the old version variable name.
+  # Makes sense to have it the other way round but keeping 'group' seems to be useful
+  # for maintaining functionality for other functions dependent on output.
+  if(length(grep("Predator",colnames(diet)))>0)
+    colnames(diet) <- gsub("Predator","Group",colnames(diet))
+
   # Change column order
   diet <- diet[, c("Group", "Cohort", "Time",
     names(diet)[which(!names(diet) %in% c("Group", "Cohort", "Time"))])]
+
 
   # Convert to tidy dataframe to allow joining/merging with other dataframes.
   diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
