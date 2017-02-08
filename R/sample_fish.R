@@ -68,12 +68,12 @@ sample_fish <- function(dat, effN) {
 	names(dat2) <- c("species","agecl","time","numAtAge")
 
 
-	#TODO: Need error checking
+	#TODO: Need error checking--SKG moved nn assignement of effN to inside y loop from outside
 	dat2$numAtAgeSamp <- NA
 	for(sp in unique(dat2$species)) {
-		nn <- effN[effN$species==sp,"effN"]
 		for(y in unique(dat2$time)) {
-			ind <- dat2$species == sp & dat2$time == y
+		  nn <- effN[effN$species==sp,"effN"]
+		  ind <- dat2$species == sp & dat2$time == y
 			totalNums <- sum(dat2[ind,]$numAtAge)
 
 			if(nn > totalNums) {
