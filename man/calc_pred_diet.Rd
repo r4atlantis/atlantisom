@@ -41,11 +41,13 @@ per time, polygon, ageclass, and prey item.
 \examples{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 fgs <- load_fgs(d, "functionalGroups.csv")
+bps <- load_bps(dir = d, fgs = fgs,
+  file_init = paste0(tail(strsplit(d, "/")[[1]], 1), ".nc"))
 runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
 dietcomp <- load_diet_comp(dir = d, file_diet = "outputSETASDietCheck.txt",
   fgs = fgs, toutinc = runprm$toutinc)
 boxes <- get_boundary(load_box(dir = d, file_bgm = "VMPA_setas.bgm"))
-groups <- load_fgs(dir = directory, "functionalGroups.csv")
+groups <- load_fgs(dir = d, "functionalGroups.csv")
 groups <- groups[groups$IsTurnedOn > 0, "Name"]
 eat <- load_nc(dir = d, file_nc = "outputSETASPROD.nc",
   bps = bps, fgs = fgs, select_groups = groups,
@@ -65,13 +67,13 @@ calcs <- calc_pred_diet(dietcomp = dietcomp, eat = eat, grazing = grazing,
 rm(calcs)
 
 }
-\author{
-Alexander Keth
-}
 \seealso{
 Other calc functions: \code{\link{calc_Z}},
   \code{\link{calc_biomass_age}},
   \code{\link{calc_stage2age}},
   \code{\link{calc_timestep2time}}
 }
-
+\author{
+Alexander Keth
+}
+\concept{calc functions}

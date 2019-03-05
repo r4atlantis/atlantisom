@@ -76,4 +76,3 @@ The function takes numbers-at-age data from an Atlantis scenario
 \author{
 Poseidon
 }
-

@@ -22,10 +22,10 @@ boxes <- get_boundary(load_box(dir = d, file_bgm = "VMPA_setas.bgm"))
 rm(boxes)
 
 }
-\author{
-Kelli Faye Johnson
-}
 \seealso{
 \code{\link{load_box}}
 }
-
+\author{
+Kelli Faye Johnson
+}
+\concept{get functions}

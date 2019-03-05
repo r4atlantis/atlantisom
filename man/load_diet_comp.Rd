@@ -44,9 +44,6 @@ temp <- load_diet_comp(dir = d, file_diet = file_diet, fgs = fgs,
 rm(temp)
 
 }
-\author{
-Kelli Faye Johnson
-}
 \seealso{
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_box}},
@@ -54,4 +51,7 @@ Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_meta}}, \code{\link{load_nc}},
   \code{\link{load_runprm}}, \code{\link{load_yoy}}
 }
-
+\author{
+Kelli Faye Johnson
+}
+\concept{load functions}

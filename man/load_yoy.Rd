@@ -30,9 +30,6 @@ d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 file <- "outputSETASYOY.txt"
 test <- load_yoy(dir = d, file_yoy = file)
 }
-\author{
-Emma E Hodgson
-}
 \seealso{
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_box}},
@@ -40,4 +37,7 @@ Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_fgs}}, \code{\link{load_meta}},
   \code{\link{load_nc}}, \code{\link{load_runprm}}
 }
-
+\author{
+Emma E Hodgson
+}
+\concept{load functions}

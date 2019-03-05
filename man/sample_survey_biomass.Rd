@@ -76,4 +76,3 @@ survObsBiom <- sample_survey_biomass(dat=tmp,cv=cv,wtAtAge)
 \author{
 Poseidon
 }
-

@@ -32,9 +32,6 @@ temp <- load_meta(d, "SETAS", verbose = FALSE)
 rm(temp)
 
 }
-\author{
-Kelli Faye Johnson
-}
 \seealso{
 \code{\link{write_meta}}
 
@@ -44,4 +41,7 @@ Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_fgs}}, \code{\link{load_nc}},
   \code{\link{load_runprm}}, \code{\link{load_yoy}}
 }
-
+\author{
+Kelli Faye Johnson
+}
+\concept{load functions}

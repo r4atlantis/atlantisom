@@ -33,15 +33,15 @@ Write metadata to the disk.
 \examples{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 meta <- load_meta(d, "SETAS")
-write_meta(meta, dir = d, "test.txt")
+write_meta(meta, dir = NULL, "test.txt")
 unlink("test.txt")
 rm(meta)
 
 }
-\author{
-Kelli Faye Johnson
-}
 \seealso{
 \code{\link{load_meta}}
 }
-
+\author{
+Kelli Faye Johnson
+}
+\concept{write functions}

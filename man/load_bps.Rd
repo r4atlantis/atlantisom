@@ -35,9 +35,6 @@ fgs <- load_fgs(d, "functionalGroups.csv")
 bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
 
 }
-\author{
-Alexander Keth
-}
 \seealso{
 \code{\link{load_fgs}}
 
@@ -47,4 +44,7 @@ Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_meta}}, \code{\link{load_nc}},
   \code{\link{load_runprm}}, \code{\link{load_yoy}}
 }
-
+\author{
+Alexander Keth
+}
+\concept{load functions}

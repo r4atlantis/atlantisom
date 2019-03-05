@@ -4,8 +4,8 @@
 \alias{aggregateData}
 \title{Aggregate and select data from Atlantis output}
 \usage{
-aggregateData(dat, time, species, boxes, keepColumns = c("species", "agecl",
-  "polygon", "time"))
+aggregateData(dat, time, species, boxes, keepColumns = c("species",
+  "agecl", "polygon", "time"))
 }
 \arguments{
 \item{dat}{A \code{data.frame} of numbers-at-age from reading
@@ -56,4 +56,3 @@ rm(list = c("tmp", "dat"))
 \author{
 Allan Hicks
 }
-

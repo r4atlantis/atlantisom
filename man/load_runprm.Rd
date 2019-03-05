@@ -33,9 +33,6 @@ runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
 rm(runprm)
 
 }
-\author{
-Emma E Hodgson, Kelli Faye Johnson
-}
 \seealso{
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_box}},
@@ -43,4 +40,7 @@ Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_fgs}}, \code{\link{load_meta}},
   \code{\link{load_nc}}, \code{\link{load_yoy}}
 }
-
+\author{
+Emma E Hodgson, Kelli Faye Johnson
+}
+\concept{load functions}

@@ -62,4 +62,3 @@ The function takes total consumption data from an Atlantis scenario
 \author{
 Robert Wildermuth
 }
-

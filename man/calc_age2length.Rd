@@ -61,4 +61,3 @@ lenout <- calc_age2length(
 \author{
 Gavin Fay
 }
-

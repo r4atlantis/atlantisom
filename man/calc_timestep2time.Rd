@@ -47,9 +47,6 @@ test <- calc_timestep2time(dir = d, data = result$biomass_ages,
 rm(test)
 
 }
-\author{
-Alexander Keth
-}
 \seealso{
 \code{\link{load_fgs}}
 
@@ -58,4 +55,7 @@ Other calc functions: \code{\link{calc_Z}},
   \code{\link{calc_pred_diet}},
   \code{\link{calc_stage2age}}
 }
-
+\author{
+Alexander Keth
+}
+\concept{calc functions}

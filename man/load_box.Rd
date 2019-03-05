@@ -30,9 +30,6 @@ boxes <- load_box(dir = d, file_bgm = "VMPA_setas.bgm")
 rm("boxes")
 
 }
-\author{
-Kelli Faye Johnson
-}
 \seealso{
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_bps}},
@@ -40,4 +37,7 @@ Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_meta}}, \code{\link{load_nc}},
   \code{\link{load_runprm}}, \code{\link{load_yoy}}
 }
-
+\author{
+Kelli Faye Johnson
+}
+\concept{load functions}

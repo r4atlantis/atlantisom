@@ -74,9 +74,6 @@ str(test)
 rm(test)
 
 }
-\author{
-Alexander Keth
-}
 \seealso{
 \code{\link{get_boundary}}, \code{\link{load_box}}
 
@@ -86,5 +83,8 @@ Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_fgs}}, \code{\link{load_meta}},
   \code{\link{load_runprm}}, \code{\link{load_yoy}}
 }
+\author{
+Alexander Keth
+}
+\concept{load functions}
 \keyword{gen}
-

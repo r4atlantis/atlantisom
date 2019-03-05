@@ -47,6 +47,9 @@ Returns a matrix similar to the input matrix
 columns: species, agecl, polygon, layer, time, atoutput
 --will sum over layers, but enter NA as layer to indicate all layers
 }
+\description{
+Create survey observations from Atlantis output
+}
 \details{
 The function takes numbers-at-age data from an Atlantis scenario
   where the data was read in from Atlantis output using \code{\link{load_nc}}
@@ -63,4 +66,3 @@ The function takes numbers-at-age data from an Atlantis scenario
 \author{
 Poseidon
 }
-
