@@ -28,7 +28,8 @@ Imports:
     dplyr,
     tidyr,
     magrittr,
-    chron
+    chron,
+    xml2
 Suggests: 
     knitr,
     rmarkdown
