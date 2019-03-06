@@ -1,3 +1,5 @@
+# Helper function to create Xpath query and return
+# argument from XML file
 read_xml_atlantis <- function(xml_input, xpath_string){
   full_xpath <- paste("//Attribute[@AttributeName='",
                 xpath_string,
