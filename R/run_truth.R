@@ -71,6 +71,7 @@ run_truth <- function(scenario, dir = getwd(),
   #Extract from NetCDF files
   # Need: dir, file_nc, bps, fgs, select_groups, select_variable,
   # check_acronyms, bboxes
+
   nums <- load_nc(dir = dir,
                   file_nc = nc_out,
                   bps = bps,

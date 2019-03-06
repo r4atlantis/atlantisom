@@ -28,39 +28,57 @@ load_runprm <- function(dir = getwd(), file_runprm) {
       "please specify the correct file type."))
   }
 
-  runprm <- readLines(file.runprm)
+  #Read in XML file
+  runprm <- xml2::read_xml(file.runprm)
+
   data <- list()
+
+
+
+  #Get nodes with tout names
+  node_touts<- as.character(xml2::xml_find_all(runprm,
+  "//Attribute[starts-with(@AttributeName,'tout')]"))
+
+  #Get nodes with AttributeName=tstop
+  attribute_names <- c("tstop",
+                       "dt",
+                       "flaghemisphere",
+                       "K_num_tot_sp",
+                       "fishout",
+                       "K_num_fisheries")
+  char_tags <- lapply(attribute_names,
+                      read_xml_atlantis,
+                      xml_input=runprm)
 
   # Pull the output start, output periodicity, and fisheries periodicity and
   # write to the returned data frame "data"
-  time <- sapply(strsplit(runprm[grep("tout", runprm)], "="),
+  time <- sapply(strsplit(node_touts,"="),
     function(x) gsub("[[:punct:]]| Attribute[[:alpha:]]+| day", "", x))
-  time <- cbind(time, sapply(strsplit(runprm[grep("tstop", runprm)], "="),
+  time <- cbind(time, sapply(strsplit(char_tags[[1]], "="),
     function(x) gsub("[[:punct:]]| Attribute[[:alpha:]]+| day", "", x))[, 1])
   apply(time, 2,
     function(x) eval(parse(text = paste0("data$", x[2], " <<- ", x[4]))))
 
   data$nyears <- as.numeric(data$tstop) / 365
-  data$timestep <- sapply(strsplit(runprm[grep("dt", runprm)], "="),
+  data$timestep <- sapply(strsplit(char_tags[[2]], "="),
     function(x) gsub("[[:punct:]]| Attribute[[:alpha:]]+| day", "", x))
   data$timestepunit <- data$timestep[4, 1]
   data$timestep <- as.numeric(data$timestep[7, 1])
   data$outputstep <- data$toutinc
   data$outputstepunit <- "days"
-  data$hemisphere <- as.vector(ifelse(sapply(strsplit(runprm[
-      grep("flaghemisphere", runprm)], "="),
+  data$hemisphere <- as.vector(ifelse(sapply(strsplit(char_tags[[3]], "="),
       function(x) gsub("[[:punct:]]| Attribute[[:alpha:]]+| day", "",
       x))[6, 1] == 0, "southern", "northern"))
 
-    data$nspp <- sapply(strsplit(runprm[grep("K_num_tot_sp", runprm)], "="),
+    data$nspp <- sapply(strsplit(char_tags[[4]],
+                                 "="),
     function(x) gsub("[[:punct:]]| Attribute[[:alpha:]]+| day", "", x))[4, 1]
     data$nspp <- as.numeric(data$nspp)
 
-  fishing <- sapply(strsplit(runprm[
-    grep("fishout", runprm)], "="),
+  fishing <- sapply(strsplit(char_tags[[5]], "="),
     function(x) gsub("[[:punct:]]| Attribute[[:alpha:]]+| day", "", x))[6, 1]
     if (fishing == 1) {
-        data$nfleet <- sapply(strsplit(runprm[grep("K_num_fish", runprm)], "="),
+        data$nfleet <- sapply(strsplit(char_tags[[6]], "="),
     function(x) gsub("[[:punct:]]| Attribute[[:alpha:]]+| day", "", x))[4, 1]
         data$nfleet <- as.numeric(data$nfleet)
     } else {

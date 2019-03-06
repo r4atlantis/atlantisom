@@ -90,6 +90,8 @@ load_nc <- function(dir = getwd(), file_nc, bps, fgs, select_groups,
 
   if (select_variable != "N" & all(is.element(select_groups, bps))) {
     stop("The only output for Biomasspools is N.")
+  } else{
+    print(paste("Read", file.nc, "successfully"))
   }
 
   # Get info from netcdf file! (Filestructure and all variable names)
