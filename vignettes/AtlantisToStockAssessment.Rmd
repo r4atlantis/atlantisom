@@ -1,0 +1,84 @@
+---
+title: "AtlantisOMVignette"
+author: "Christine Stawitz, Sarah Gaichas"
+date: "March 5, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Setup
+
+First, you will want to load packages and initialize the correct file and working directory names.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyr)
+require(dplyr)
+library(ggplot2)
+library(data.table)
+```
+
+If you want to load the local of the atlantisom R package, use devtools:
+
+```{r message=FALSE, warning=FALSE}
+require(devtools)
+package.dir <- "C:/Users/chris/Documents/Github/atlantisom"
+devtools::load_all(package.dir)
+library(atlantisom)
+```
+
+Or you can install directly from the Github repository.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+devtools::install_github("r4atlantis\atlantisom")
+```
+
+## Initializing input files and directories
+
+You will first need to tell `atlantisom` to know where to look for the output and input files from your atlantis model run. Here, we will give the directory where the Atlantis inputs and outputs are stored `d.name`, the location of the functional groups file `functional.group.file` (.csv), the biomass pools file `biomass.pools.file` (.nc), the box locations file `box.file` (.bgm), an `initial.conditions.file` (.nc), the biology .prm file `biol.prm.file` (.prm), and the run .prm file `run.prm.file` (.prm). You will also need to specify a scenario name, which will be used to define the output files (i.e. output is stored in a number of netCDF files of the format: output<scenario><value>.nc). All of these files should be stored in `d.name`.
+
+```{r initialize}
+d.name <- "C:/Users/chris/Documents/NOrway/CalCurrentSummitScenario1"
+functional.groups.file <- "CalCurrentV3Groups.csv" 
+biomass.pools.file <- "DIVCalCurrentV3_BIOL.nc"
+biol.prm.file <- "CalCurrentV3_Biol.prm"
+box.file <- "CalCurrentV3_utm.bgm"
+initial.conditions.file <- "DIVCalCurrentV3_BIOL.nc"
+biol.prm.file <- "CalCurrentV3_Biol.prm"
+run.prm.file <- "CalCurrentV3_run.xml"
+scenario.name <- "CCV3"
+```
+
+## Getting the "true" operating model values
+
+There are a number of functions in the package that begin with the prefix `load` that load various files. See documentation if you'd only like to load one file. The `atlantisom::run_truth()` function uses the above file definitions and calls a number of the `load` functions to read in all of the atlantis output. Note: this call reads in a number of large .nc files, so it will take a few minutes to return.
+
+```{r get_truth, message=FALSE}
+#Load functional groups
+funct.groups <- load_fgs(dir=d.name,
+                         file_fgs = functional.groups.file)
+#Get just the names of active functional groups
+funct.group.names <- funct.groups %>% 
+  filter(IsTurnedOn == 1) %>%
+  select(Name) %>%
+  .$Name
+
+#Store all loaded results into an R object
+results <- run_truth(scenario = scenario.name,
+          dir = d.name,
+          file_fgs = functional.groups.file,
+          file_bgm = box.file,
+          select_groups = funct.group.names,
+          file_init = initial.conditions.file,
+          file_biolprm = biol.prm.file,
+          file_runprm = run.prm.file
+)
+```
+
+Now the R object `results` with the comprehensive results from the Atlantis model has been read in. 
+
+## Simulating "sampling" from an Atlantis OM
+
+There are a number of functions to "sample" biological data from this comprehensive Atlantis output. These include `create_survey`, `sample_ages`, `sample_diet`, `sample_fish`, and `sample_survey_biomass`. 
