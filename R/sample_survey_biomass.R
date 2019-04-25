@@ -25,17 +25,16 @@
 #'   The function sums over layers and makes \code{$layers} is {NA}.
 #'
 #' @examples
-#'	directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#'	scenario <- "SETAS"
-#'	groups <- load_fgs(dir = directory, "functionalGroups.csv")
-#'	groups <- groups[groups$IsTurnedOn > 0, "Name"]
-#'	results <- run_truth(scenario = scenario,
-#'	dir = directory,
-#'	file_fgs = "functionalGroups.csv",
-#'	file_bgm = "VMPA_setas.bgm",
-#'	select_groups = groups,
-#'	file_init = "INIT_VMPA_Jan2015.nc",
-#'	file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
+#' groups <- load_fgs(dir = d, "functionalGroups.csv")
+#' run_truth(scenario = "SETAS",
+#'   dir = d,
+#'   file_fgs = "functionalGroups.csv",
+#'   file_bgm = "VMPA_setas.bgm",
+#'   select_groups = groups[groups$IsTurnedOn > 0, "Name"],
+#'   file_init = "INIT_VMPA_Jan2015.nc",
+#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm",
+#'   file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml")
 #'
 #'	species=c("Pisciv_T_Fish","Pisciv_S_Fish")
 #'  boxes <- 1:3
