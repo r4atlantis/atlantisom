@@ -84,7 +84,7 @@ sample_fish <- function(dat, effN) {
 			if(nn > 0){
 			  dat2[ind,]$numAtAgeSamp <- rmultinom(1,nn,probs)[,1]
 			} else { # sample is 0 if probs vector all 0s, no fish that year
-			  dat2[ind,]$numAtAgeSamp <- rep(0, length(probs))
+			  dat2[ind,]$numAtAgeSamp <- as.matrix(rep(0, length(probs),nrow=1))
 			  message("total numAtAge ", nn,", assigning 0 sample for species ",sp," and time ",y,"\n")
 			}
 		}
