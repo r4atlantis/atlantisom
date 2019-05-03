@@ -81,7 +81,12 @@ sample_fish <- function(dat, effN) {
 				message("effN is greater than total numbers available, so nEff set equal to ", nn," for species ",sp," and time ",y,"\n")
 			}
 			probs <- matrix(dat2[ind,]$numAtAge,nrow=1)
-		    dat2[ind,]$numAtAgeSamp <- rmultinom(1,nn,probs)[,1]
+			if(nn > 0){
+			  dat2[ind,]$numAtAgeSamp <- rmultinom(1,nn,probs)[,1]
+			} else { # sample is 0 if probs vector all 0s, no fish that year
+			  dat2[ind,]$numAtAgeSamp <- rep(0, length(probs))
+			  message("total numAtAge ", nn,", assigning 0 sample for species ",sp," and time ",y,"\n")
+			}
 		}
 	}
 
