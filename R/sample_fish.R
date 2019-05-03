@@ -78,7 +78,7 @@ sample_fish <- function(dat, effN) {
 
 			if(nn > totalNums) {
 				nn <- totalNums
-				message("effN is greater than total numbers available, so nEff set equal to", nn,"for species",sp,"and time",y,"\n")
+				message("effN is greater than total numbers available, so nEff set equal to ", nn," for species ",sp," and time ",y,"\n")
 			}
 			probs <- matrix(dat2[ind,]$numAtAge,nrow=1)
 		    dat2[ind,]$numAtAgeSamp <- rmultinom(1,nn,probs)[,1]
