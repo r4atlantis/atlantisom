@@ -86,7 +86,7 @@ sample_fish <- function(dat, effN) {
 			} else { # sample is 0 if probs vector all 0s, no fish that year
 			  dat2[ind,]$numAtAgeSamp <- rep(0, length(probs))
 			  message("total numAtAge ", nn,", assigning 0 sample for species ",sp," and time ",y,"\n")
-			#}
+			}
 		}
 	}
 
