@@ -1,7 +1,7 @@
 ---
-title: "AtlantisOMVignette"
+title: "AtlantisOMtoSSVignette"
 author: "Christine Stawitz, Sarah Gaichas"
-date: "March 5, 2019"
+date: "May 8, 2019"
 output: html_document
 ---
 
@@ -42,15 +42,11 @@ devtools::install_github("r4atlantis\atlantisom")
 You will first need to tell `atlantisom` to know where to look for the output and input files from your atlantis model run. Here, we will give the directory where the Atlantis inputs and outputs are stored `d.name`, the location of the functional groups file `functional.group.file` (.csv), the biomass pools file `biomass.pools.file` (.nc), the box locations file `box.file` (.bgm), an `initial.conditions.file` (.nc), the biology .prm file `biol.prm.file` (.prm), and the run .prm file `run.prm.file` (.prm). You will also need to specify a scenario name, which will be used to define the output files (i.e. output is stored in a number of netCDF files of the format: output<scenario><value>.nc). All of these files should be stored in `d.name`.
 
 ```{r initialize, eval = FALSE}
-d.name <- "C:/Users/chris/Documents/NOrway/CalCurrentSummitScenario1"
-functional.groups.file <- "CalCurrentV3Groups.csv" 
-biomass.pools.file <- "DIVCalCurrentV3_BIOL.nc"
-biol.prm.file <- "CalCurrentV3_Biol.prm"
-box.file <- "CalCurrentV3_utm.bgm"
-initial.conditions.file <- "DIVCalCurrentV3_BIOL.nc"
-biol.prm.file <- "CalCurrentV3_Biol.prm"
-run.prm.file <- "CalCurrentV3_run.xml"
-scenario.name <- "CCV3"
+ss.directory <- here("inst/extdata/Sardine_SS_files")
+
+#Need a way to manage data that doesn't rely on specific paths
+d.name <- here("non_synced_data/CalCurrentSummitScenario1")
+source(here("config/CCConfig.R"))
 ```
 
 ## Getting the "true" operating model values
@@ -67,6 +63,7 @@ funct.group.names <- funct.groups %>%
   select(Name) %>%
   .$Name
 
+if(!file.exists(file.path(d.name,"outputCCV3run_truth.RData"))){
 #Store all loaded results into an R object
 results <- run_truth(scenario = scenario.name,
           dir = d.name,
@@ -76,7 +73,12 @@ results <- run_truth(scenario = scenario.name,
           file_init = initial.conditions.file,
           file_biolprm = biol.prm.file,
           file_runprm = run.prm.file
+          save(results, file = "outputCCV3run_truth.RData")
 )
+} else{
+  results <- get(load(file.path(d.name,"outputCCV3run_truth.RData")))
+}
+
 ```
 
 Now the R object `results` with the comprehensive results from the Atlantis model has been read in. 
@@ -98,7 +100,7 @@ sel<- data.frame(species=rep(species,10),
               selex=rep(1,10))
 
 #Extract survey numbers
-tmp <- create_survey(dat=results$nums, time=seq(1,99,1), species=species, boxes=boxes, effic=effic, selex=sel)
+tmp <- create_survey(dat=results$nums, time=timeall, species=species, boxes=boxes, effic=effic, selex=sel)
 
 #wtAtAge comes from empirical data from assessment, in kg
 wtAtAge <- data.frame(species=rep("Pacific_sardine",10),
@@ -124,5 +126,22 @@ cv <- data.frame(species="Pacific_sardine", cv=c(0.4))
 
 # Get catch biomass
 catchObsBiom <- sample_survey_biomass(dat=fishery,cv=cv,wtAtAge)
+```
+
+We now have the full time series of catch and survey biomass from the atlantis output for Pacific sardine. Next, we read in the dummy SS data (`.dat`) file and replace the abundance indices with the sampled time series.
+
+```{r}
+#Read in dummy data
+sardine.dat <- r4ss::SS_readdat_3.30(file.path(ss.directory, "sardEM_3_3.dat"))
+
+#Replace CPUE observations for first time series with output from Atlantis - last 25 years
+# SS units are metric tons, so we divide by 1000
+sardine.dat$CPUE[1:75,"obs"] <- survObsBiom$atoutput[25:99]/1000
+
+#Replace CPUE observations for second time series with output from Atlantis - last 25 years
+# SS units are metric tons, so we divide by 1000
+sardine.dat$CPUE[76:150,"obs"] <- catchObsBiom$atoutput[25:99]/1000
+r4ss::SS_writedat_3.30(datlist = sardine.dat,
+                       outfile = file.path(assessment_dir, "sardEM_3_3.dat"))
 ```
 
