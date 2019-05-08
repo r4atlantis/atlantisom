@@ -83,4 +83,46 @@ Now the R object `results` with the comprehensive results from the Atlantis mode
 
 ## Simulating "sampling" from an Atlantis OM
 
-There are a number of functions to "sample" biological data from this comprehensive Atlantis output. These include `create_survey`, `sample_ages`, `sample_diet`, `sample_fish`, and `sample_survey_biomass`. 
+There are a number of functions to "sample" biological data from this comprehensive Atlantis output. These include `create_survey`, `sample_ages`, `sample_diet`, `sample_fish`, and `sample_survey_biomass`. Below, we use the `sample_survey_biomass` function to extract time series of a biomass index for a survey and fisheries CPUE for Pacific sardine. 
+
+```{r}
+species=c("Pacific_sardine")
+
+####### Boxes = spatial area, use all for now
+# effic - ?
+# sel - age-based selectivity curve
+boxes <- unique(results$nums$polygon)
+effic <- data.frame(species=species, efficiency=0.5)
+sel<- data.frame(species=rep(species,10),
+               agecl=c(1:10),
+              selex=rep(1,10))
+
+#Extract survey numbers
+tmp <- create_survey(dat=results$nums, time=seq(1,99,1), species=species, boxes=boxes, effic=effic, selex=sel)
+
+#wtAtAge comes from empirical data from assessment, in kg
+wtAtAge <- data.frame(species=rep("Pacific_sardine",10),
+                agecl=1:10,
+                wtAtAge=c( 0.0542, 0.0837,	0.1103,	0.1323,	0.1497,	0.163,	0.1729,	0.1801,	0.1854,	0.1941))
+
+#Set survey CV at 0.2
+cv <- data.frame(species="Pacific_sardine", cv=c(0.2))
+
+#Sample the survey biomass
+survObsBiom <- sample_survey_biomass(dat=tmp,cv=cv,wtAtAge)
+
+#Define selectivity curve for the fishery
+selCatch<- data.frame(species=rep(species,10),
+                 agecl=c(1:10),
+                 selex=(1/(1+exp(-0.5*(1:10-2)))))
+
+#How do we distinguish survey sampling from fisheries sampling? Maybe define by historical sampling locations?
+fishery <- create_survey(dat=results$nums, time=seq(1,99,1), species=species, boxes=boxes, effic=effic, selex=selCatch)
+
+# Make CV of fishery CPUE slightly larger
+cv <- data.frame(species="Pacific_sardine", cv=c(0.4))
+
+# Get catch biomass
+catchObsBiom <- sample_survey_biomass(dat=fishery,cv=cv,wtAtAge)
+```
+
