@@ -49,7 +49,8 @@ upper.bins <- 1:150
 # This could conceivably be passed to the function with vals for each species.
 
 ## Get group codes to calculate size comps for
-groups <- as.factor(fgs$Name)
+#groups <- as.factor(fgs$Name)
+groups <- as.factor(structn$species)
 
 times <- unique(structn$time)
 
@@ -78,8 +79,8 @@ muweight$atoutput <- li_a_use*mulen$atoutput^li_b_use
 upper.bins <- 1:150
 lower.bins <- c(0,upper.bins[-length(upper.bins)])
 lenfreq <- NULL
-#for (irow in 1:nrow(mulen))
-for (irow in 1:100)
+for (irow in 1:nrow(mulen))
+#for (irow in 1:100)
   {
   group <- nums$species[irow]
   igroup <- which(groups==group)
