@@ -50,7 +50,7 @@ upper.bins <- 1:150
 
 ## Get group codes to calculate size comps for
 #groups <- as.factor(fgs$Name)
-groups <- as.factor(structn$species)
+groups <- unique(as.factor(structn$species))
 
 times <- unique(structn$time)
 
