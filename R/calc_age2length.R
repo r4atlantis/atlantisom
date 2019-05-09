@@ -50,9 +50,9 @@ upper.bins <- 1:150
 
 ## Get group codes to calculate size comps for
 #groups <- as.factor(fgs$Name)
-groups <- unique(as.factor(structn$species))
+groups <- unique(as.factor(structn$species)) # use nums instead of structn?
 
-times <- unique(structn$time)
+times <- unique(structn$time) # use nums instead of structn?
 
 #calculate mean length at age
 mulen <- nums
@@ -80,7 +80,7 @@ upper.bins <- 1:150
 lower.bins <- c(0,upper.bins[-length(upper.bins)])
 lenfreq <- NULL
 for (irow in 1:nrow(mulen))
-#for (irow in 1:100)
+#for (irow in 1:500)
   {
   group <- nums$species[irow]
   igroup <- which(groups==group)
@@ -94,10 +94,10 @@ for (irow in 1:nrow(mulen))
   CumFracperbin <- plnorm(upper.bins,muuse,sigma)
   Fracperbin <- c(CumFracperbin[1],diff(CumFracperbin))
   natlength = Fracperbin*nums$atoutput[irow]
-  results <- cbind(mulen[irow,],lower.bins,upper.bins)
+  results <- cbind(mulen[irow,],lower.bins,upper.bins, row.names = NULL) # add row.names = NULL?
   results$atoutput <- natlength
   #results <- results[results$atoutput>0,]
-  lenfreq <- rbind(lenfreq,results)
+  lenfreq <- rbind(lenfreq,results) # add row.names = NULL?
 }
 
 #get rid of zero rows.
