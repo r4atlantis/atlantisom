@@ -28,6 +28,9 @@
 #' @param effN    Efficiency for each species: a matrix with nrow=length(species). Columns:
 #'                 species:  the species name. Matches names in species
 #'                 effN:     the effective N for each species (effective sample size)
+#' @param sample  Logical asking whether to apply multinomial sampling using effN.
+#' Setting to false results in simple aggregation of atoutput to annual age class values.
+#' The default value is \code{TRUE}.
 #' @examples
 #' 		setwd(file.path(system.file( package = "atlantisom"),".."))
 #'
@@ -55,7 +58,7 @@
 #'		samp <- sample_fish(tmp, effN=effN)
 #'
 
-sample_fish <- function(dat, effN) {
+sample_fish <- function(dat, effN, sample = TRUE) {
 
     #assumes that time is already selected/subsetted
 	#assumes equal effort in each polygon, thus samples coastwide
@@ -67,29 +70,29 @@ sample_fish <- function(dat, effN) {
 	dat2 <- aggregate(dat$atoutput,list(dat$species,dat$agecl,dat$time),sum)
 	names(dat2) <- c("species","agecl","time","numAtAge")
 
+	if(sample = TRUE){
+	  #TODO: Need error checking--SKG moved nn assignement of effN to inside y loop from outside
+	  dat2$numAtAgeSamp <- NA
+	  for(sp in unique(dat2$species)) {
+	    for(y in unique(dat2$time)) {
+	      nn <- effN[effN$species==sp,"effN"]
+	      ind <- dat2$species == sp & dat2$time == y
+	      totalNums <- sum(dat2[ind,]$numAtAge)
 
-	#TODO: Need error checking--SKG moved nn assignement of effN to inside y loop from outside
-	dat2$numAtAgeSamp <- NA
-	for(sp in unique(dat2$species)) {
-		for(y in unique(dat2$time)) {
-		  nn <- effN[effN$species==sp,"effN"]
-		  ind <- dat2$species == sp & dat2$time == y
-			totalNums <- sum(dat2[ind,]$numAtAge)
-
-			if(nn > totalNums) {
-				nn <- totalNums
-				message("effN is greater than total numbers available, so nEff set equal to ", nn," for species ",sp," and time ",y,"\n")
-			}
-			probs <- matrix(dat2[ind,]$numAtAge,nrow=1)
-			if(nn > 0){
-			  dat2[ind,]$numAtAgeSamp <- rmultinom(1,nn,probs)[,1]
-			} else { # sample is 0 if probs vector all 0s, no fish that year
-			  dat2[ind,]$numAtAgeSamp <- rep(0, length(probs))
-			  message("total numAtAge ", nn,", assigning 0 sample for species ",sp," and time ",y,"\n")
-			}
-		}
+	      if(nn > totalNums) {
+	        nn <- totalNums
+	        message("effN is greater than total numbers available, so nEff set equal to ", nn," for species ",sp," and time ",y,"\n")
+	      }
+	      probs <- matrix(dat2[ind,]$numAtAge,nrow=1)
+	      if(nn > 0){
+	        dat2[ind,]$numAtAgeSamp <- rmultinom(1,nn,probs)[,1]
+	      } else { # sample is 0 if probs vector all 0s, no fish that year
+	        dat2[ind,]$numAtAgeSamp <- rep(0, length(probs))
+	        message("total numAtAge ", nn,", assigning 0 sample for species ",sp," and time ",y,"\n")
+	      }
+	    }
+	  }
 	}
-
 
 	#output same general format that can be input into comp functions
 	out <- data.frame(species = dat2$species,
