@@ -70,7 +70,7 @@ sample_fish <- function(dat, effN, sample = TRUE) {
 	dat2 <- aggregate(dat$atoutput,list(dat$species,dat$agecl,dat$time),sum)
 	names(dat2) <- c("species","agecl","time","numAtAge")
 
-	if(sample = TRUE){
+	if(sample){
 	  #TODO: Need error checking--SKG moved nn assignement of effN to inside y loop from outside
 	  dat2$numAtAgeSamp <- NA
 	  for(sp in unique(dat2$species)) {
