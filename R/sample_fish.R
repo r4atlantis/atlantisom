@@ -92,7 +92,7 @@ sample_fish <- function(dat, effN, sample = TRUE) {
 	      }
 	    }
 	  }
-	}
+	} else dat2$numAtAgeSamp <- dat2$numAtAge
 
 	#output same general format that can be input into comp functions
 	out <- data.frame(species = dat2$species,
