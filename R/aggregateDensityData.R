@@ -40,7 +40,7 @@
 #'   species = c("spec1", "spec2"), boxes = 1:2)
 #' rm(list = c("tmp", "dat"))
 #'
-aggregateData <- function(dat, time, species, boxes,
+aggregateDensityData <- function(dat, time, species, boxes,
   keepColumns = c("species", "agecl", "polygon", "time")) {
 
   #first select the appropriate rows (time and box)
