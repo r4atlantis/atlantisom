@@ -1,7 +1,7 @@
 #' @title Sample numbers-at-age to create composition data
 #'
 #' @description Create sampled data from numbers-at-age data to create
-#'   composition data from and Atlantis scenario.
+#'   composition data from and Atlantis scenario by default.
 #'   todo: add more information here later
 #'
 #' @details The function takes numbers-at-age data from an Atlantis scenario
@@ -14,7 +14,9 @@
 #'   sums across boxes to properly weight the
 #'   numbers-at-age data. Subsequently, the data is sampled using a multinomial
 #'   with the effective sample size based on the number of fish you pass in
-#'   \code{dat} and \code{prop}.
+#'   \code{dat} and \code{prop}. Density data are also needed for biological sampling.
+#'   Therefore, when called with sample=FALSE for density data,
+#'   applies median to aggregate and does not apply multinomial.
 ##'   The function starts with numbers-at-age data and therefore the function then must
 ##'   sum across boxes to properly weight them. Subsequently, the function then uses
 ##'   a multinomial with a specified effective sample size.
@@ -65,13 +67,12 @@ sample_fish <- function(dat, effN, sample = TRUE) {
 	#### Therefore make sure that density is not applied in create_survey function
 
 	#TODO: parameterize effN to vary with time period
+  if(sample){
+    #sum over boxes and assume sampling occurs coastwide (the sampled boxes were already subset in create functions)
+    dat2 <- aggregate(dat$atoutput,list(dat$species,dat$agecl,dat$time),sum)
+    names(dat2) <- c("species","agecl","time","numAtAge")
 
-	#sum over boxes and assume sampling occurs coastwide (the sampled boxes were already subset in create functions)
-	dat2 <- aggregate(dat$atoutput,list(dat$species,dat$agecl,dat$time),sum)
-	names(dat2) <- c("species","agecl","time","numAtAge")
-
-	if(sample){
-	  #TODO: Need error checking--SKG moved nn assignement of effN to inside y loop from outside
+    #TODO: Need error checking--SKG moved nn assignement of effN to inside y loop from outside
 	  dat2$numAtAgeSamp <- NA
 	  for(sp in unique(dat2$species)) {
 	    for(y in unique(dat2$time)) {
@@ -92,7 +93,11 @@ sample_fish <- function(dat, effN, sample = TRUE) {
 	      }
 	    }
 	  }
-	} else dat2$numAtAgeSamp <- dat2$numAtAge
+	} else {
+	  dat2 <- aggregate(dat$medatoutput,list(dat$species,dat$agecl,dat$time),median)
+	  names(dat2) <- c("species","agecl","time","medatoutput")
+	  dat2$numAtAgeSamp <- dat2$medatoutput
+	}
 
 	#output same general format that can be input into comp functions
 	out <- data.frame(species = dat2$species,
