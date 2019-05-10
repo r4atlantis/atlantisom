@@ -4,7 +4,7 @@
 \alias{sample_fish}
 \title{Sample numbers-at-age to create composition data}
 \usage{
-sample_fish(dat, effN)
+sample_fish(dat, effN, sample = TRUE)
 }
 \arguments{
 \item{dat}{A \code{data.frame} of numbers at age containing the following columns:
@@ -22,6 +22,10 @@ or \code{\link{create_fishery_data}}.}
 \item{effN}{Efficiency for each species: a matrix with nrow=length(species). Columns:
 species:  the species name. Matches names in species
 effN:     the effective N for each species (effective sample size)}
+
+\item{sample}{Logical asking whether to apply multinomial sampling using effN.
+Setting to false results in simple aggregation of atoutput to annual age class values.
+The default value is \code{TRUE}.}
 }
 \description{
 Create sampled data from numbers-at-age data to create
