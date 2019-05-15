@@ -5,7 +5,7 @@
 \title{Approximating the true numbers at age within each box, functional group and
 time step.}
 \usage{
-calc_stage2age(dir, nums_data, biolprm, YOY, fgs)
+calc_stage2age(nums_data, biolprm, YOY, fgs, runprm)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
@@ -13,9 +13,9 @@ default is \code{getwd()}.}
 }
 \value{
 A \code{data.frame} in long format with the following coumn names:
-  Species, timestep, polygon, agecl, and atoutput (i.e., variable). This is 
+  Species, timestep, polygon, agecl, and atoutput (i.e., variable). This is
   the same as the input Nums data frame however, agecl will be TRUE numbers
-  by age class -- just named the same as the input to ensure make it work 
+  by age class -- just named the same as the input to ensure make it work
   with the other functions
 }
 \description{

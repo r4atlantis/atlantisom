@@ -4,7 +4,7 @@
 \alias{calc_Z}
 \title{Calculate total mortality for age structured groups}
 \usage{
-calc_Z(yoy, nums, fgs, biolprm, toutinc = 73)
+calc_Z(yoy, nums, fgs, biolprm, toutinc)
 }
 \arguments{
 \item{yoy}{Output from \code{\link{load_yoy}}, which is a \code{data.frame}
@@ -20,9 +20,7 @@ reads in the csv file containing functional group names, usually
 \item{biolprm}{A list of biological parameters available from the
 \code{[...]_Biol.prm} file, as read in by \code{\link{load_biolprm}}.}
 
-\item{toutinc}{The  periodicity specified for the output of the Atlantis
-model. The value can either be specified manually or read in from the
-\code{[...]_run.xml} file using \code{\link{load_runprm}}.}
+\item{toutinc}{output time increment from run.prm file}
 }
 \value{
 A \code{data.frame} of time-varying Z values.
