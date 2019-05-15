@@ -22,7 +22,7 @@
 #' @param nums Object containing the number at stage.
 #' @template fgs
 #' @template biolprm
-#' @template toutinc
+#' @param toutinc output time increment from run.prm file
 #' @family calc functions
 #' @return A \code{data.frame} of time-varying Z values.
 #' @author Sean Lucey
@@ -51,8 +51,11 @@
 #' calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm,
 #'   toutinc = run$toutinc)
 #'
-calc_Z <- function(yoy, nums, fgs, biolprm, toutinc = 73) {
 
+#calc_Z <- function(yoy, nums, fgs, biolprm, toutinc = 73) {
+# harcoding toutinc won't work, now passing from calc_stage2age
+
+calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   # subset the yoy for species included in the fgs file
   # that are turned on
   # colnames of the recruit data are "Time" and a column for each
