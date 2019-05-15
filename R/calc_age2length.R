@@ -1,6 +1,6 @@
 #' Calculate length from ages
 #'
-#' calculate length composition from Atlantis output (st)age data
+#' Calculate length composition in 1 cm bins from Atlantis output (st)age data
 #' Uses numbers at age, plus weight at age, and weight-length relationships to
 #' generate size comps
 #'
@@ -11,7 +11,10 @@
 #' @template nums
 #' @template biolprm
 #' @template fgs
+#' @param maxbin The upper length (cm) bin applied to all species sampled. The default
+#' value is 150.
 #' @param CVlenage The variability in length at age (currently same for all species)
+#' The default value is 0.1.
 #' @param remove.zeroes  Logical asking whether to only return numbers at length for
 #' combinations of species, age, box, depth, etc that have numbers>0.
 #' The default value is \code{TRUE}.
@@ -31,7 +34,7 @@
 #'   CVlenage = 0.1, remove.zeroes=TRUE)
 #'
 calc_age2length <- function(structn, resn, nums,
-  biolprm, fgs,
+  biolprm, fgs, maxbin = 150,
   CVlenage = 0.1, remove.zeroes = TRUE) {
 
 ### Inputs required
@@ -43,7 +46,7 @@ ages = 1:10
 # that is pre-specified in the call to the function, and would likely change by species
 # Perhaps solution is to make number of length bins fixed across groups, but
 # change the upper limits for each length bin
-upper.bins <- 1:150
+upper.bins <- 1:maxbin
 
 # CV length at age for each species is Needed to create the age-length key.
 # This could conceivably be passed to the function with vals for each species.
@@ -76,7 +79,7 @@ muweight$atoutput <- li_a_use*mulen$atoutput^li_b_use
 # #calculate length comps
 #(numbers at length at max resolution - can then be collapsed to appropriate
 #spatial/temporal resolution later)
-upper.bins <- 1:150
+upper.bins <- 1:maxbin
 lower.bins <- c(0,upper.bins[-length(upper.bins)])
 lenfreq <- NULL
 for (irow in 1:nrow(mulen))

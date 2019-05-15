@@ -4,8 +4,8 @@
 \alias{calc_age2length}
 \title{Calculate length from ages}
 \usage{
-calc_age2length(structn, resn, nums, biolprm, fgs, CVlenage = 0.1,
-  remove.zeroes = TRUE)
+calc_age2length(structn, resn, nums, biolprm, fgs, maxbin = 150,
+  CVlenage = 0.1, remove.zeroes = TRUE)
 }
 \arguments{
 \item{structn}{A \code{data.frame} containing the structural nitrogen per functional-group
@@ -30,7 +30,11 @@ The \code{data.frame} has to origininate from \code{\link{load_nc}} using
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
-\item{CVlenage}{The variability in length at age (currently same for all species)}
+\item{maxbin}{The upper length (cm) bin applied to all species sampled. The default
+value is 150.}
+
+\item{CVlenage}{The variability in length at age (currently same for all species)
+The default value is 0.1.}
 
 \item{remove.zeroes}{Logical asking whether to only return numbers at length for
 combinations of species, age, box, depth, etc that have numbers>0.
@@ -43,7 +47,7 @@ same format as other dataframes in the atlantisom package except has two additio
 columns to include the length bin information.
 }
 \description{
-calculate length composition from Atlantis output (st)age data
+Calculate length composition in 1 cm bins from Atlantis output (st)age data
 Uses numbers at age, plus weight at age, and weight-length relationships to
 generate size comps
 }
