@@ -23,7 +23,7 @@ or \code{\link{create_fishery_data}}.}
 a matrix with columns: species, cv}
 
 \item{wtAtAge}{Weight-at-age by species. a matrix with columns:
-species, agecl, wtAtAge}
+species, agecl, time (optional), wtAtAge}
 }
 \value{
 The standard dataframe as specified used in \code{dat}.

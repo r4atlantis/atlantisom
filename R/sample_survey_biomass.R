@@ -19,7 +19,7 @@
 #' @param cv      Coefficient of variation for the entire species specific biomass
 #'                    a matrix with columns: species, cv
 #' @param wtAtAge Weight-at-age by species. a matrix with columns:
-#'                   species, agecl, wtAtAge
+#'                   species, agecl, time (optional), wtAtAge
 #'
 #' @return The standard dataframe as specified used in \code{dat}.
 #'   The function sums over layers and makes \code{$layers} is {NA}.
@@ -61,8 +61,14 @@ sample_survey_biomass <- function(dat,cv,wtAtAge) {
 	###  this makes sure that box-specific biomasses add up to total observed biomass
     ### use create_survey to subset the boxes and time
 
+  #SKG if we want this to work for time-varying wt@age, need to allow that dimension
+
 	#convert numAtAge to BiomassAtAge
-	dat2 <- merge(dat,wtAtAge,by=c("species","agecl"),all.x=T)
+	if("time" %in% colnames(wtAtAge)){
+	  dat2 <- merge(dat,wtAtAge,by=c("species","agecl", "time"),all.x=T)
+	}else{
+	  dat2 <- merge(dat,wtAtAge,by=c("species","agecl"),all.x=T)
+	  }
 	dat2$biomass <- dat2$atoutput * dat2$wtAtAge
 
 	#sum over boxes and ages (the sampled boxes were already subset in create functions)
