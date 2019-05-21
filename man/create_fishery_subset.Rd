@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_fishery_subset.R
 \name{create_fishery_subset}
 \alias{create_fishery_subset}
-\title{Create survey observations from Atlantis output}
+\title{Create fishery subset from Atlantis output}
 \usage{
 create_fishery_subset(dat, time, species, boxes)
 }
@@ -44,13 +44,15 @@ Returns only boxes where fishery was sampled
 Create a subset of the fishery observations for an Atlantis scenario.
 }
 \details{
-The function takes numbers-at-age data from an Atlantis scenario
+The function takes fishery catch data from an Atlantis scenario
   where the data was read in from Atlantis output using \code{\link{load_nc}}
   within \code{\link{run_truth}}. One does not need to use these functions
   to create \code{dat}, rather you must only ensure that the structure of
   \code{dat} is the same.
-  Currently, the function subsets the data by polygon and time,
-  and sums over layers.  The input is fishery observations, so nothing else needs to be done.
+  Currently, the function subsets the data by polygon and time (there are not layers
+  in fishery outputs).  The input is fishery observations (either catch nums
+  or catch bio outputs of run_truth), so nothing else needs to be done. Atlantis
+  already applies a fishery efficiency and selectivity internally.
   This function works for specific defined species, specific defined polygons,
   and specific defined time.
 }
