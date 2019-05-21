@@ -23,7 +23,7 @@ or \code{\link{create_fishery_data}}.}
 a matrix with columns: species, cv}
 
 \item{wtAtAge}{Weight-at-age by species. a matrix with columns:
-species, agecl, time (optional), wtAtAge}
+species, agecl, time (optional), wtAtAge (kg)}
 }
 \value{
 The standard dataframe as specified used in \code{dat}.
@@ -37,10 +37,10 @@ The function takes numbers-at-age data from an Atlantis scenario
   \code{dat} is the same.
 }
 \details{
-This function simply calculates biomass-at-age by applying a weight-at-age
-  vector, sums over polygons,
+This function simply calculates biomass-at-age in t by applying a weight-at-age
+  vector (units of kg), sums over polygons,
   and then applies user defined error to the biomass.
-  The result is a coastwide biomass estimate from the survey
+  The result is a coastwide biomass estimate in tons from the survey
   Improvements could be to provide polygon specific biomass,
   but the cv will need to be thought about.
 }
