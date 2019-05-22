@@ -2,7 +2,7 @@
 % Please edit documentation in R/SS_write_comps.R
 \name{SS_write_comps}
 \alias{SS_write_comps}
-\title{Function to write age and length composition data from \code{atlantisom} to Stock Synthesis 3.30.}
+\title{Function to write age and length composition data from \code{atlantisom} to Stock Synthesis 3.30. Note: every time this function is called, it overwrites the age and length composition data currently in the \code{ss_data_list} object.}
 \usage{
 SS_write_comps(ss_data_list, comp_matrix, data_rows, sampling_month,
   data_type, fleet_number, bins, caal_bool)
@@ -24,6 +24,9 @@ SS_write_comps(ss_data_list, comp_matrix, data_rows, sampling_month,
 
 \item{caal_bool}{a vector of length \code{ss_data_list} with boolean values for whether the data is conditional age-at-length}
 }
+\value{
+modified ss_data_list that includes added composition data
+}
 \description{
-Function to write age and length composition data from \code{atlantisom} to Stock Synthesis 3.30.
+Function to write age and length composition data from \code{atlantisom} to Stock Synthesis 3.30. Note: every time this function is called, it overwrites the age and length composition data currently in the \code{ss_data_list} object.
 }
