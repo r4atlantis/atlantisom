@@ -1,4 +1,4 @@
-#'Function to write age and length composition data from \code{atlantisom} to Stock Synthesis 3.30.
+#'Function to write age and length composition data from \code{atlantisom} to Stock Synthesis 3.30. Note: every time this function is called, it overwrites the age and length composition data currently in the \code{ss_data_list} object.
 #'@param ss_data_list the list object containing SS data
 #'@param comp_matrix the matrix of composition data (age or length)
 #'@param data_rows a list, where each entry is a vector corresponding to the year column of the composition data. For length composition data, this is the 1:nyears repped each row for the number of length bins. For age composition data, this is nyears
@@ -7,6 +7,7 @@
 #'@param fleet_number a vector of numbers, each entry corresponds to which fleet the comp data are from
 #'@param bins a list item, each item is a vector specifying either the age or length bins
 #'@param caal_bool a vector of length \code{ss_data_list} with boolean values for whether the data is conditional age-at-length
+#'@return modified ss_data_list that includes added composition data
 SS_write_comps <- function(ss_data_list, comp_matrix,
                            data_rows, sampling_month,
                            data_type, fleet_number,
@@ -62,7 +63,7 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
   if(data_type[[i]]=="lencomp"){
       ss_data_list[[data_type[i]]][, paste(type_prefix,as.character(bins[[i]]), sep="")] <- 0
   }
-  browser()
+
     ss_data_list[[data_type[i]]][indices,paste(type_prefix,as.character(bins[[i]]), sep="")] <- comp_matrix[[i]][,as.character(bins[[i]])]
 }
     return(ss_data_list)
