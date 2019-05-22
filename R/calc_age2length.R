@@ -82,6 +82,10 @@ muweight$atoutput <- li_a_use*mulen$atoutput^li_b_use
 upper.bins <- 1:maxbin
 lower.bins <- c(0,upper.bins[-length(upper.bins)])
 lenfreq <- NULL
+
+if(maxbin<max(mulen$atoutput)){
+  print("Warning: maximum bin size is smaller than the longest fish in the sample. Fish above the maximum bin size will be removed from length compositions.")
+}
 for (irow in 1:nrow(mulen))
 #for (irow in 1:500)
   {
@@ -98,7 +102,7 @@ for (irow in 1:nrow(mulen))
   Fracperbin <- c(CumFracperbin[1],diff(CumFracperbin))
   natlength = Fracperbin*nums$atoutput[irow]
   results <- cbind(mulen[irow,],lower.bins,upper.bins, row.names = NULL) # add row.names = NULL?
-  results$atoutput <- natlength
+  results$atoutput <- round(natlength,0)
   #results <- results[results$atoutput>0,]
   lenfreq <- rbind(lenfreq,results) # add row.names = NULL?
 }

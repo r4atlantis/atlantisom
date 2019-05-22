@@ -19,7 +19,7 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
   }
 
   if("lencomp" %in% data_type){
-    ss_data_list$lencomp <- ss_data_list$lencomp[0,]
+    ss_data_list$lencomp <- ss_data_list$lencomp[0,-seq(7,nrow(ss_data_list$lencomp))]
     len_comp_ind <- which(data_type=="lencomp")
   }
 
@@ -46,18 +46,25 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
                           "agecomp"="a",
                           "lencomp"="l")
 
+
     if(data_type[i]=="agecomp"){
       if(caal_bool[i]){
-      stop("Conditional age-at-length observations are not yet supported")
+
+        ss_data_list[[data_type[i]]][indices,"Lbin_lo"] <- comp_matrix[[i]][,"lower.bins"]
+        ss_data_list[[data_type[i]]][indices,"Lbin_hi"] <- comp_matrix[[i]][,"upper.bins"]
       } else{
       ss_data_list[[data_type[i]]][indices,"Lbin_lo"] <- rep(-1,length(data_rows[[i]]))
       ss_data_list[[data_type[i]]][indices,"Lbin_hi"] <- rep(-1,length(data_rows[[i]]))
       }
       ss_data_list[[data_type[i]]][indices, "Ageerr"] <- rep(1,length(data_rows[[i]]))
     }
-  }
-    ss_data_list[[data_type[i]]][indices,paste(type_prefix,bins[[i]], sep="")] <- comp_matrix[[i]][,bins[[i]]]
 
+  if(data_type[[i]]=="lencomp"){
+      ss_data_list[[data_type[i]]][, paste(type_prefix,as.character(bins[[i]]), sep="")] <- 0
+  }
+  browser()
+    ss_data_list[[data_type[i]]][indices,paste(type_prefix,as.character(bins[[i]]), sep="")] <- comp_matrix[[i]][,as.character(bins[[i]])]
+}
     return(ss_data_list)
 
   }
