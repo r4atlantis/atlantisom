@@ -42,6 +42,7 @@
 #_Catch data: yr, seas, fleet, catch, catch_se
 #_catch_se:  standard error of log(catch)
 #_NOTE:  catch data is ignored for survey fleets
+#_yr month fleet obs stderr
 -999 1 1 0 0.01
 30 1 1 0 0.01
 -9999 0 0 0 0
