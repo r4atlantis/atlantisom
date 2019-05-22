@@ -11,16 +11,34 @@
 1 #_Nsexes
 10 #_Nages
 1 #_Nareas
-2 #_Nfleets
-#_fleetinfo
-#_type	surveytiming	area	units	need_catch_mult	fleetname
-1	-1	1	2	0	Fishery	#_1
-3	1 	1	1	0	Survey 	#_2
-#_year	seas	index	obs	se_log
--999 	1	1	0	0.01	#_1         
-30   	1	1	0	0.01	#_2         
--9999	0	0	0	0   	#_terminator
-#_CPUE_and_surveyabundance_observations
+2 #_Nfleets (including surveys)
+#_fleet_type: 1=catch fleet; 2=bycatch only fleet; 3=survey; 4=ignore 
+#_sample_timing: -1 for fishing fleet to use season-long catch-at-age for observations, or 1 to use observation month;  (always 1 for surveys)
+#_fleet_area:  area the fleet/survey operates in 
+#_units of catch:  1=bio; 2=num (ignored for surveys; their units read later)
+#_catch_mult: 0=no; 1=yes
+#_rows are fleets
+#_fleet_type fishery_timing area catch_units need_catch_mult fleetname
+ 1 -1 1 2 0 Fishery  # 1
+ 3 1 1 1 0 Survey  # 2
+#Bycatch_fleet_input_goes_next
+#a:  fleet index
+#b:  1=include dead bycatch in total dead catch for F0.1 and MSY optimizations and forecast ABC; 2=omit from total catch for these purposes (but still include the mortality)
+#c:  1=Fmult scales with other fleets; 2=bycatch F constant at input value; 3=bycatch F from range of years
+#d:  F or first year of range
+#e:  last year of range
+#f:  not used
+# a   b   c   d   e   f 
+#_Catch data: yr, seas, fleet, catch, catch_se
+#_catch_se:  standard error of log(catch)
+#_NOTE:  catch data is ignored for survey fleets
+#_yr month fleet obs stderr
+-999 1 1 0 0.01
+30 1 1 0 0.01
+-9999 0 0 0 0
+#
+ #_CPUE_and_surveyabundance_observations
+>>>>>>> 63db449ef800bbe8ef56dcea9c312e976acc7829
 #_Units:  0=numbers; 1=biomass; 2=F; >=30 for special types
 #_Errtype:  -1=normal; 0=lognormal; >0=T
 #_SD_Report: 0=no sdreport; 1=enable sdreport
@@ -89,9 +107,33 @@
 #
 #_discard_data
 #
+<<<<<<< HEAD
 #_meanbodywt
 0 #_use_meanbodywt
  #_DF_for_meanbodywt_T-distribution_like
+=======
+10 #_N_age_bins
+ 1 2 3 4 5 6 7 8 9 10
+1 #_N_ageerror_definitions  
+ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
+ 0.001 0.001 0.001 0.001 0.001 0.001 0.001 0.001 0.001 0.001 0.001
+#_mintailcomp: upper and lower distribution for females and males separately are accumulated until exceeding this level.
+#_addtocomp:  after accumulation of tails; this value added to all bins
+#_males and females treated as combined gender below this bin number 
+#_compressbins: accumulate upper tail by this number of bins; acts simultaneous with mintailcomp; set=0 for no forced accumulation
+#_Comp_Error:  0=multinomial, 1=dirichlet
+#_Comp_Error2:  parm number  for dirichlet
+#_minsamplesize: minimum sample size; set to 1 to match 3.24, minimum value is 0.001
+#_mintailcomp addtocomp combM+F CompressBins CompError ParmSelect minsamplesize
+-0.0001 1e-05 -1 0 0 0 1 #_fleet:1_Fishery
+-0.0001 1e-05 -1 0 0 0 1 #_fleet:2_Survey
+3 #_Lbin_method_for_Age_Data: 1=poplenbins; 2=datalenbins; 3=lengths
+# sex codes:  0=combined; 1=use female only; 2=use male only; 3=use both as joint sexxlength distribution
+# partition codes:  (0=combined; 1=discard; 2=retained
+#_yr month fleet sex part ageerr Lbin_lo Lbin_hi Nsamp datavector(female-male)
+ 1 7 1 0 0 1 -1 -1 100	1	0	0	0	0	0	0	0	0	0
+ -9999  0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+>>>>>>> 63db449ef800bbe8ef56dcea9c312e976acc7829
 #
 #_population_length_bins
 1 # length bin method: 1=use databins; 2=generate from binwidth,min,max below; 3=read vector

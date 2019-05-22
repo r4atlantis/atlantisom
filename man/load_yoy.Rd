@@ -33,9 +33,10 @@ test <- load_yoy(dir = d, file_yoy = file)
 \seealso{
 Other load functions: \code{\link{load_biolprm}},
   \code{\link{load_boxarea}}, \code{\link{load_box}},
-  \code{\link{load_bps}}, \code{\link{load_diet_comp}},
-  \code{\link{load_fgs}}, \code{\link{load_meta}},
-  \code{\link{load_nc}}, \code{\link{load_runprm}}
+  \code{\link{load_bps}}, \code{\link{load_catch}},
+  \code{\link{load_diet_comp}}, \code{\link{load_fgs}},
+  \code{\link{load_meta}}, \code{\link{load_nc}},
+  \code{\link{load_runprm}}
 }
 \author{
 Emma E Hodgson
