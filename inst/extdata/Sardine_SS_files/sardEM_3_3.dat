@@ -97,7 +97,7 @@
 10 #_N_age_bins
  1 2 3 4 5 6 7 8 9 10
 1 #_N_ageerror_definitions  
- 1.5 2.5 3.5 4.5 5.5 6.5 7.5 8.5 9.5 10.5 11.5 
+ -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 
  0.001 0.001 0.001 0.001 0.001 0.001 0.001 0.001 0.001 0.001 0.001
 #_mintailcomp: upper and lower distribution for females and males separately are accumulated until exceeding this level.
 #_addtocomp:  after accumulation of tails; this value added to all bins
