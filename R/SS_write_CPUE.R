@@ -5,12 +5,23 @@
 #'@param CVs a vector of numbers representing the CV around the index
 #'@param data_years a vector, where each item is the length of the index
 #'@param sampling_month a list, where each item is a vector representig the month of sampling for each index
-#'@param  units must be one of "numbers" or "biomass"
-SS_write_CPUE <- function(ss_data_list, cpue_data,
+#'@param  units a vector where each entry must be one of "numbers" or "biomass"
+#'@param fleets a vector where each entry is the fleet number
+#'@param data_type a vector with length = length(ts_data), each entry must be either "cpue" or "catch"
+SS_write_ts <- function(ss_data_list, ts_data,
                  CVs, data_years,
-                 sampling_month, units){
+                 sampling_month, units,
+                 fleets,
+                 data_type){
 
+  #Clear existing data
+  if("cpue" %in% data_type){
   ss_data_list$CPUE <- ss_data_list$CPUE[0,]
+  }
+  if("catch" %in% data_type){
+  ss_data_list$catch <- ss_data_list$catch[0,]
+  }
+
   k <- 1
   start_year <- ss_data_list$styr
   for(i in 1:length(cpue_data)){
@@ -22,11 +33,12 @@ SS_write_CPUE <- function(ss_data_list, cpue_data,
       }
 
     indices <- (k:(k+data_years[i]-1))
-  ss_data_list$CPUE[indices,"year"] <- start_year:(start_year+data_years[i]-1)
-  ss_data_list$CPUE[indices, "obs"] <- cpue_data[[i]]
-  ss_data_list$CPUE[indices, "seas"] <- sampling_month[[i]]
-  ss_data_list$CPUE[indices, "se_log"] <- rep(CVs[i], length(indices))
-  ss_data_list$CPUE[indices, "index"] <- rep(i, length(indices))
+  ss_data_list[data_type[i]][indices,"year"] <- start_year:(start_year+data_years[i]-1)
+  ss_data_list[data_type[i]][indices, "seas"] <- sampling_month[[i]]
+
+  ss_data_list[data_type[i]][indices, "obs"] <- cpue_data[[i]]
+  ss_data_list[data_type[i]][indices, "se_log"] <- rep(CVs[i], length(indices))
+  ss_data_list[data_type[i]][indices, "index"] <- rep(fleets[i], length(indices))
 
   k <- indices[length(indices)]+1
 

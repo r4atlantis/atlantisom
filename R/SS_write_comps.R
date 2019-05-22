@@ -20,7 +20,8 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
   }
 
   if("lencomp" %in% data_type){
-    ss_data_list$lencomp <- ss_data_list$lencomp[0,-seq(7,nrow(ss_data_list$lencomp))]
+
+    ss_data_list$lencomp <- ss_data_list$lencomp[0,c("Yr","Seas","FltSvy","Gender","Part","Nsamp")]
     len_comp_ind <- which(data_type=="lencomp")
   }
 
