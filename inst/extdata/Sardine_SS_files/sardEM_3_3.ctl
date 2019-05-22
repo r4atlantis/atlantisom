@@ -15,7 +15,7 @@
 1 #  number of recruitment settlement assignments 
 0 # unused option
 #GPattern month  area  age (for each settlement assignment)
- 1 1 1 0
+ 1 1.0 1 1
 #
 #_Cond 0 # N_movement_definitions goes here if Nareas > 1
 #_Cond 1.0 # first age that moves (real age at begin of season, not integer) also cond on do_migration>0
@@ -24,7 +24,7 @@
 1 #_Nblock_Patterns
  1 #_blocks_per_pattern 
 # begin and end years of blocks
- 1912 1912
+1 1
 #
 # controls for all timevary parameters 
 1 #_env/block/dev_adjust_method for all time-vary parms (1=warn relative to base parm bounds; 3=no bound check)
@@ -109,18 +109,18 @@
            -15            15             0             0            99             0         -2          0          0          0          0          0          0          0 # SR_regime
              0             0             0             0            99             0         -3          0          0          0          0          0          0          0 # SR_autocorr
 1 #do_recdev:  0=none; 1=devvector (R=F(SSB)+dev); 2=deviations (R=F(SSB)+dev); 3=deviations (R=R0*dev; dev2=R-f(SSB)); 4=like 3 with sum(dev2) adding penalty
-1913 # first year of main recr_devs; early devs can preceed this era
-2012 # last year of main recr_devs; forecast devs start in following year
+1 # first year of main recr_devs; early devs can preceed this era
+50 # last year of main recr_devs; forecast devs start in following year
 1 #_recdev phase 
 1 # (0/1) to read 13 advanced options
  0 #_recdev_early_start (0=none; neg value makes relative to recdev_start)
  -2 #_recdev_early_phase
  0 #_forecast_recruitment phase (incl. late recr) (0 value resets to maxphase+1)
  1 #_lambda for Fcast_recr_like occurring before endyr+1
- 1913 #_last_yr_nobias_adj_in_MPD; begin of ramp
- 1938 #_first_yr_fullbias_adj_in_MPD; begin of plateau
- 2011 #_last_yr_fullbias_adj_in_MPD
- 2012 #_end_yr_for_ramp_in_MPD (can be in forecast to shape ramp, but SS sets bias_adj to 0.0 for fcast yrs)
+ 1 #_last_yr_nobias_adj_in_MPD; begin of ramp
+ 30 #_first_yr_fullbias_adj_in_MPD; begin of plateau
+ 48 #_last_yr_fullbias_adj_in_MPD
+ 50 #_end_yr_for_ramp_in_MPD (can be in forecast to shape ramp, but SS sets bias_adj to 0.0 for fcast yrs)
  0 #_max_bias_adj_in_MPD (-1 to override ramp and set biasadj=1.0 for all estimated recdevs)
  0 #_period of cycles in recruitment (N parms read below)
  -5 #min rec_dev
@@ -164,13 +164,11 @@
 #_6:  0/1 to float
 #_   fleet      link link_info  extra_se   biasadj     float  #  fleetname
          2         1         0         0         0         0  #  Survey
-         3         1         0         0         0         0  #  CPUE
 -9999 0 0 0 0 0
 #
 #_Q_parms(if_any);Qunits_are_ln(q)
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn  #  parm_name
             -3             3             0             0            99             0          5          0          0          0          0          0          0          0  #  LnQ_base_Survey(2)
-            -3             3             0             0            99             0          5          0          0          0          0          0          0          0  #  LnQ_base_CPUE(3)
 #_no timevary Q parameters
 #
 #_size_selex_patterns
@@ -193,7 +191,7 @@
 #_Pattern Discard Male Special
  1 0 0 0 # 1 Fishery
  1 0 0 0 # 2 Survey
- 15 0 0 1 # 3 CPUE
+
 #
 #_age_selex_patterns
 #Pattern:_0; parm=0; selex=1.0 for ages 0 to maxage
@@ -215,7 +213,6 @@
 #_Pattern Discard Male Special
  11 0 0 0 # 1 Fishery
  11 0 0 0 # 2 Survey
- 11 0 0 0 # 3 CPUE
 #
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn  #  parm_name
 # 1   Fishery LenSelex
@@ -232,8 +229,6 @@
              0            15             0             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P1_Survey(2)
              0            20            15             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P2_Survey(2)
 # 3   CPUE AgeSelex
-             0            15             0             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P1_CPUE(3)
-             0            20            15             0            99             0        -50          0          0          0          0          0          0          0  #  AgeSel_P2_CPUE(3)
 #_no timevary selex parameters
 #
 0   #  use 2D_AR1 selectivity(0/1):  experimental feature

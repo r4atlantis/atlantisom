@@ -3,7 +3,7 @@
 #Foreign copyrights may apply. See copyright.txt for more information.
 #_user_support_available_at:NMFS.Stock.Synthesis@noaa.gov
 #_user_info_available_at:https://vlab.ncep.noaa.gov/group/stock-synthesis
-Test_atlantis_sardine.dat
+SardEM_3_3.dat
 SardEM_3_3.ctl
 0 # 0=use init values in control file; 1=use ss.par
 1 # run display detail (0,1,2)
