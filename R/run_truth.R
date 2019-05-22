@@ -189,10 +189,13 @@ run_truth <- function(scenario, dir = getwd(),
     by = c("species", "time"))
   check$check <- with(check, atoutput / catch)
 
+  # SKG May 2019, no export of catch in biomass for now
+  # does not match catch.txt output file
+  # read that in separately instead
+
   result <- list("biomass_eaten" = biomass_eaten,
                  "biomass_ages" = biomass_ages,
                  "catch" = catch,
-                 "catchbio" = catchbio,
                  "nums" = nums,
                  "resn" = resn,
                  "structn" = structn,
