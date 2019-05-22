@@ -35,12 +35,11 @@ SS_write_ts <- function(ss_data_list, ts_data,
     indices <- (k:(k+length(data_years[[i]])-1))
   ss_data_list[[data_type[i]]][indices,"year"] <- data_years[[i]]
   ss_data_list[[data_type[i]]][indices, "seas"] <- sampling_month[[i]]
-
+browser()
   ss_data_list[[data_type[i]]][indices, "obs"] <- ts_data[[i]]
   ss_data_list[[data_type[i]]][indices, "se_log"] <- rep(CVs[i], length(indices))
   ss_data_list[[data_type[i]]][indices, "index"] <- rep(fleets[i], length(indices))
 
-  k <- indices[length(indices)]+1
 
   }
 
