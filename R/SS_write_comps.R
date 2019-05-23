@@ -26,10 +26,12 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
   }
 
   #Initialize local variables
-  k <- 1
+  k_agecomp <- k_lencomp <- 1
   start_year <- ss_data_list$styr
 
   for(i in 1:length(comp_matrix)){
+    k <- switch(data_type[i],"lencomp"=k_lencomp,
+                "agecomp"=k_agecomp)
     indices <- (k:(k+length(data_rows[[i]])-1))
     ss_data_list[[data_type[i]]][indices,"Yr"] <- data_rows[[i]]
     ss_data_list[[data_type[i]]][indices,"Seas"] <- sampling_month[[i]]
@@ -62,11 +64,18 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
     }
 
   if(data_type[[i]]=="lencomp"){
-      ss_data_list[[data_type[i]]][, paste(type_prefix,as.character(bins[[i]]), sep="")] <- 0
+    if(indices[1]==1){
+     ss_data_list[[data_type[i]]][, paste(type_prefix,as.character(bins[[i]]), sep="")] <- 0
+    }
   }
-
     ss_data_list[[data_type[i]]][indices,paste(type_prefix,as.character(bins[[i]]), sep="")] <- comp_matrix[[i]][,as.character(bins[[i]])]
-}
+    if(data_type[i]=="agecomp"){
+      k_agecomp <- k_agecomp+length(data_rows[[i]])
+    } else{
+
+      k_lencomp <- k_lencomp+length(data_rows[[i]])
+    }
+    }
     return(ss_data_list)
 
   }
