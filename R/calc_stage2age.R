@@ -44,7 +44,7 @@
 #calc_stage2age <- function(dir, nums_data, biolprm, YOY, fgs) {
 # dir not used in the function
 # need runprm to get correct toutinc to pass to calc_Z
-calc_stage2age <- function(nums_data, biolprm, YOY, fgs, runprm) {
+calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
 
   # subset the yoy for those species that are included in the fgs file
   # that are turned on
@@ -62,11 +62,13 @@ calc_stage2age <- function(nums_data, biolprm, YOY, fgs, runprm) {
   # For each species with multiple ages, use the calc_Z function to get time
   # varying Z values and put that all into one dataframe
   Z.dataframe <- data.frame()
-  for(i in 1:num_multi_age) {
-    temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
+  #for(i in 1:num_multi_age) {
+    #temp_nums <- nums_data[nums_data$species==multiple_ages$Name[i],]
+    temp_nums <- nums_data[nums_data$species %in% multiple_ages$Name,]
     temp_Z <- calc_Z(yoy=yoy, nums=temp_nums, fgs=fgs, biolprm=biolprm, toutinc=runprm$toutinc)
-    Z.dataframe <- rbind(Z.dataframe, temp_Z)
-  }
+    #Z.dataframe <- rbind(Z.dataframe, temp_Z)
+    Z.dataframe <- temp_Z
+  #}
 
   # HACK for now, since some Z values are negative, I am replacing them
   # with a random number

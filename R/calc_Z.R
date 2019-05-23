@@ -114,7 +114,8 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   recstart_temp <- biolprm$recruit_time
   recstart_temp[,2] <- biolprm$time_spawn[-(grep('#',
                        biolprm$time_spawn[,1])),2] + biolprm$recruit_time[,2]
-  recstart_temp <- recstart_temp[recstart_temp[,1]%in%turnedon$Code,]
+  #recstart_temp <- recstart_temp[recstart_temp[,1]%in%turnedon$Code,] #bug added codes with no YOY output
+  recstart_temp <- recstart_temp[recstart_temp[,1]%in%recruits$group,]
   recruits$frac_recruit <- 0
   for (irow in 1:nrow(recstart_temp)) {
     group <- recstart_temp[irow,1]
