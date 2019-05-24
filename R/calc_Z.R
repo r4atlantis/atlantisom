@@ -112,8 +112,10 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   nyrs <- ceiling(max(yoy$Time)/365)
   times <- unique(yoy$Time)
   recstart_temp <- biolprm$recruit_time
-  recstart_temp[,2] <- biolprm$time_spawn[-(grep('#',
-                       biolprm$time_spawn[,1])),2] + biolprm$recruit_time[,2]
+  #recstart_temp[,2] <- biolprm$time_spawn[-(grep('#',
+  #                     biolprm$time_spawn[,1])),2] + biolprm$recruit_time[,2]
+  # was this grep to get rid of a species with #XXX? breaks when there are none
+  recstart_temp[,2] <- biolprm$time_spawn[,2] + biolprm$recruit_time[,2]
   #recstart_temp <- recstart_temp[recstart_temp[,1]%in%turnedon$Code,] #bug added codes with no YOY output
   recstart_temp <- recstart_temp[recstart_temp[,1]%in%recruits$group,]
   recruits$frac_recruit <- 0
