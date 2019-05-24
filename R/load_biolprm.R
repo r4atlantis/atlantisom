@@ -69,6 +69,14 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   vertebrates <- as.character(biolprm[grep("^flagplankfish", biolprm[, 1]), 1])
   vertebrates <- gsub("flagplankfish", "", vertebrates)
 
+  # Get FSP_XXX proportion of spawner biomass lost due to spawning
+  fsp <- biolprm[grep("FSP_", biolprm[, 1]), 1:2]
+  fsp[, 2] <- as.numeric(as.character(fsp[, 2]))
+  fsp[, 1] <- gsub("FSP_", "", fsp[, 1])
+
+  # note: flagrecruitXXX 3   sets stock recruitment to Beverton Holt,
+  # or Beth's forumulation of it
+  # eventually check for this and throw an error if not set to 3
   # Get recruitment parameters
   BHalpha <- biolprm[grep("BHalpha_", biolprm[, 1]), 1:2] #name, dimension
   BHalpha[, 2] <- as.numeric(as.character(BHalpha[, 2]))
@@ -104,7 +112,7 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   return(list("wl" = wl, "redfieldcn" = r.cn, "kgw2d" = kgw2d,
     "agespercohort" = agespercohort, "ageofmaturity" = ageofmaturity,
     "maturityogive" = maturityogive, "vertebrates" = vertebrates,
-    "kswr" = kwsr, "kwrr" = kwrr, "BHalpha" = BHalpha,
+    "kswr" = kwsr, "kwrr" = kwrr, "fsp" = fsp, "BHalpha" = BHalpha,
     "BHbeta" = BHbeta, "r.rs" = r.rs, "time_spawn" = time_spawn,
     "recruit_period" = recruit_period, "recruit_time" = recruit_time))
 
