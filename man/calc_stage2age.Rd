@@ -5,7 +5,7 @@
 \title{Approximating the true numbers at age within each box, functional group and
 time step.}
 \usage{
-calc_stage2age(nums_data, biolprm, YOY, fgs, runprm)
+calc_stage2age(nums_data, biolprm, yoy, fgs, runprm)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the

@@ -39,6 +39,15 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   ageofmaturity[, 2] <- as.numeric(as.character(ageofmaturity[, 2]))
   ageofmaturity[, 1] <- gsub("_age_mat", "", ageofmaturity[, 1])
 
+  # Get maturity ogive, WARNING hardcoded for 10 cohorts
+  maturityogive <- biolprm[grep("FSPB_", biolprm[, 1]), 1:2] #name, dimension
+  maturityogive[, 2] <- as.numeric(as.character(maturityogive[, 2]))
+  maturityogive[, 1] <- gsub("FSPB_", "", maturityogive[, 1])
+  maturityogive[, 3:12] <- biolprm[grep("FSPB_", biolprm[, 1], value = FALSE)+1, ]
+  names(maturityogive) <- c("code", "nagecl",
+                            "agecl1", "agecl2", "agecl3", "agecl4", "agecl5",
+                            "agecl6", "agecl7", "agecl8", "agecl9"," agecl10")
+
   # Find weight-length parameters
   wl <- data.frame(biolprm[grep("li_a_", biolprm[, 1]), 1:2],
     "b" = biolprm[grep("li_b_", biolprm[, 1]), 2])
@@ -60,6 +69,18 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   vertebrates <- as.character(biolprm[grep("^flagplankfish", biolprm[, 1]), 1])
   vertebrates <- gsub("flagplankfish", "", vertebrates)
 
+  # Get recruitment parameters
+  BHalpha <- biolprm[grep("BHalpha_", biolprm[, 1]), 1:2] #name, dimension
+  BHalpha[, 2] <- as.numeric(as.character(BHalpha[, 2]))
+  BHalpha[, 1] <- gsub("BHalpha_", "", as.character(BHalpha[, 1]))
+
+  BHbeta <- biolprm[grep("BHbeta_", biolprm[, 1]), 1:2] #name, dimension
+  BHbeta[, 2] <- as.numeric(as.character(BHbeta[, 2]))
+  BHbeta[, 1] <- gsub("BHbeta_", "", as.character(BHbeta[, 1]))
+
+  # Optimum ratio of resn to structn (for fecundity, eventually)
+  r.rs <- as.numeric(as.character(biolprm[grep("X_RS", biolprm[, 1]), 2]))
+
   # Find time of spawning
   time_spawn <- biolprm[grep("_Time_Spawn", biolprm[, 1],
     ignore.case = TRUE), 1:2]
@@ -80,10 +101,11 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   recruit_time[, 1] <- gsub("_Recruit_Time", "",
     as.character(recruit_time[, 1]))
 
-
   return(list("wl" = wl, "redfieldcn" = r.cn, "kgw2d" = kgw2d,
-    "agespercohort" = agespercohort, "vertebrates" = vertebrates,
-    "kswr" = kwsr, "kwrr" = kwrr, "time_spawn" = time_spawn,
+    "agespercohort" = agespercohort, "ageofmaturity" = ageofmaturity,
+    "maturityogive" = maturityogive, "vertebrates" = vertebrates,
+    "kswr" = kwsr, "kwrr" = kwrr, "BHalpha" = BHalpha,
+    "BHbeta" = BHbeta, "r.rs" = r.rs, "time_spawn" = time_spawn,
     "recruit_period" = recruit_period, "recruit_time" = recruit_time))
 
 }
