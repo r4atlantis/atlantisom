@@ -1,7 +1,7 @@
 #'Function to write age and length composition data from \code{atlantisom} to Stock Synthesis 3.30. Note: every time this function is called, it overwrites the age and length composition data currently in the \code{ss_data_list} object.
 #'@param ss_data_list the list object containing SS data
-#'@param comp_matrix the matrix of composition data (age or length)
-#'@param data_rows a list, where each entry is a vector corresponding to the year column of the composition data. For length composition data, this is the 1:nyears repped each row for the number of length bins. For age composition data, this is nyears
+#'@param comp_matrix a list, where each list item is the matrix of composition data (age or length)
+#'@param data_rows a list, where each entry is a vector corresponding to the year column of the composition data. For length and age composition data, this is the 1:nyears repped each row for the number of length or age bins. For conditional age-at-length composition data, this is nyears:lengthbins .
 #'@param sampling_month a list where each list item is a vector of the sampling month for each composition data type
 #'@param data_type a vector of strings, each entry needs to be either "agecomp" or "lengthcomp"
 #'@param fleet_number a vector of numbers, each entry corresponds to which fleet the comp data are from

@@ -10,9 +10,9 @@ SS_write_comps(ss_data_list, comp_matrix, data_rows, sampling_month,
 \arguments{
 \item{ss_data_list}{the list object containing SS data}
 
-\item{comp_matrix}{the matrix of composition data (age or length)}
+\item{comp_matrix}{a list, where each list item is the matrix of composition data (age or length)}
 
-\item{data_rows}{a list, where each entry is a vector corresponding to the year column of the composition data. For length composition data, this is the 1:nyears repped each row for the number of length bins. For age composition data, this is nyears}
+\item{data_rows}{a list, where each entry is a vector corresponding to the year column of the composition data. For length and age composition data, this is the 1:nyears repped each row for the number of length or age bins. For conditional age-at-length composition data, this is nyears:lengthbins .}
 
 \item{sampling_month}{a list where each list item is a vector of the sampling month for each composition data type}
 
