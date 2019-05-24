@@ -12,10 +12,11 @@
 #
 2 # recr_dist_method for parameters:  2=main effects for GP, Settle timing, Area; 3=each Settle entity; 4=none, only when N_GP*Nsettle*pop==1
 1 # not yet implemented; Future usage: Spawner-Recruitment: 1=global; 2=by area
-1 #  number of recruitment settlement assignments 
+2 #  number of recruitment settlement assignments 
 0 # unused option
 #GPattern month  area  age (for each settlement assignment)
- 1 1.0 1 1
+1 12.0 1 0
+1 1.0 1 1
 #
 #_Cond 0 # N_movement_definitions goes here if Nareas > 1
 #_Cond 1.0 # first age that moves (real age at begin of season, not integer) also cond on do_migration>0
@@ -56,24 +57,25 @@
 0 #_CV_Growth_Pattern:  0 CV=f(LAA); 1 CV=F(A); 2 SD=F(LAA); 3 SD=F(A); 4 logSD=F(A)
 #
 1 #_maturity_option:  1=length logistic; 2=age logistic; 3=read age-maturity matrix by growth_pattern; 4=read age-fecundity; 5=disabled; 6=read length-maturity
-0 #_First_Mature_Age
+1 #_First_Mature_Age
 1 #_fecundity option:(1)eggs=Wt*(a+b*Wt);(2)eggs=a*L^b;(3)eggs=a*Wt^b; (4)eggs=a+b*L; (5)eggs=a+b*W
 0 #_hermaphroditism option:  0=none; 1=female-to-male age-specific fxn; -1=male-to-female age-specific fxn
 1 #_parameter_offset_approach (1=none, 2= M, G, CV_G as offset from female-GP1, 3=like SS2 V1.x)
+
 #
 #_growth_parms
 #_ LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
 # Sex: 1  BioPattern: 1  NatMort
  0.2 0.7 0.4 0 99 0 -3 0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
 # Sex: 1  BioPattern: 1  Growth
- 3 15 10 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
- 20 30 25 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
+ 20 30 25 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
+ 40 50 45 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
  0.05 0.99 0.4 0 99 0 3 0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
  0.05 0.3 0.14 0 99 0 3 0 0 0 0 0 0 0 # CV_young_Fem_GP_1
  0.01 0.1 0.05 0 99 0 3 0 0 0 0 0 0 0 # CV_old_Fem_GP_1
 # Sex: 1  BioPattern: 1  WtLen
- -3 3 1.68384e-05 0 99 0 -3 0 0 0 0 0 0 0 # Wtlen_1_Fem
- -3 5 2.94825 0 99 0 -3 0 0 0 0 0 0 0 # Wtlen_2_Fem
+ -3 3 1.0e-06 0 99 0 -3 0 0 0 0 0 0 0 # Wtlen_1_Fem
+ -3 5 3.113 0 99 0 -3 0 0 0 0 0 0 0 # Wtlen_2_Fem
 # Sex: 1  BioPattern: 1  Maturity&Fecundity
  9 19 15.88 0 99 0 -3 0 0 0 0 0 0 0 # Mat50%_Fem
  -20 3 -0.90461 0 99 0 -3 0 0 0 0 0 0 0 # Mat_slope_Fem
@@ -83,7 +85,8 @@
 #  Recruitment Distribution  
  -4 4 0 0 99 0 -3 0 0 0 0 0 0 0 # RecrDist_GP_1
  -4 4 1 0 99 0 -3 0 0 0 0 0 0 0 # RecrDist_Area_1
- -4 4 1 0 99 0 -3 0 0 0 0 0 0 0 # RecrDist_timing_1
+ -4 4 0.5 0 99 0 -3 0 0 0 0 0 0 0 # RecrDist_timing_1
+ -4 4 0.5 0 99 0 -3 0 0 0 0 0 0 0 # RecrDist_timing_2
 #  Cohort growth dev base
  -4 4 1 0 99 0 -3 0 0 0 0 0 0 0 # CohortGrowDev
 #  Movement
@@ -168,7 +171,7 @@
 #
 #_Q_parms(if_any);Qunits_are_ln(q)
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn  #  parm_name
-            -3             3             0             0            99             0          5          0          0          0          0          0          0          0  #  LnQ_base_Survey(2)
+            -3             3             -0.69             0            99             0          -5          0          0          0          0          0          0          0  #  LnQ_base_Survey(2)
 #_no timevary Q parameters
 #
 #_size_selex_patterns
@@ -189,8 +192,8 @@
 #Pattern:_42; parm=2+special+3; // like 27, with 2 additional param for scaling (average over bin range)
 #_discard_options:_0=none;_1=define_retention;_2=retention&mortality;_3=all_discarded_dead;_4=define_dome-shaped_retention
 #_Pattern Discard Male Special
- 1 0 0 0 # 1 Fishery
- 1 0 0 0 # 2 Survey
+ 0 0 0 0 # 1 Fishery
+ 0 0 0 0 # 2 Survey
 
 #
 #_age_selex_patterns
@@ -211,23 +214,23 @@
 #Pattern:_27; parm=3+special; cubic spline in age
 #Pattern:_42; parm=2+special+3; // cubic spline; with 2 additional param for scaling (average over bin range)
 #_Pattern Discard Male Special
- 11 0 0 0 # 1 Fishery
- 11 0 0 0 # 2 Survey
+ 0 0 0 0 # 1 Fishery
+ 0 0 0 0 # 2 Survey
 #
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn  #  parm_name
 # 1   Fishery LenSelex
-            10            28         15.88             0            99             0          2          0          0          0          0          0          0          0  #  SizeSel_P1_Fishery(1)
-           -20            10       3.25493             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Fishery(1)
+#            10            28         15.88             0            99             0          2          0          0          0          0          0          0          0  #  SizeSel_P1_Fishery(1)
+#           -20            10       3.25493             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Fishery(1)
 # 2   Survey LenSelex
-            10            28          12.7             0            99             0          2          0          0          0          0          0          0          0  #  SizeSel_P1_Survey(2)
-           -20            10       3.25493             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Survey(2)
+#            10            28          12.7             0            99             0          2          0          0          0          0          0          0          0  #  SizeSel_P1_Survey(2)
+#           -20            10       3.25493             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Survey(2)
 # 3   CPUE LenSelex
 # 1   Fishery AgeSelex
-             0            15             0             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P1_Fishery(1)
-             0            20            15             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P2_Fishery(1)
+#             0            15             0             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P1_Fishery(1)
+#             0            20            15             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P2_Fishery(1)
 # 2   Survey AgeSelex
-             0            15             0             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P1_Survey(2)
-             0            20            15             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P2_Survey(2)
+#             0            15             0             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P1_Survey(2)
+#             0            20            15             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P2_Survey(2)
 # 3   CPUE AgeSelex
 #_no timevary selex parameters
 #

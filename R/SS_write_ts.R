@@ -6,8 +6,8 @@
 #'@param data_years a vector, where each item is the length of the index
 #'@param sampling_month a list, where each item is a vector representig the month of sampling for each index
 #'@param  units a vector where each entry must be one of "numbers" or "biomass"
-#'@param fleets a vector where each entry is the fleet number
-#'@param data_type a vector with length = length(ts_data), each entry must be either "CPUE" or "catch"
+#'@param fleets a list of vectors, in each vector  each entry is the fleet number
+#'@param data_type a vector with length = \code{length(ts_data)}, each entry must be either "CPUE" or "catch"
 SS_write_ts <- function(ss_data_list, ts_data,
                  CVs, data_years,
                  sampling_month, units,
@@ -22,9 +22,11 @@ SS_write_ts <- function(ss_data_list, ts_data,
   ss_data_list$catch <- ss_data_list$catch[0,]
   }
 
-  k <- 1
+  k_CPUE <- k_catch <- 1
   start_year <- ss_data_list$styr
   for(i in 1:length(ts_data)){
+    k <- switch(data_type[i],"CPUE"=k_CPUE,
+                "catch"=k_catch)
 
     if(units[i] == "numbers") {
       ts_data[[i]] <- round(ts_data[[i]]/1000,0)
@@ -40,7 +42,12 @@ SS_write_ts <- function(ss_data_list, ts_data,
   ss_data_list[[data_type[i]]][indices, "se_log"] <- rep(CVs[i], length(indices))
   ss_data_list[[data_type[i]]][indices, "index"] <- rep(fleets[i], length(indices))
 
+  if(data_type[i]=="CPUE"){
+    k_CPUE <- k_CPUE+length(data_years[[i]])
+  } else{
 
+    k_catch <- k_catch+length(data_years[[i]])
+  }
   }
 
   return(ss_data_list)

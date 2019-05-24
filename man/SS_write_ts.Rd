@@ -18,10 +18,9 @@ SS_write_ts(ss_data_list, ts_data, CVs, data_years, sampling_month, units,
 \item{sampling_month}{a list, where each item is a vector representig the month of sampling for each index}
 
 \item{units}{a vector where each entry must be one of "numbers" or "biomass"}
+\item{fleets}{a list of vectors, in each vector  each entry is the fleet number}
 
-\item{fleets}{a vector where each entry is the fleet number}
-
-\item{data_type}{a vector with length = length(ts_data), each entry must be either "CPUE" or "catch"}
+\item{data_type}{a vector with length = \code{length(ts_data)}, each entry must be either "CPUE" or "catch"}
 
 \item{cpue_data}{a list, where each list item is a #'vector of the observations for each index}
 }
