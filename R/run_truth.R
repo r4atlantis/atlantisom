@@ -151,7 +151,7 @@ run_truth <- function(scenario, dir = getwd(),
     if(codedate < "2015-12-15"){
       if(verbose) message("Catch numbers correction needed for this codebase, starting")
       # read in initial conditions NC file
-      at_init <- RNetCDF::open.nc(con = file.path(d.name, initial.conditions.file))
+      at_init <- RNetCDF::open.nc(con = file.path(dir, file_init))
 
       # Get info from netcdf file! (Filestructure and all variable names)
       var_names_ncdf <- sapply(seq_len(RNetCDF::file.inq.nc(at_init)$nvars - 1),
@@ -161,7 +161,7 @@ run_truth <- function(scenario, dir = getwd(),
       RNetCDF::close.nc(at_init)
 
       # are these in box order??? if so make a box-numlayer lookup
-      layerbox.lookup <- data.frame(polygon=boxall, numlayers)
+      layerbox.lookup <- data.frame(polygon=c(0:(allboxes$nbox - 1)), numlayers)
 
       catch.tmp <- merge(catch, layerbox.lookup)
 
