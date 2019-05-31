@@ -139,6 +139,44 @@ run_truth <- function(scenario, dir = getwd(),
                  bboxes = boxes)
   if(verbose) message("Catch read in.")
 
+  # May 2019 this is the catch in nums correction needed for legacy atlantis codebases
+
+  # check for logfile, send warning if not found.
+  if(file.exists(paste0(file.path(dir, "log.txt")))){
+    #if found compare codedate and do catch numbers correction if necessary
+    logfile <- paste0(file.path(dir, "log.txt"))
+    codedate <- system(paste0("grep 'Atlantis SVN' ", logfile), intern = TRUE)
+    codedate <- as.Date(stringr::str_extract(codedate, "\\d+/\\d+/\\d+"),
+                        format = "%Y/%m/%d")
+    if(codedate < "2015-12-15"){
+      if(verbose) message("Catch numbers correction needed for this codebase, starting")
+      # read in initial conditions NC file
+      at_init <- RNetCDF::open.nc(con = file.path(d.name, initial.conditions.file))
+
+      # Get info from netcdf file! (Filestructure and all variable names)
+      var_names_ncdf <- sapply(seq_len(RNetCDF::file.inq.nc(at_init)$nvars - 1),
+                               function(x) RNetCDF::var.inq.nc(at_init, x)$name)
+      numlayers <- RNetCDF::var.get.nc(ncfile = at_init, variable = "numlayers")
+
+      RNetCDF::close.nc(at_init)
+
+      # are these in box order??? if so make a box-numlayer lookup
+      layerbox.lookup <- data.frame(polygon=boxall, numlayers)
+
+      catch.tmp <- merge(catch, layerbox.lookup)
+
+      # divide the numbers at age by (86400 * number_water_column_layers_in_the_box)
+      # replace truth$catch atoutput with correction
+      catch <- catch.tmp %>%
+        mutate(atoutput = atoutput / 86400 * numlayers) %>%
+        select(species, agecl, polygon, time, atoutput)
+      if(verbose) message("Catch numbers corrected")
+    }
+  } else {
+    warning(strwrap(prefix = " ", initial = "",
+                    "log.txt file not found; catch in numbers correction not done. For Atlantis SVN dates prior to December 2015, CATCH.nc output units were incorrect. Correction requires presence of log.txt file in the directory."))
+  }
+
   catchfish <- read.table(file_catchfish, header = TRUE)
   over <- colnames(catchfish)[-(1:2)]
   catchfish <- reshape(catchfish, direction = "long",
@@ -169,25 +207,27 @@ run_truth <- function(scenario, dir = getwd(),
   diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs,
     toutinc = runprm$toutinc)
 
+  # May 2019 let's not do the catch calcs until they are corrected
+
   if(verbose) message("Start calc_functions")
-  catchbio <- calc_biomass_age(nums = catch,
-    resn = resn, structn = structn, biolprm = biol)
+  #catchbio <- calc_biomass_age(nums = catch,
+  #  resn = resn, structn = structn, biolprm = biol)
   biomass_eaten <- calc_pred_diet(dietcomp = diet,
     eat = eat, grazing = grazing, vol = vol, biolprm = biol)
   biomass_ages <- calc_biomass_age(nums = nums,
     resn = resn, structn = structn, biolprm = biol)
-  bio_catch <- calc_biomass_age(nums = catch,
-    resn = resn, structn = structn, biolprm = biol)
+  #bio_catch <- calc_biomass_age(nums = catch,
+  #  resn = resn, structn = structn, biolprm = biol)
 
-  bio_catch <- aggregate(atoutput ~ species + time,
-    data = bio_catch, sum)
+  #bio_catch <- aggregate(atoutput ~ species + time,
+  #  data = bio_catch, sum)
 
   # todo: check that the biomass of the catches are correct
   # also should catch in biomass be exported as well
   # as catch in numbers?
-  check <- merge(catch_all, bio_catch,
-    by = c("species", "time"))
-  check$check <- with(check, atoutput / catch)
+  #check <- merge(catch_all, bio_catch,
+  #  by = c("species", "time"))
+  #check$check <- with(check, atoutput / catch)
 
   # SKG May 2019, no export of catch in biomass for now
   # does not match catch.txt output file
