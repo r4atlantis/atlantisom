@@ -1,5 +1,6 @@
 #'Function to write the CPUE from an atlantis OM into a
 #'Stock Synthesis 3.3 estimation model
+#'@export
 #'@param ss_data_list the list of the SS .dat file that #'comes from \code{SS_readdat}
 #'@param cpue_data a list, where each list item is a #'vector of the observations for each index
 #'@param CVs a vector of numbers representing the CV around the index
