@@ -1,3 +1,14 @@
+#' @title Reformat compositional data for input in to Stock Synthesis
+#'
+#' @description to be added
+#' @details to be added
+#' @export
+#'
+#' @template comp_data
+#' @param round.places
+#' @param comp_type takes 3 possible values: lencomp, agecomp, caalcomp
+#' @return flattened comp data set for input into SS
+#'
 reformat_compositions <- function(comp_data,
                                   round.places = 4,
                                   comp_type){
