@@ -171,8 +171,10 @@ run_truth <- function(scenario, dir = getwd(),
         mutate(atoutput = atoutput / 86400 * numlayers) %>%
         select(species, agecl, polygon, time, atoutput)
       if(verbose) message("Catch numbers corrected")
+    }else{
+      message("Codebase later than December 2015, no correction needed")
     }
-  } else {
+  }else{
     warning(strwrap(prefix = " ", initial = "",
                     "log.txt file not found; catch in numbers correction not done. For Atlantis SVN dates prior to December 2015, CATCH.nc output units were incorrect. Correction requires presence of log.txt file in the directory."))
   }
