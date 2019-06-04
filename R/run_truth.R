@@ -212,24 +212,24 @@ run_truth <- function(scenario, dir = getwd(),
   # May 2019 let's not do the catch calcs until they are corrected
 
   if(verbose) message("Start calc_functions")
-  #catchbio <- calc_biomass_age(nums = catch,
-  #  resn = resn, structn = structn, biolprm = biol)
+  # catchbio <- calc_biomass_age(nums = catch,
+  #   resn = resn, structn = structn, biolprm = biol)
   biomass_eaten <- calc_pred_diet(dietcomp = diet,
     eat = eat, grazing = grazing, vol = vol, biolprm = biol)
   biomass_ages <- calc_biomass_age(nums = nums,
     resn = resn, structn = structn, biolprm = biol)
-  #bio_catch <- calc_biomass_age(nums = catch,
-  #  resn = resn, structn = structn, biolprm = biol)
-
-  #bio_catch <- aggregate(atoutput ~ species + time,
-  #  data = bio_catch, sum)
+  # bio_catch <- calc_biomass_age(nums = catch,
+  #   resn = resn, structn = structn, biolprm = biol)
+  #
+  # bio_catch <- aggregate(atoutput ~ species + time,
+  #   data = bio_catch, sum)
 
   # todo: check that the biomass of the catches are correct
   # also should catch in biomass be exported as well
   # as catch in numbers?
-  #check <- merge(catch_all, bio_catch,
-  #  by = c("species", "time"))
-  #check$check <- with(check, atoutput / catch)
+  # check <- merge(catch_all, bio_catch,
+  #   by = c("species", "time"))
+  # check$check <- with(check, atoutput / catch)
 
   # SKG May 2019, no export of catch in biomass for now
   # does not match catch.txt output file
