@@ -15,19 +15,30 @@ SS_write_ts <- function(ss_data_list, ts_data,
                  fleets,
                  data_type){
 
+
+  names_cpue <- c("year","seas","index", "obs", "se_log")
+  names_catch <- c("year","seas","fleet", "catch", "catch_se")
+
   #Clear existing data
   if("CPUE" %in% data_type){
-  ss_data_list$CPUE <- ss_data_list$CPUE[0,]
+  ss_data_list$CPUE <- data.frame(matrix(ncol=5, nrow=0))
+  colnames(ss_data_list$CPUE) <- names_cpue
   }
   if("catch" %in% data_type){
-  ss_data_list$catch <- ss_data_list$catch[0,]
+  ss_data_list$catch <- data.frame(matrix(ncol=5, nrow=0))
+  colnames(ss_data_list$catch) <- names_catch
   }
+
 
   k_CPUE <- k_catch <- 1
   start_year <- ss_data_list$styr
   for(i in 1:length(ts_data)){
     k <- switch(data_type[i],"CPUE"=k_CPUE,
                 "catch"=k_catch)
+
+    col_names <- switch(data_type[i],
+                        "CPUE"=names_cpue,
+                        "catch"=names_catch)
 
     if(units[i] == "numbers") {
       ts_data[[i]] <- round(ts_data[[i]]/1000,0)
@@ -39,9 +50,9 @@ SS_write_ts <- function(ss_data_list, ts_data,
   ss_data_list[[data_type[i]]][indices,"year"] <- data_years[[i]]
   ss_data_list[[data_type[i]]][indices, "seas"] <- sampling_month[[i]]
 
-  ss_data_list[[data_type[i]]][indices, "obs"] <- ts_data[[i]]
-  ss_data_list[[data_type[i]]][indices, "se_log"] <- rep(CVs[i], length(indices))
-  ss_data_list[[data_type[i]]][indices, "index"] <- rep(fleets[i], length(indices))
+  ss_data_list[[data_type[i]]][indices, col_names[4]] <- ts_data[[i]]
+  ss_data_list[[data_type[i]]][indices, col_names[5]] <- rep(CVs[i], length(indices))
+  ss_data_list[[data_type[i]]][indices, col_names[3]] <- rep(fleets[i], length(indices))
 
   if(data_type[i]=="CPUE"){
     k_CPUE <- k_CPUE+length(data_years[[i]])
