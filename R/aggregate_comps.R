@@ -1,4 +1,5 @@
 #'Function to aggregate compositions into a shorter range of bins based on  data availability in each bin
+#'@export
 #'@param comp.data output from the \code{calc_age2length} function, namely a list with objects mulen, muweight, and natlength
 #'@param compbins the age or length composition bins you want to compress the data into, either this or compression can be specified but not both
 #'@param compression the minimum thresshold for numbers of fish in each bin for the bin to be included in the data, default is 1
