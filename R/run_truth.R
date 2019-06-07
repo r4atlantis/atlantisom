@@ -168,7 +168,7 @@ run_truth <- function(scenario, dir = getwd(),
       # divide the numbers at age by (86400 * number_water_column_layers_in_the_box)
       # replace truth$catch atoutput with correction
       catch <- catch.tmp %>%
-        mutate(atoutput = atoutput / 86400 * numlayers) %>%
+        mutate(atoutput = atoutput / (86400 * numlayers)) %>%
         select(species, agecl, polygon, time, atoutput)
       if(verbose) message("Catch numbers corrected")
     }else{
