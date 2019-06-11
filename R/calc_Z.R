@@ -103,6 +103,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   colnames(recruits)[which(colnames(recruits) == "recruits")] <- "recruitsbio"
   # Get recruits in numbers rather than biomass
   recruits$recruits <- recruits$recruitsbio / recruits$sum
+  recruits$yr <- as.integer(round(recruits$Time)/365)
 
   # G.Fay 2/21/16
   # UGLY code below tries to align fraction of annual yoy with timing of recruitment
@@ -111,73 +112,94 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   #perhaps due to averaging of survival over toutinc days
   nyrs <- ceiling(max(yoy$Time)/365)
   times <- unique(yoy$Time)
-  recstart_temp <- biolprm$recruit_time
+
+  # SKG June 2019
+  # need to match codes below, this mismatches when biolprm not in same order!!
+  #recstart_temp <- biolprm$recruit_time
   #recstart_temp[,2] <- biolprm$time_spawn[-(grep('#',
   #                     biolprm$time_spawn[,1])),2] + biolprm$recruit_time[,2]
   # was this grep to get rid of a species with #XXX? breaks when there are none
-  recstart_temp[,2] <- biolprm$time_spawn[,2] + biolprm$recruit_time[,2]
-  #recstart_temp <- recstart_temp[recstart_temp[,1]%in%turnedon$Code,] #bug added codes with no YOY output
-  recstart_temp <- recstart_temp[recstart_temp[,1]%in%recruits$group,]
-  recruits$frac_recruit <- 0
-  for (irow in 1:nrow(recstart_temp)) {
-    group <- recstart_temp[irow,1]
-    pick <- which(recruits$group == group)
+  #recstart_temp[,2] <- biolprm$time_spawn[,2] + biolprm$recruit_time[,2]
 
-    recstart <- seq(recstart_temp[irow,2],by=365,length.out=nyrs)
-    recstart <- recstart[recstart<max(recruits$Time[pick])]
-    recend <- recstart + biolprm$recruit_period[irow,2]
+  #recstart_temp <- recstart_temp[recstart_temp[,1]%in%turnedon$Code,] #bug added codes with no YOY output
+  #recstart_temp <- recstart_temp[recstart_temp[,1]%in%recruits$group,]
+
+  # need spawn_period?? if so read out in load_biolprm and merge it here too
+
+  # rectiming is a dataframe with species code, time_spawn (day of year),
+  # recruit_time (number of days), and recruit period (number of days).
+  # we use these to calculate recstart (day of year) and recend (day of year)
+  rectiming <- merge(biolprm$time_spawn, biolprm$recruit_time, by = 1)
+  rectiming <- merge(rectiming, biolprm$recruit_period, by = 1)
+  names(rectiming) <- c("Code", "time_spawn", "recruit_time", "recruit_period")
+  rectiming <- rectiming %>%
+    mutate(recstart = time_spawn + recruit_time) %>% # possibly + spawn_period
+    mutate(recend = recstart + recruit_period)
+
+  #subsets to groups of interest
+  recstart_temp <- rectiming[rectiming$Code %in% recruits$group,]
+
+  # align model output timesteps (days) with recruitment periods (days)
+  numstime.days <- unique(nums$time)*toutinc
+
+  # make need to write fractions at model output timesteps in nums
+  # Sum numbers output over all boxes/depth/cohorts
+  totnums <- aggregate(atoutput ~ species + time, data = nums, sum) %>%
+    mutate(time.days = time*toutinc) %>%
+    mutate(yr = ceiling(time.days/365))  # excludes year 0 YOY value, check
+
+  totnums <- merge(totnums, recruits,
+                   by.x = c("yr", "species"), by.y = c("yr", "Name"),
+                   all.x = TRUE) %>%
+    arrange(time)
+
+  totnums$frac_recruit <- 0
+
+  for (irow in 1:nrow(recstart_temp)) {
+    group <- recstart_temp$Code[irow]
+    pick <- which(totnums$group == group)
+
+    recstart <- seq(recstart_temp$recstart[irow],by=365,length.out=nyrs)
+    recstart <- recstart[recstart<max(totnums$Time[pick])]
+    recend <- recstart + recstart_temp$recend[irow]
     #rec_times <- rbind(rec_times,cbind(group,recstart,recend))
 
     for (i_rec in 1:length(recstart)) {
-      i_tstart <- which(pick==min(pick[recruits$Time[pick]>=recstart[i_rec]]))
-      i_tstop <- which(pick==min(pick[recruits$Time[pick]>=recend[i_rec]]))
+      i_tstart <- which(pick==min(pick[numstime.days[pick]>=recstart[i_rec]]))
+      i_tstop <- which(pick==min(pick[numstime.days[pick]>=recend[i_rec]]))
       if (i_rec == length(recstart)) i_tstop <- length(pick)
       n_t <- 1+i_tstop-i_tstart
       for (i_t in 1:n_t) {
-        t_temp <- recruits$Time[pick[i_tstart+i_t-1]]
+        t_temp <- numstime.days[pick[i_tstart+i_t-1]]
         num_temp <- t_temp - recstart[i_rec]
         if (i_t>1) {
           if ((recend[i_rec]-t_temp)>toutinc) {
             num_temp <- toutinc
           }
           else {
-            num_temp <- recend[i_rec]-(recruits$Time[pick[i_tstart+i_t-2]])
+            num_temp <- recend[i_rec]-(numstime.days[pick[i_tstart+i_t-2]])
           }
         }
         frac_temp <- max(c(0,num_temp /(recend[i_rec]-recstart[i_rec])))
-        recruits$frac_recruit[pick[i_tstart+i_t-1]] <- frac_temp
+        totnums$frac_recruit[pick[i_tstart+i_t-1]] <- frac_temp
       }
     }
   }
 
-
-  # match "Time" of the young of the year with the time-step periodicity
-  # listed in the run.prm or run.xml file
-  recruits$Time <- recruits$Time / toutinc
-
   #G.Fay 1/6/16, expand to num of recruits
   # Recruit / mg C converted to wet weight in tonnes / redfield ratio of C:N
-  recruits$recruits <- recruits$recruits/k_wetdry/biolprm$redfieldcn
+  totnums$recruits <- totnums$recruits/k_wetdry/biolprm$redfieldcn
 
-  # Sum over all boxes/depth/cohorts
-  totnums <- aggregate(atoutput ~ species + time, data = nums, sum)
-
-  # Combine recruits and numbers
-  # Only pull recruits from the yearly time step, where the
-  # yearly time step matches the time step
-  totnums <- merge(totnums, recruits,
-    by.x = c("time", "species"), by.y = c("Time", "Name"),
-    all.x = TRUE, all.y = FALSE)
   totnums$group <- recruits$group[match(totnums$species, recruits$Name)]
   # For all time increments where there
   totnums$recruits[is.na(totnums$recruits)] <- 0
 
+  totnums$annrecruits <- totnums$recruits
+
+  totnums$recruits <- totnums$annrecruits*totnums$frac_recruit
+
   # Calculate survivors for each species group
   totnums$survivors <- totnums$recruits
-  # Make sure time is in order
-  totnums <- totnums[order(totnums$species, totnums$time), ]
-
-  totnums$recruits <- totnums$recruits*totnums$frac_recruit
 
   totnums$survival <- totnums$survivors
   # Calculate survival for each group
