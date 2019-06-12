@@ -103,7 +103,11 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   colnames(recruits)[which(colnames(recruits) == "recruits")] <- "recruitsbio"
   # Get recruits in numbers rather than biomass
   recruits$recruits <- recruits$recruitsbio / recruits$sum
-  recruits$yr <- as.integer(round(recruits$Time)/365)
+  recruits$yr <- as.integer(round(recruits$Time)/365) #needed to merge with totnums
+
+  # June 2019:Isaac determined that yr 0 (Time 0) in the YOY file is not real, don't use it
+  # code below assigns year 1 to times 0:stepperyr, all good output timesteps in truth$nums
+
 
   # G.Fay 2/21/16
   # UGLY code below tries to align fraction of annual yoy with timing of recruitment
@@ -124,7 +128,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   #recstart_temp <- recstart_temp[recstart_temp[,1]%in%turnedon$Code,] #bug added codes with no YOY output
   #recstart_temp <- recstart_temp[recstart_temp[,1]%in%recruits$group,]
 
-  # need spawn_period?? if so read out in load_biolprm and merge it here too
+  # June 12 2019 Beth determined that we do not need spawn_period
 
   # rectiming is a dataframe with species code, time_spawn (day of year),
   # recruit_time (number of days), and recruit period (number of days).
@@ -133,20 +137,17 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   rectiming <- merge(rectiming, biolprm$recruit_period, by = 1)
   names(rectiming) <- c("Code", "time_spawn", "recruit_time", "recruit_period")
   rectiming <- rectiming %>%
-    mutate(recstart = time_spawn + recruit_time) %>% # possibly + spawn_period
+    mutate(recstart = time_spawn + recruit_time) %>%
     mutate(recend = recstart + recruit_period)
 
   #subsets to groups of interest
   recstart_temp <- rectiming[rectiming$Code %in% recruits$group,]
 
-  # align model output timesteps (days) with recruitment periods (days)
-  numstime.days <- unique(nums$time)*toutinc
-
-  # make need to write fractions at model output timesteps in nums
   # Sum numbers output over all boxes/depth/cohorts
+  # align model output timesteps (days) with recruitment periods (days)
   totnums <- aggregate(atoutput ~ species + time, data = nums, sum) %>%
-    mutate(time.days = time*toutinc) %>%
-    mutate(yr = ceiling(time.days/365))  # excludes year 0 YOY value, check
+    mutate(time.days = (time+1)*toutinc) %>% #makes time 0 into days 0->73, etc
+    mutate(yr = ceiling(time.days/365))  # yr 1 is 0:stepsperyr to match recruits yr1
 
   totnums <- merge(totnums, recruits,
                    by.x = c("yr", "species"), by.y = c("yr", "Name"),
@@ -165,19 +166,19 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
     #rec_times <- rbind(rec_times,cbind(group,recstart,recend))
 
     for (i_rec in 1:length(recstart)) {
-      i_tstart <- which(pick==min(pick[numstime.days[pick]>=recstart[i_rec]]))
-      i_tstop <- which(pick==min(pick[numstime.days[pick]>=recend[i_rec]]))
+      i_tstart <- which(pick==min(pick[totnums$time.days[pick]>=recstart[i_rec]]))
+      i_tstop <- which(pick==min(pick[totnums$time.days[pick]>=recend[i_rec]]))
       if (i_rec == length(recstart)) i_tstop <- length(pick)
       n_t <- 1+i_tstop-i_tstart
       for (i_t in 1:n_t) {
-        t_temp <- numstime.days[pick[i_tstart+i_t-1]]
+        t_temp <- totnums$time.days[pick[i_tstart+i_t-1]]
         num_temp <- t_temp - recstart[i_rec]
         if (i_t>1) {
           if ((recend[i_rec]-t_temp)>toutinc) {
             num_temp <- toutinc
           }
           else {
-            num_temp <- recend[i_rec]-(numstime.days[pick[i_tstart+i_t-2]])
+            num_temp <- recend[i_rec]-(totnums$time.days[pick[i_tstart+i_t-2]])
           }
         }
         frac_temp <- max(c(0,num_temp /(recend[i_rec]-recstart[i_rec])))
