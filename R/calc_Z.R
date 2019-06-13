@@ -146,7 +146,8 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   # Sum numbers output over all boxes/depth/cohorts
   # align model output timesteps (days) with recruitment periods (days)
   totnums <- aggregate(atoutput ~ species + time, data = nums, sum) %>%
-    mutate(time.days = (time+1)*toutinc) %>% #makes time 0 into days 0->73, etc
+    #mutate(time.days = (time+1)*toutinc) %>% #makes time 0 into days 0->73, etc
+    mutate(time.days = (time)*toutinc) %>% #makes time 1 into days 0->73, etc
     mutate(yr = ceiling(time.days/365))  # yr 1 is 0:stepsperyr to match recruits yr1
 
   totnums <- merge(totnums, recruits,
