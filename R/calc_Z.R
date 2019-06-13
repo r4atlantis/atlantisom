@@ -182,6 +182,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
           }
         }
         frac_temp <- max(c(0,num_temp /(recend[i_rec]-recstart[i_rec])))
+        if(frac_temp > 1.0) frac_temp = 1.0
         totnums$frac_recruit[pick[i_tstart+i_t-1]] <- frac_temp
       }
     }
