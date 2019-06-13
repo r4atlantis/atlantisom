@@ -162,7 +162,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
 
     recstart <- seq(recstart_temp$recstart[irow],by=365,length.out=nyrs)
     recstart <- recstart[recstart<max(totnums$Time[pick])]
-    recend <- recstart + recstart_temp$recend[irow]
+    recend <- recstart + recstart_temp$recruit_period[irow]
     #rec_times <- rbind(rec_times,cbind(group,recstart,recend))
 
     for (i_rec in 1:length(recstart)) {
