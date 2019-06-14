@@ -140,9 +140,6 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
     mutate(recstart = time_spawn + recruit_time) %>%
     mutate(recend = recstart + recruit_period)
 
-  #subsets to groups of interest
-  recstart_temp <- rectiming[rectiming$Code %in% recruits$group,]
-
   # Sum numbers output over all boxes/depth/cohorts
   # align model output timesteps (days) with recruitment periods (days)
   totnums <- aggregate(atoutput ~ species + time, data = nums, sum) %>%
@@ -154,6 +151,9 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
                    by.x = c("yr", "species"), by.y = c("yr", "Name"),
                    all.x = TRUE) %>%
     arrange(time)
+
+  #subset recpars to groups of interest
+  recstart_temp <- rectiming[rectiming$Code %in% totnums$group,]
 
   totnums$frac_recruit <- 0
 
