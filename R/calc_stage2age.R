@@ -112,7 +112,7 @@ calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
 
       for(j in sp_times) { # looping through time
         # get the Z val for the timestep in question
-        Zval.j <- Zvals$time[Zvals$time==j]
+        Zval.j <- Zvals$Z[Zvals$time==j]
 
         # and turn the Z value into a vector of survival values across the
         # number of true ages for each age class for this species
