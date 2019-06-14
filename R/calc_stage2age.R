@@ -91,7 +91,9 @@ calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
   temp.list <- list()
 
   #SKG subset turnedon and only loop through species present in the nums input
-  turnedon_sub <- turnedon[which(turnedon$Name == unique(new_nums$species)),]
+  turnedon_sub <- turnedon %>%
+    filter(Name %in% new_nums$species)
+
   names <- turnedon_sub$Code
 
   for(i in 1:length(names)) {
