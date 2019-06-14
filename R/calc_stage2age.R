@@ -100,7 +100,7 @@ calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
     group.i <- turnedon_sub$Name[i]
     nums_species <- new_nums[new_nums$species==group.i,] # might need to
     num_ages <- turnedon_sub$NumAgeClassSize[i]
-    sp_times <- unique(nums_species$time)
+    sp_times <- sort(unique(nums_species$time))
     n_sp_tsteps <- length(sp_times)
     # these last pieces are needed because not all species are present at all times
 
