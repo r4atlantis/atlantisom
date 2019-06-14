@@ -90,12 +90,16 @@ calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
   # across ages and boxes (these wil all be put together in the end)
   temp.list <- list()
 
+  #SKG subset turnedon and only loop through species present in the nums input
+  turnedon_sub <- turnedon[which(turnedon$Name == unique(new_nums$species)),]
+  names <- turnedon_sub$Code
+
   for(i in 1:length(names)) {
     # looping all species -- those with or without multiple true ages
 
-    group.i <- turnedon$Name[i]
+    group.i <- turnedon_sub$Name[i]
     nums_species <- new_nums[new_nums$species==group.i,] # might need to
-    num_ages <- turnedon$NumAgeClassSize[i]
+    num_ages <- turnedon_sub$NumAgeClassSize[i]
     sp_times <- unique(nums_species$time)
     n_sp_tsteps <- length(sp_times)
     # these last pieces are needed because not all species are present at all times
