@@ -178,7 +178,6 @@ run_truth <- function(scenario, dir = getwd(),
     warning(strwrap(prefix = " ", initial = "",
                     "log.txt file not found; catch in numbers correction not done. For Atlantis SVN dates prior to December 2015, CATCH.nc output units were incorrect. Correction requires presence of log.txt file in the directory."))
   }
-
   catchfish <- read.table(file_catchfish, header = TRUE)
   over <- colnames(catchfish)[-(1:2)]
   catchfish <- reshape(catchfish, direction = "long",
@@ -238,6 +237,7 @@ run_truth <- function(scenario, dir = getwd(),
   result <- list("biomass_eaten" = biomass_eaten,
                  "biomass_ages" = biomass_ages,
                  "catch" = catch,
+                 "catch_all" = catch_all,
                  "nums" = nums,
                  "resn" = resn,
                  "structn" = structn,

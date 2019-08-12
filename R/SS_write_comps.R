@@ -31,6 +31,9 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
   start_year <- ss_data_list$styr
 
   for(i in 1:length(comp_matrix)){
+    if(i==3){
+      browser()
+    }
     k <- switch(data_type[i],"lencomp"=k_lencomp,
                 "agecomp"=k_agecomp)
     indices <- (k:(k+length(data_rows[[i]])-1))
@@ -54,7 +57,6 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
 
     if(data_type[i]=="agecomp"){
       if(caal_bool[i]){
-
         ss_data_list[[data_type[i]]][indices,"Lbin_lo"] <- comp_matrix[[i]][,"lower.bins"]
         ss_data_list[[data_type[i]]][indices,"Lbin_hi"] <- comp_matrix[[i]][,"upper.bins"]
       } else{

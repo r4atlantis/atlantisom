@@ -56,7 +56,8 @@
 0 #_SD_add_to_LAA (set to 0.1 for SS2 V1.x compatibility)
 0 #_CV_Growth_Pattern:  0 CV=f(LAA); 1 CV=F(A); 2 SD=F(LAA); 3 SD=F(A); 4 logSD=F(A)
 #
-2 #_maturity_option:  1=length logistic; 2=age logistic; 3=read age-maturity matrix by growth_pattern; 4=read age-fecundity; 5=disabled; 6=read length-maturity
+3 #_maturity_option:  1=length logistic; 2=age logistic; 3=read age-maturity matrix by growth_pattern; 4=read age-fecundity; 5=disabled; 6=read length-maturity
+0.0 0.1 0.5 0.9 1.0 1.0 1.0 1.0 1.0 1.0 1.0 
 1 #_First_Mature_Age
 1 #_fecundity option:(1)eggs=Wt*(a+b*Wt);(2)eggs=a*L^b;(3)eggs=a*Wt^b; (4)eggs=a+b*L; (5)eggs=a+b*W
 0 #_hermaphroditism option:  0=none; 1=female-to-male age-specific fxn; -1=male-to-female age-specific fxn
@@ -67,11 +68,11 @@
 # Sex: 1  BioPattern: 1  NatMort
  0.2 0.7 0.4 0 99 0 -3 0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
 # Sex: 1  BioPattern: 1  Growth
- 20 30 25 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
- 40 50 45 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
+ 15 30 15.188 0 99 0 -3 0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
+ 40 50 48.39 0 99 0 -3 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
  0.05 0.99 0.4 0 99 0 3 0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
- 0.05 0.3 0.14 0 99 0 3 0 0 0 0 0 0 0 # CV_young_Fem_GP_1
- 0.01 0.1 0.05 0 99 0 3 0 0 0 0 0 0 0 # CV_old_Fem_GP_1
+ 0.05 0.3 0.25 0 99 0 -3 0 0 0 0 0 0 0 # CV_young_Fem_GP_1
+ 0.01 0.2 0.09 0 99 0 -3 0 0 0 0 0 0 0 # CV_old_Fem_GP_1
 # Sex: 1  BioPattern: 1  WtLen
  -3 3 1.0e-06 0 99 0 -3 0 0 0 0 0 0 0 # Wtlen_1_Fem
  -3 5 3.113 0 99 0 -3 0 0 0 0 0 0 0 # Wtlen_2_Fem
@@ -105,13 +106,13 @@
 0  # 0/1 to use steepness in initial equ recruitment calculation
 0  #  future feature:  0/1 to make realized sigmaR a function of SR curvature
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn #  parm_name
-             3            25            16             0            99             0          1          0          0          0          0          0          0          0 # SR_LN(R0)
-           0.2             1          0.59             0            99             0         -1          0          0          0          0          0          0          0 # SR_BH_steep
+             3            25          20.45             0            99             0         1          0          0          0          0          0          0          0 # SR_LN(R0)
+           0.2             1          0.95             0            99             0         -1          0          0          0          0          0          0          0 # SR_BH_steep
              0             2         0.727             0            99             0         -3          0          0          0          0          0          0          0 # SR_sigmaR
            -15            15             0             0            99             0         -2          0          0          0          0          0          0          0 # SR_regime
              0             0             0             0            99             0         -3          0          0          0          0          0          0          0 # SR_autocorr
 1 #do_recdev:  0=none; 1=devvector (R=F(SSB)+dev); 2=deviations (R=F(SSB)+dev); 3=deviations (R=R0*dev; dev2=R-f(SSB)); 4=like 3 with sum(dev2) adding penalty
-1 # first year of main recr_devs; early devs can preceed this era
+30 # first year of main recr_devs; early devs can preceed this era
 79 # last year of main recr_devs; forecast devs start in following year
 1 #_recdev phase 
 1 # (0/1) to read 13 advanced options
@@ -213,13 +214,13 @@
 #Pattern:_27; parm=3+special; cubic spline in age
 #Pattern:_42; parm=2+special+3; // cubic spline; with 2 additional param for scaling (average over bin range)
 #_Pattern Discard Male Special
- 0 0 0 0 # 1 Fishery
+ 12 0 0 0 # 1 Fishery
  0 0 0 0 # 2 Survey
 #
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn  #  parm_name
-# 1   Fishery LenSelex
-#            10            28         15.88             0            99             0          2          0          0          0          0          0          0          0  #  SizeSel_P1_Fishery(1)
-#           -20            10       3.25493             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Fishery(1)
+# 1   Fishery ageSelex
+            0            5         2             0            99             0          2          0          0          0          0          0          0          0  #  SizeSel_P1_Fishery(1)
+           -20            10       1             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Fishery(1)
 # 2   Survey LenSelex
 #            10            28          12.7             0            99             0          2          0          0          0          0          0          0          0  #  SizeSel_P1_Survey(2)
 #           -20            10       3.25493             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Survey(2)

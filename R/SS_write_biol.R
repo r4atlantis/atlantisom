@@ -34,14 +34,14 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage){
 
   #Translate weight at age from grams to nitrogen
   wtsage_N <- wtsage %>%
-    mutate(weight=(1000*meanwt)/(kgw2d*redfieldcn))
+    mutate(weight=meanwt*20*5.7)
 
   #Calculate recruitment parameters from atlantis values
   bh_lnro <- log(BHalpha) - log(kwrr+kswr)
-  sb0 <- sum(exp(Z*wtsage_N[,"agecl"]+bh_lnro)*fsp*wtsage_N[,"weight"]*  as.numeric(t(maturityogive[-1])))
-  b0 <- sum(exp(Z*wtsage_N[,"agecl"]+bh_lnro)*wtsage_N[,"weight"])
-  bh_steepness <- ((kwrr+kswr)*0.2*sb0)/(BHbeta+0.2*b0)
-
+  sb0 <- exp(bh_lnro)*sum(exp(-Z*wtsage_N[,"agecl"])*fsp*wtsage_N[,"weight"]*as.numeric(t(maturityogive[-1])))
+  b0 <- sum(exp(-Z*wtsage_N[,"agecl"])*exp(bh_lnro)*wtsage_N[,"weight"])
+    bh_steepness <- ((kwrr+kswr)*0.2*sb0)/(BHbeta+0.2*sb0)
+  browser()
   ##Function that assigns ctl values to the ones from atlantis and sets phase and upper and lower bounds
   set_par_values <- function(X, name, value, phase){
     val <- unlist(value[X])
@@ -92,6 +92,7 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage){
          name = ctl_names, value = ctl_values,
          phase = ctl_phases)
 
+  # Write maturity ogive to the control file
 
 
  return(ctl_obj)

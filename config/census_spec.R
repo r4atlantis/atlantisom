@@ -1,4 +1,4 @@
-# should return a perfectly efficient survey 
+# should return a perfectly efficient survey
 effic1 <- data.frame(species=funct.group.names,
                      efficiency=rep(1.0,length(funct.group.names)))
 
@@ -27,11 +27,11 @@ fstepperyr <- if(runpar$outputstepunit=="days") 365/runpar$toutfinc
 
 # define set of species we expect surveys to sample (e.g. fish only? vertebrates?)
 # for ecosystem indicator work test all species, e.g.
-survspp <- funct.group.names 
+survspp <- funct.group.names
 
 # for length and age groups lets just do fish and sharks
 # NOBA model has InvertType, changed to GroupType in file, but check Atlantis default
-if(initNOBA) funct.groups <- rename(funct.groups, GroupType = InvertType)
+#if(initNOBA) funct.groups <- rename(funct.groups, GroupType = InvertType)
 
 survspp <- funct.groups$Name[funct.groups$IsTurnedOn==1 &
                                funct.groups$GroupType %in% c("FISH", "SHARK")]

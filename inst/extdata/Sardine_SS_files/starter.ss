@@ -7,7 +7,7 @@ SardEM_3_3.dat
 SardEM_3_3.ctl
 0 # 0=use init values in control file; 1=use ss.par
 1 # run display detail (0,1,2)
-2 # detailed output (0=minimal for data-limited, 1=high (w/ wtatage.ss_new), 2=brief) 
+1 # detailed output (0=minimal for data-limited, 1=high (w/ wtatage.ss_new), 2=brief) 
 0 # write 1st iteration details to echoinput.sso file (0,1) 
 4 # write parm values to ParmTrace.sso (0=no,1=good,active; 2=good,all; 3=every_iter,all_parms; 4=every,active)
 2 # write to cumreport.sso (0=no,1=like&timeseries; 2=add survey fits)
