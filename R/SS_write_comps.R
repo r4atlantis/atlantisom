@@ -31,9 +31,9 @@ SS_write_comps <- function(ss_data_list, comp_matrix,
   start_year <- ss_data_list$styr
 
   for(i in 1:length(comp_matrix)){
-    if(i==3){
-      browser()
-    }
+    # if(i==3){
+    #   browser()
+    # }
     k <- switch(data_type[i],"lencomp"=k_lencomp,
                 "agecomp"=k_agecomp)
     indices <- (k:(k+length(data_rows[[i]])-1))
