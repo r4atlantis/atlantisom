@@ -42,8 +42,14 @@ SS_write_ts <- function(ss_data_list, ts_data,
 
     if(units[i] == "numbers") {
       ts_data[[i]] <- round(ts_data[[i]]/1000,0)
+      ss_data_list$units_of_catch[i] <- 2
+      ss_data_list$fleetinfo$units[i] <- 2
+      ss_data_list$CPUEinfo$Units[i] <-2
     } else{
       ts_data[[i]] <- round(ts_data[[i]],0)
+      ss_data_list$units_of_catch[i] <- 1
+      ss_data_list$fleetinfo$units[i] <- 1
+      ss_data_list$CPUEinfo$Units[i] <-1
       }
 
     indices <- (k:(k+length(data_years[[i]])-1))
