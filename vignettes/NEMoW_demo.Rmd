@@ -85,14 +85,6 @@ This truth object shows the true population dynamics for sardine from Atlantis w
 
 Then we will have a function that implements the "survey" that produces the stock assessment inputs and sends those to the SS file writing functions. Here the survey functions are still separate.
 
-## Survey Config
-```{r census-spec, message=FALSE, warning=FALSE}
-
-# make a function for this
-source(here("config/census_spec.R"))
-
-```
-
 
 ## Derive “Data” from Atlantis to give to SS3
 
@@ -101,6 +93,23 @@ Specify our survey sampling. This could come from other information such as the 
 Here are specifications which approximate the true sardine acoustic survey
 
 ```{r sardine-survey-spec}
+
+# generalized timesteps all models
+runpar <- load_runprm(d.name, run.prm.file)
+noutsteps <- runpar$tstop/runpar$outputstep
+stepperyr <- if(runpar$outputstepunit=="days") 365/runpar$toutinc
+midptyr <- round(median(seq(0,stepperyr)))
+
+# a survey that takes place once per year mid year
+annualmidyear <- seq(midptyr, noutsteps, stepperyr)
+# learned the hard way this can be different from ecosystem outputs
+fstepperyr <- if(runpar$outputstepunit=="days") 365/runpar$toutfinc
+
+# should return all model areas
+boxpars <- load_box(d.name, box.file)
+boxall <- c(0:(boxpars$nbox - 1))
+
+
 source(here("config/sardine_survey.R"))
 
 ```
@@ -199,7 +208,7 @@ effN <- data.frame(species=species, effN=effN)
 
 #catch at age each timestep summed over polygons
 # catch at age by area and timestep
-catch_numbers <-  create_fishery_subset(dat = truth$catch,
+catch_numbers <-  create_fishery_subset(dat = sardine_truth$catch,
                                          time = fish_times,
                                          species = species,
                                          boxes = boxall)
@@ -210,13 +219,13 @@ rm(catch_numbers)
 gc()
 #Get weights
 # aggregate true resn per fishery subset design
-catch_aggresnss <- aggregateDensityData(dat = truth$resn,
+catch_aggresnss <- aggregateDensityData(dat = sardine_truth$resn,
                                  time = fish_times,
                                  species = species,
                                  boxes = boxall)
 
 # aggregate true structn fishery subsetdesign
-catch_aggstructnss <- aggregateDensityData(dat = truth$structn,
+catch_aggstructnss <- aggregateDensityData(dat = sardine_truth$structn,
                                  time = fish_times,
                                  species = species,
                                  boxes = boxall)
@@ -230,7 +239,8 @@ catch_resnss_samp <-  sample_fish(catch_aggresnss, effN, sample = FALSE)
 catch_lengthwt_samp <- calc_age2length(structn = catch_structnss_samp,
                                  resn = catch_resnss_samp,
                                  nums = catch_numsss_samp,
-                                 biolprm = truth$biolprm, fgs = truth$fgs,
+                                 biolprm = sardine_truth$biolprm, 
+                                 fgs = sardine_truth$fgs,
                                  maxbin = maxbin,
                                  CVlenage = CVs$lenage, remove.zeroes=TRUE)
 
