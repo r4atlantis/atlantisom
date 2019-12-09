@@ -1,0 +1,239 @@
+---
+title: "atlantisom demo notebook"
+output: 
+  html_notebook: default
+author: "Sarah Gaichas and Christine Stawitz"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE}
+library(tidyr)
+require(dplyr)
+library(ggplot2)
+library(data.table)
+library(here)
+library(ggforce)
+library(ggthemes)
+devtools::install_github("r4atlantis/atlantisom")
+library(atlantisom)
+```
+
+## Introduction
+
+This demonstrates the Atlantis to `atlantisom` to SS3 workflow with the California Current run that includes climate forcing, recruitment variability, and the fishing scenario outlined for our project in Norway: "output_CC_2063_OA_OFF_22". 
+
+We will go from Atlantis model output to SS input and run in this page for a single species, "sardine", that doesn't require any age class splitting. 
+
+
+```{r initialize}
+
+species_ss <- c("Pacific_sardine")
+age_classes <- 1:10
+
+source(here("config/NEMOWConfig.R"))
+needed.files <- ls()
+print(unlist(lapply(needed.files, FUN=get)))
+
+```
+
+The below example requires a folder in your project directory named "atlantisom" containing the above files from an Atlantis output.
+
+```{r get_names, message=FALSE, warning=FALSE}
+#Check for needed files
+
+
+#Load functional groups
+funct.groups <- load_fgs(dir=d.name,
+                         file_fgs = functional.groups.file)
+#Get just the names of active functional groups
+funct.group.names <- funct.groups %>% 
+  filter(IsTurnedOn == 1) %>%
+  select(Name) %>%
+  .$Name
+
+```
+
+This can be run with `species_ss` in `select_groups` to get results only for that species. WARNING: running with all species takes a long time! (50 minutes for this output)
+
+```{r get_truth_ss}
+  #Store all loaded results into an R object
+sardine_truth <- if(!file.exists(file.path(d.name, 
+                          "sardine_truth.RData"))){
+  #Store all loaded results into an R object
+  sardine_truth <- run_truth(scenario = scenario.name,
+                     dir = d.name,
+                     file_fgs = functional.groups.file,
+                     file_bgm = box.file,
+                     select_groups = "Pacific_sardine",
+                     file_init = initial.conditions.file,
+                     file_biolprm = biol.prm.file,
+                     file_runprm = run.prm.file,
+                     verbose = TRUE
+  )
+} else {
+  sardine_truth <- get(load(file.path(d.name,
+                              "sardine_truth.RData")))
+}
+
+```
+
+This truth object shows the true population dynamics for sardine from Atlantis which we need for reference to compare with estimated population dynamics from the stock assessment estimation models. 
+
+Then we will have a function that implements the "survey" that produces the stock assessment inputs and sends those to the SS file writing functions. Here the survey functions are still separate.
+
+## Survey Config
+```{r census-spec, message=FALSE, warning=FALSE}
+
+# make a function for this
+source(here("config/census_spec.R"))
+
+```
+
+
+## Derive “Data” from Atlantis to give to SS3
+
+Specify our survey sampling. This could come from other information such as the overlap of actual survey stations with OM polygons, experiments evaluating survey selectivity and efficiency, actual sample-based survey cv, etc. 
+
+Here are specifications which approximate the true sardine acoustic survey
+
+```{r sardine-survey-spec}
+source(here("config/sardine_survey.R"))
+
+```
+
+Get input survey biomass for SS (these have q, selectivity, cv)
+
+```{r toSS-surveyts-comps}
+
+#Sample survey - 3rd timestep simulates a summer survey
+survey_out <- create_survey(dat=sardine_truth$nums, 
+                            time=survey_sample_full, 
+                            species=species, 
+                            boxes=boxall, 
+                            effic=effic, 
+                            selex=sel)
+
+#Try a biomass based survey for comparison
+survey_outB <- create_survey(dat=sardine_truth$biomass_ages,
+                            time=survey_sample_full,
+                            species=species,
+                            boxes=boxall,
+                            effic=effic,
+                            selex=sel)
+
+
+#Set effective sample size for age compositions
+effN <- surveyEffN
+highEffN <- data.frame(species=species, effN=rep(effN, length(species)))
+
+#Sample fish for age composition
+age_comp_data <- sample_fish(survey_out, highEffN)
+
+# aggregate true resn per survey design
+survey_aggresnstd <- aggregateDensityData(dat = sardine_truth$resn,
+                                          time = survey_sample_full,
+                                          species = species,
+                                          boxes = boxall)
+
+# aggregate true structn per survey design
+survey_aggstructnstd <- aggregateDensityData(dat =sardine_truth$structn,
+                                             time = survey_sample_full,
+                                             species = species,
+                                             boxes = boxall)
+
+ss_structnstd <- sample_fish(survey_aggstructnstd,
+                             effN,
+                             sample=FALSE)
+ss_resnstd <- sample_fish(survey_aggresnstd,
+                          effN,
+                          sample=FALSE)
+
+#Extract length composition data
+ss_length_stdsurv <- calc_age2length(structn = ss_structnstd,
+                                     resn = ss_resnstd,
+                                     nums = age_comp_data,
+                                     biolprm = sardine_truth$biolprm, fgs = sardine_truth$fgs,
+                                     CVlenage = CVs$lenage, remove.zeroes=TRUE)
+
+#Need to replace with interp function
+wtAtAge <- ss_length_stdsurv$muweight %>%
+  select(species, agecl, time, wtAtAge = atoutput) %>%
+  mutate(wtAtAge = wtAtAge/1000)
+
+# CV function
+cv <- data.frame(species=species_ss, cv=CVs$survey)
+
+#Sample survey biomass
+survObsBiom <- sample_survey_biomass(dat=survey_out,cv=cv,wtAtAge)
+
+# check against survey with truth$biomass_ages output
+wtage1 <- data.frame(species=rep(species_ss, each=max(age_classes)),
+                    agecl=rep(c(age_classes),length(species_ss)),
+                    wtAtAge=rep(1000.0,length(species_ss)*max(age_classes)))
+
+survObsBiomB <- sample_survey_biomass(dat=survey_outB,cv=cv,wtage1)
+
+# survey numbers, not sure which SS needs?
+survObsNum <- sample_survey_numbers(dat=survey_out,cv=cv)
+
+
+```
+
+
+Get composition inputs for SS (survey and fishery catch at age, survey and fishery lengths, survey and fishey weight at age).
+
+Because catch composition information goes in to the assessment as a proportion, we can use fishery catch at age from this legacy codebase even with absolute catch numbers likely half what they should be overall.
+
+
+```{r toSS-fisherycomps}
+
+# Survey length comps and wtage done above to get survey ts using nums*wtage approach
+
+#We end up using CAAL for the survey below, so let's generate fishery age comps instead
+effN <- fisheryEffN/fstepperyr
+effN <- data.frame(species=species, effN=effN)
+
+#catch at age each timestep summed over polygons
+# catch at age by area and timestep
+catch_numbers <-  create_fishery_subset(dat = truth$catch,
+                                         time = fish_times,
+                                         species = species,
+                                         boxes = boxall)
+
+catch_numsss_samp <- sample_fish(catch_numbers, effN)
+
+rm(catch_numbers)
+gc()
+#Get weights
+# aggregate true resn per fishery subset design
+catch_aggresnss <- aggregateDensityData(dat = truth$resn,
+                                 time = fish_times,
+                                 species = species,
+                                 boxes = boxall)
+
+# aggregate true structn fishery subsetdesign
+catch_aggstructnss <- aggregateDensityData(dat = truth$structn,
+                                 time = fish_times,
+                                 species = species,
+                                 boxes = boxall)
+
+#dont sample these, just aggregate them using median
+catch_structnss_samp <- sample_fish(catch_aggstructnss, effN, sample = FALSE)
+
+catch_resnss_samp <-  sample_fish(catch_aggresnss, effN, sample = FALSE)
+
+# these fishery lengths and weight at age are each output timestep
+catch_lengthwt_samp <- calc_age2length(structn = catch_structnss_samp,
+                                 resn = catch_resnss_samp,
+                                 nums = catch_numsss_samp,
+                                 biolprm = truth$biolprm, fgs = truth$fgs,
+                                 maxbin = maxbin,
+                                 CVlenage = CVs$lenage, remove.zeroes=TRUE)
+
+
+```
+

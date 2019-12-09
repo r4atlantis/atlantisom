@@ -1,0 +1,10 @@
+d.name <- here("nemow_demo","CC_2063_OA_OFF_22")
+functional.groups.file <- "CalCurrentV3Groups.csv"
+biomass.pools.file <- "DIVCalCurrentV3_Biol.nc"
+biol.prm.file <- "CalCurrentV3_Biol.prm"
+box.file <- "CalCurrentV3_utm.bgm"
+initial.conditions.file <- "DIVCalCurrentV3_Biol.nc"
+run.prm.file <- "CalCurrentV3_run.xml"
+scenario.name <- "CCV3"
+bioind.file <- "outputCCV3BiomIndx.txt"
+catch.file <- "outputCCV3Catch.txt"
