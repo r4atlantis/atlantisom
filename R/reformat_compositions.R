@@ -26,6 +26,9 @@ reformat_compositions <- function(comp_data,
   unmelt <- dcast(data = comp_proportion,
                   formula = time ~agecl,
                   value.var = "comp")
+  samp_size <- comp_proportion %>%
+    group_by(time) %>% summarise("nsamp" = sum(atoutput))
+  unmelt <- left_join(unmelt, samp_size, by =c("time"))
   }
 
   if(comp_type=="lencomp"){
@@ -35,10 +38,13 @@ reformat_compositions <- function(comp_data,
   }
 
   if(comp_type=="caalcomp"){
-
     unmelt <- dcast(data = comp_proportion,
                     formula = time + lower.bins + upper.bins ~agecl,
                     value.var = "comp")
+    samp_size <- comp_proportion %>%
+      group_by(time, lower.bins, upper.bins) %>% summarise("nsamp" = sum(atoutput))
+    unmelt <- left_join(unmelt, samp_size, by =c("time", "lower.bins","upper.bins"))
+
   }
 
 
@@ -48,10 +54,7 @@ reformat_compositions <- function(comp_data,
   columns_nonsum <- c("fleet", "year","season",
                       "Lbin_lo","Lbin_hi", "month", "sex", "part", "ageerr","Nsamp", "time", "lower.bins","upper.bins")
 
-  sample_size <- apply(unmelt[,(!names(unmelt)%in% columns_nonsum)], FUN=sum, MARGIN=1)
-  comp_flat<- cbind(unmelt[order(unmelt$time),],
-                        sample_size)
-  names(comp_flat)[ncol(comp_flat)] <- "nsamp"
+  comp_flat<- unmelt[order(unmelt$time),]
 
   return(comp_flat)
 }

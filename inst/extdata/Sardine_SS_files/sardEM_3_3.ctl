@@ -24,7 +24,7 @@
 1 #_Nblock_Patterns
 1 #_blocks_per_pattern 
 # begin and end years of blocks
-1 79
+30 79
 #
 # controls for all timevary parameters 
 1 #_env/block/dev_adjust_method for all time-vary parms (1=warn relative to base parm bounds; 3=no bound check)
@@ -47,8 +47,8 @@
   #_no additional input for selected M option; read 1P per morph
 #
 1 # GrowthModel: 1=vonBert with L1&L2; 2=Richards with L1&L2; 3=age_specific_K_incr; 4=age_specific_K_decr; 5=age_specific_K_each; 6=NA; 7=NA; 8=growth cessation
-0.5 #_Age(post-settlement)_for_L1;linear growth below this
-999 #_Growth_Age_for_L2 (999 to use as Linf)
+1 #_Age(post-settlement)_for_L1;linear growth below this
+10 #_Growth_Age_for_L2 (999 to use as Linf)
 -999 #_exponential decay for growth above maxage (value should approx initial Z; -999 replicates 3.24; -998 to not allow growth above maxage)
 0  #_placeholder for future growth feature
 #
@@ -65,11 +65,11 @@
 #_growth_parms
 #_ LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
 # Sex: 1  BioPattern: 1  NatMort
- 0.2 0.7 0.256 0 99 0 -3 0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
+ 0.2 0.7 0.1 0 99 0 -3 0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
 # Sex: 1  BioPattern: 1  Growth
  15 30 15.188 0 99 0 -3 0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
- 40 50 48.39 0 99 0 -3 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
- 0.05 0.99 0.249 0 99 0 3 0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
+ 40 50 48.39 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
+ 0.05 0.99 0.249 0 99 0 -3 0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
  0.05 0.3 0.25 0 99 0 -3 0 0 0 0 0 0 0 # CV_young_Fem_GP_1
  0.01 0.2 0.09 0 99 0 -3 0 0 0 0 0 0 0 # CV_old_Fem_GP_1
 # Sex: 1  BioPattern: 1  WtLen
@@ -112,18 +112,18 @@
              0             0             0             0            99             0         -3          0          0          0          0          0          0          0 # SR_autocorr
 1 #do_recdev:  0=none; 1=devvector (R=F(SSB)+dev); 2=deviations (R=F(SSB)+dev); 3=deviations (R=R0*dev; dev2=R-f(SSB)); 4=like 3 with sum(dev2) adding penalty
 30 # first year of main recr_devs; early devs can preceed this era
-79 # last year of main recr_devs; forecast devs start in following year
+76 # last year of main recr_devs; forecast devs start in following year
 1 #_recdev phase 
 1 # (0/1) to read 13 advanced options
- 0 #_recdev_early_start (0=none; neg value makes relative to recdev_start)
- -2 #_recdev_early_phase
+ 20 #_recdev_early_start (0=none; neg value makes relative to recdev_start)
+ 2 #_recdev_early_phase
  0 #_forecast_recruitment phase (incl. late recr) (0 value resets to maxphase+1)
  1 #_lambda for Fcast_recr_like occurring before endyr+1
- 5.6 #_last_yr_nobias_adj_in_MPD; begin of ramp
- 30.3 #_first_yr_fullbias_adj_in_MPD; begin of plateau
- 78.2 #_last_yr_fullbias_adj_in_MPD
+ 1 #_last_yr_nobias_adj_in_MPD; begin of ramp
+ 30 #_first_yr_fullbias_adj_in_MPD; begin of plateau
+ 76 #_last_yr_fullbias_adj_in_MPD
  79 #_end_yr_for_ramp_in_MPD (can be in forecast to shape ramp, but SS sets bias_adj to 0.0 for fcast yrs)
- 0.9721 #_max_bias_adj_in_MPD (-1 to override ramp and set biasadj=1.0 for all estimated recdevs)
+ 1 #_max_bias_adj_in_MPD (-1 to override ramp and set biasadj=1.0 for all estimated recdevs)
  0 #_period of cycles in recruitment (N parms read below)
  -5 #min rec_dev
  5 #max rec_dev
@@ -213,7 +213,7 @@
 #Pattern:_27; parm=3+special; cubic spline in age
 #Pattern:_42; parm=2+special+3; // cubic spline; with 2 additional param for scaling (average over bin range)
 #_Pattern Discard Male Special
- 0 0 0 0 # 1 Fishery
+ 10 0 0 0 # 1 Fishery
  0 0 0 0 # 2 Survey
 #
 #_          LO            HI          INIT         PRIOR         PR_SD       PR_type      PHASE    env-var    use_dev   dev_mnyr   dev_mxyr     dev_PH      Block    Blk_Fxn  #  parm_name
@@ -225,8 +225,8 @@
 #           -20            10       3.25493             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Survey(2)
 # 3   CPUE LenSelex
 # 1   Fishery AgeSelex
-#             0            15             0             0            99             0         4          0          0          0          0          0          0          0  #  AgeSel_P1_Fishery(1)
-#             0            20            15             0            99             0         4          0          0          0          0          0          0          0  #  AgeSel_P2_Fishery(1)
+#             0            15             0             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P1_Fishery(1)
+#             0            20            15             0            99             0         -4          0          0          0          0          0          0          0  #  AgeSel_P2_Fishery(1)
 # 2   Survey AgeSelex
 #            0            5         2             0            99             0          2          0          0          0          0          0          0          0  #  SizeSel_P1_Fishery(1)
 #           -20            10       1             0            99             0          3          0          0          0          0          0          0          0  #  SizeSel_P2_Fishery(1)
