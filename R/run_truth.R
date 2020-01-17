@@ -26,7 +26,6 @@
 #' @template file_runprm
 #' @template verbose
 #' @template save
-#' @template full
 #'
 #' @return Returns a list object.
 #' @export
@@ -44,7 +43,7 @@
 #'
 run_truth <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm, file_runprm,
-  verbose = FALSE, save = TRUE, full = TRUE){
+  verbose = FALSE, save = TRUE){
 
   # Read in information
   # Read in the functional groups csv since that is used by many functions
