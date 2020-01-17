@@ -5,7 +5,8 @@
 \title{Load Atlantis scenario output}
 \usage{
 run_truth(scenario, dir = getwd(), file_fgs, file_bgm, select_groups,
-  file_init, file_biolprm, file_runprm, verbose = FALSE, save = TRUE)
+  file_init, file_biolprm, file_runprm, verbose = FALSE, save = TRUE,
+  full = TRUE)
 }
 \arguments{
 \item{scenario}{A character value, specifying the Atlantis scenario name.
@@ -63,6 +64,9 @@ on input from the \code{"[...]_run.prm"} file.}
 to the screen or not. The default value is \code{FALSE}.}
 
 \item{A}{logical value specifying if the function should save the output
+to the disk or not. The default is \code{TRUE}.}
+
+\item{A}{logical value specifying if the function should save the full output
 to the disk or not. The default is \code{TRUE}.}
 }
 \value{
