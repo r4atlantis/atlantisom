@@ -6,8 +6,9 @@
 #'@param species_code the three-letter species code of the fish you are creating a model for
 #'@param Z scalar value for Z of the species
 #'@param wtsage two dimensional vector with column names agecl and meanwt giving mean body weight at age in grams
+#'@param lenage three dimensional vector with column names agecl, meanln, and cvln giving mean body length and cv of body length at age
 #'@return an updated ctl_obj that has replaced parameters with the atlantis-created ones
-SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage){
+SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage, lensage){
 
   #vector of parameters needed
   needed_pars <- c("BHalpha","BHbeta","kgw2d","redfieldcn","maturityogive","fsp","kswr","kwrr", "wl")
@@ -57,18 +58,21 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage){
   }
 
   #Translate weight to length
-  meanln <- (wtsage$meanwt^(1/wl[,"b"]))/(100*wl[,"a"])
   a1 <- round(ctl_obj$Growth_Age_for_L1,0)
   a2 <- round(ctl_obj$Growth_Age_for_L2,0)
 
   #Guess L1 and L2 values from the mean length at different age classes
-  l1_guess <- meanln[which.min(abs(wtsage$agecl-a1))]
+  l1_guess <- lensage[which.min(abs(lensage$agecl-a1)),"meanln"]
+
+  #Guess CV_young values from cv len at a1
+  cvy_guess <-lensage[which.min(abs(lensage$agecl-a1)),"cvln"]/l1_guess
 
   #If Linf is used instead of L2, just pick max age
   if(a2==999){
-    l2_guess <- last(meanln)
+    l2_guess <- last(lensage$meanln)
     } else{
-    l2_guess<-meanln[which.min(abs(wtsage$agecl-a2))]
+    l2_guess <- lensage[which.min(abs(lensage$agecl-a2)),"meanln"]
+    cvo_guess <- lensage[which.min(abs(lensage$agecl-a2)),"cvln"]
   }
 
   ctl_names <- c("SR_LN(R0)", "SR_BH_steep",
@@ -83,7 +87,7 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage){
   ctl_values <- c(bh_lnro, bh_steepness,
                   wl[1], wl[2], 0.4,
                   l1_guess, l2_guess,
-                  0.4, 0.14, 0.05)
+                  0.4, cvy_guess, cvo_guess)
 
   ctl_phases <- c(rep(-1,5), rep(3,3), -1,-1)
 
