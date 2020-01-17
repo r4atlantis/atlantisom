@@ -1,6 +1,6 @@
 #'@description A wrapper function to read in an SS .dat file, modify it to add a catch vector, survey CPUE, CAAL and length comp data
 #' from a survey, and age and length comp data from a fishery using the \code{atlantisom} functions to take data from atlantis.
-#'@param model_dir the directory (relative to \inst\extdata) your SS files are in
+#'@param model_dir the directory (relative to inst extdata) your SS files are in
 #'@param datfile_name the name of your stock synthesis .dat file
 #'@param survey_ts a data frame with columns \code{atoutput} and \code{time} where atoutput is survey CPUE in biomass (tons)
 #'@param fishery_ts a data frame with columns \code{atoutput} and \code{time} where atoutput is fished catch in biomass (tons)
@@ -67,13 +67,12 @@ write_SS_dat <- function(model_dir, datfile_name, survey_ts, fishery_ts, survey_
 
   age_comp_flat <- filter(age_comp_flat, (time>burnin*timestep)&(time<(nyears+burnin)*timestep))
 
-  if(!all(age_bins ==names(age_comp_flat)[!names(age_comp_flat) %in% c("time","nsamp")])){
-    stop("Age bins from SS dat file do not match the number of age bins generated from the data")
-  }
 
   #Get the SS length bins
   length_bin_names <- names(stocksynthesis.data$lencomp)[7:length(names(stocksynthesis.data$lencomp))]
   length_bins <- sub("l","",length_bin_names)
+
+  sum(catch_meanwt[,names(catch_meanwt)!="time"])
 
   #Flatten CAAL comps
   caal_comp_flat <- reformat_compositions(len_comp_data, round.places=4,
@@ -96,6 +95,10 @@ write_SS_dat <- function(model_dir, datfile_name, survey_ts, fishery_ts, survey_
   #remove burnin
   len_comp_final <- filter(len_comp_flat,
                            time %in% survey_years)
+
+  if(!all(length_bins ==names(len_comp_flat)[!names(len_comp_flat) %in% c("time","nsamp","lower.bins","upper.bins")])){
+    stop("Length bins from SS dat file do not match the number of length bins generated from the data")
+  }
 
   #Add over fishery age classes to get length comps
   fish_len_comp_flat <- reformat_compositions(fishery_lencomp,
