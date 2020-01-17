@@ -65,13 +65,13 @@
 #_growth_parms
 #_ LO HI INIT PRIOR PR_SD PR_type PHASE env_var&link dev_link dev_minyr dev_maxyr dev_PH Block Block_Fxn
 # Sex: 1  BioPattern: 1  NatMort
- 0.2 0.7 0.1 0 99 0 -3 0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
+ 0.2 0.7 0.2 0 99 0 -3 0 0 0 0 0 0 0 # NatM_p_1_Fem_GP_1
 # Sex: 1  BioPattern: 1  Growth
- 15 30 15.188 0 99 0 -3 0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
- 40 50 48.39 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
+ 15 30 22.5 0 99 0 -3 0 0 0 0 0 0 0 # L_at_Amin_Fem_GP_1
+ 40 50 45.39 0 99 0 3 0 0 0 0 0 0 0 # L_at_Amax_Fem_GP_1
  0.05 0.99 0.249 0 99 0 -3 0 0 0 0 0 0 0 # VonBert_K_Fem_GP_1
- 0.05 0.3 0.25 0 99 0 -3 0 0 0 0 0 0 0 # CV_young_Fem_GP_1
- 0.01 0.2 0.09 0 99 0 -3 0 0 0 0 0 0 0 # CV_old_Fem_GP_1
+ 0.05 0.3 0.05 0 99 0 -3 0 0 0 0 0 0 0 # CV_young_Fem_GP_1
+ 0.01 0.2 0.05 0 99 0 -3 0 0 0 0 0 0 0 # CV_old_Fem_GP_1
 # Sex: 1  BioPattern: 1  WtLen
  -3 3 1.0e-06 0 99 0 -3 0 0 0 0 0 0 0 # Wtlen_1_Fem
  -3 5 3.113 0 99 0 -3 0 0 0 0 0 0 0 # Wtlen_2_Fem

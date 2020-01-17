@@ -5,8 +5,8 @@
 #
 30 #_styr
 79 #_endyr
-2 #_nseas
-6 6 #_months_per_seas
+1 #_nseas
+12 #_months_per_seas
 2 #_Nsubseasons
 3 #_spawn_month
 1 #_Nsexes
@@ -144,10 +144,7 @@
  #_DF_for_meanbodywt_T-distribution_like
 #
 #_population_length_bins
-2 # length bin method: 1=use databins; 2=generate from binwidth,min,max below; 3=read vector
-1
-8
-60
+1 # length bin method: 1=use databins; 2=generate from binwidth,min,max below; 3=read vector
 1 #_use_lencomp
 #
 #_len_info
