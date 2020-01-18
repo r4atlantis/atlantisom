@@ -7,19 +7,9 @@
 reformat_compositions(comp_data, round.places = 4, comp_type)
 }
 \arguments{
-\item{comp_data}{A \code{data.frame} of numbers, length, or weight at age containing the following columns:
-\itemize{
-  \item{species}
-  \item{agecl}
-  \item{polygon}
-  \item{layer}
-  \item{time}
-  \item{atoutput}
-  \item{lower.bins}
-  \item{upper.bins}
-}
-The \code{data.frame} is generated from either \code{\link{create_survey}}
-or \code{\link{create_fishery_data}}.}
+\item{comp_data}{the data frame of composition data}
+
+\item{round.places}{the number of decimal places you would like your compositions rounded to; default is 4}
 
 \item{comp_type}{takes 3 possible values: lencomp, agecomp, caalcomp}
 }

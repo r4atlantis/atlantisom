@@ -4,8 +4,13 @@
 \alias{load_nc_physics}
 \title{Load Atlantis outputfiles (netcdf)}
 \usage{
-load_nc_physics(dir = getwd(), file_nc, physic_variables,
-  aggregate_layers, bboxes)
+load_nc_physics(
+  dir = getwd(),
+  file_nc,
+  physic_variables,
+  aggregate_layers,
+  bboxes
+)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the

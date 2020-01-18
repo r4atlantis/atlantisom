@@ -4,8 +4,12 @@
 \alias{aggregate_comps}
 \title{Function to aggregate compositions into a shorter range of bins based on  data availability in each bin}
 \usage{
-aggregate_comps(comp.data, compbins = NULL, compression = 1,
-  proportion.thresh = 0.9)
+aggregate_comps(
+  comp.data,
+  compbins = NULL,
+  compression = 1,
+  proportion.thresh = 0.9
+)
 }
 \arguments{
 \item{comp.data}{output from the \code{calc_age2length} function, namely a list with objects mulen, muweight, and natlength}

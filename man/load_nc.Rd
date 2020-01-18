@@ -4,10 +4,18 @@
 \alias{load_nc}
 \title{Load Atlantis outputfiles (netcdf)}
 \usage{
-load_nc(dir = getwd(), file_nc, bps, fgs, select_groups,
-  select_variable = c("N", "Nums", "ResN", "StructN", "Eat", "Growth",
-  "Prodn", "Grazing", "Catch"), check_acronyms = TRUE, bboxes = c(0),
-  verbose = FALSE)
+load_nc(
+  dir = getwd(),
+  file_nc,
+  bps,
+  fgs,
+  select_groups,
+  select_variable = c("N", "Nums", "ResN", "StructN", "Eat", "Growth", "Prodn",
+    "Grazing", "Catch"),
+  check_acronyms = TRUE,
+  bboxes = c(0),
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
@@ -77,12 +85,18 @@ rm(test)
 \seealso{
 \code{\link{get_boundary}}, \code{\link{load_box}}
 
-Other load functions: \code{\link{load_bioind}},
-  \code{\link{load_biolprm}}, \code{\link{load_boxarea}},
-  \code{\link{load_box}}, \code{\link{load_bps}},
-  \code{\link{load_catch}}, \code{\link{load_diet_comp}},
-  \code{\link{load_fgs}}, \code{\link{load_meta}},
-  \code{\link{load_runprm}}, \code{\link{load_yoy}}
+Other load functions: 
+\code{\link{load_bioind}()},
+\code{\link{load_biolprm}()},
+\code{\link{load_boxarea}()},
+\code{\link{load_box}()},
+\code{\link{load_bps}()},
+\code{\link{load_catch}()},
+\code{\link{load_diet_comp}()},
+\code{\link{load_fgs}()},
+\code{\link{load_meta}()},
+\code{\link{load_runprm}()},
+\code{\link{load_yoy}()}
 }
 \author{
 Alexander Keth

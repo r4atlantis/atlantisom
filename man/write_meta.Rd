@@ -4,8 +4,12 @@
 \alias{write_meta}
 \title{Write metadata to the disk.}
 \usage{
-write_meta(meta, dir = getwd(), file_out = "atlantisom_log.txt",
-  verbose = FALSE)
+write_meta(
+  meta,
+  dir = getwd(),
+  file_out = "atlantisom_log.txt",
+  verbose = FALSE
+)
 }
 \arguments{
 \item{meta}{A \code{list} of metadata as read in by \code{\link{load_meta}}.}

@@ -5,8 +5,16 @@
 \title{Function to write the CPUE from an atlantis OM into a
 Stock Synthesis 3.3 estimation model}
 \usage{
-SS_write_ts(ss_data_list, ts_data, CVs, data_years, sampling_month, units,
-  fleets, data_type)
+SS_write_ts(
+  ss_data_list,
+  ts_data,
+  CVs,
+  data_years,
+  sampling_month,
+  units,
+  fleets,
+  data_type
+)
 }
 \arguments{
 \item{ss_data_list}{the list of the SS .dat file that #'comes from \code{SS_readdat}}

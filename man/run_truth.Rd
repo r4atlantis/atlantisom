@@ -4,8 +4,18 @@
 \alias{run_truth}
 \title{Load Atlantis scenario output}
 \usage{
-run_truth(scenario, dir = getwd(), file_fgs, file_bgm, select_groups,
-  file_init, file_biolprm, file_runprm, verbose = FALSE, save = TRUE)
+run_truth(
+  scenario,
+  dir = getwd(),
+  file_fgs,
+  file_bgm,
+  select_groups,
+  file_init,
+  file_biolprm,
+  file_runprm,
+  verbose = FALSE,
+  save = TRUE
+)
 }
 \arguments{
 \item{scenario}{A character value, specifying the Atlantis scenario name.

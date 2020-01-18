@@ -4,8 +4,16 @@
 \alias{calc_age2length}
 \title{Calculate length from ages}
 \usage{
-calc_age2length(structn, resn, nums, biolprm, fgs, maxbin = 150,
-  CVlenage = 0.1, remove.zeroes = TRUE)
+calc_age2length(
+  structn,
+  resn,
+  nums,
+  biolprm,
+  fgs,
+  maxbin = 150,
+  CVlenage = 0.1,
+  remove.zeroes = TRUE
+)
 }
 \arguments{
 \item{structn}{A \code{data.frame} containing the structural nitrogen per functional-group

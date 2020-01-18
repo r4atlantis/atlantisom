@@ -1,5 +1,5 @@
 #'Function to write an empirical weight at age SS file (wt_at_age.ss) from Atlantis output
-#'@description
+#'@description This function writes an empirical weight-at-age file for stock synthesis
 #'@param age_classes the vector of age classes in the model
 #'@param years vector of years in the model
 #'@param fleets vector of fleets
@@ -9,6 +9,7 @@
 #'@param fleet_month vector of months (1-12) when sampling occurs
 #'@param mat_vector vector of maturity ogive, must be the same length as \code{age_classes}
 #'@author Christine Stawitz
+#'@export
 
 SS_write_EWAA <- function(age_classes, years, fleets, seas, catch_mean_wt_matrix, surv_mean_wt_matrix, fleet_month, mat_vector,
                           recruit_size){

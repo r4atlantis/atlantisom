@@ -4,9 +4,16 @@
 \alias{run_stocksynthesis}
 \title{Function to execute an SS run}
 \usage{
-run_stocksynthesis(os, species, model_dir, admb_options = " -noest",
-  ignore.stdout = TRUE, show_output = FALSE, iteration_pause = 0.05,
-  ...)
+run_stocksynthesis(
+  os,
+  species,
+  model_dir,
+  admb_options = " -noest",
+  ignore.stdout = TRUE,
+  show_output = FALSE,
+  iteration_pause = 0.05,
+  ...
+)
 }
 \arguments{
 \item{species}{species name}

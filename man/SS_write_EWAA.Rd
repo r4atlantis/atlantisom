@@ -4,20 +4,37 @@
 \alias{SS_write_EWAA}
 \title{Function to write an empirical weight at age SS file (wt_at_age.ss) from Atlantis output}
 \usage{
-SS_write_EWAA(age_classes, years, fleets, seas, catch_mean_wt_matrix,
-  surv_mean_wt_matrix, fleet_month, mat_vector)
+SS_write_EWAA(
+  age_classes,
+  years,
+  fleets,
+  seas,
+  catch_mean_wt_matrix,
+  surv_mean_wt_matrix,
+  fleet_month,
+  mat_vector,
+  recruit_size
+)
 }
 \arguments{
 \item{age_classes}{the vector of age classes in the model}
+
+\item{years}{vector of years in the model}
+
+\item{fleets}{vector of fleets}
+
+\item{seas}{vector of seasons}
 
 \item{catch_mean_wt_matrix}{mu_weight object in grams}
 
 \item{surv_mean_wt_matrix}{mu_weight object in grams}
 
 \item{fleet_month}{vector of months (1-12) when sampling occurs}
+
+\item{mat_vector}{vector of maturity ogive, must be the same length as \code{age_classes}}
 }
 \description{
-Function to write an empirical weight at age SS file (wt_at_age.ss) from Atlantis output
+This function writes an empirical weight-at-age file for stock synthesis
 }
 \author{
 Christine Stawitz

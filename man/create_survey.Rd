@@ -24,7 +24,9 @@ i.e., seq(365,10*3650,365) would be an annual survey for 10 years}
 
 \item{species}{The species to sample in the survey (a vector)}
 
-\item{boxes}{A vector of polygon numbers that are sampled by survey}
+\item{boxes}{A matrix with two columns:
+1) polygon:  box ID's that are sampled
+2) survArea: area sampled in that box}
 
 \item{effic}{Efficiency for each species: a matrix with nrow=length(species). Columns:
  species:    the species name. Matches names in species
@@ -37,10 +39,6 @@ selex:   the proportion selected relative to fully selected age classes (between
 
 \item{spex}{The specifications of Atlantis model (box-specific area, habitat, etc.)
 for now, from load_boxarea a dataframe with polygon and area column names}
-
-\item{boxes}{A matrix with two columns:
-1) polygon:  box ID's that are sampled
-2) survArea: area sampled in that box}
 }
 \value{
 Returns a matrix similar to the input matrix

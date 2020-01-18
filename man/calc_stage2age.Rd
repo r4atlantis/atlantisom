@@ -47,10 +47,11 @@ biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
 YOY <- load_yoy(dir, file_yoy="outputSETASYOY.txt")
 }
 \seealso{
-Other calc functions: \code{\link{calc_Z}},
-  \code{\link{calc_biomass_age}},
-  \code{\link{calc_pred_diet}},
-  \code{\link{calc_timestep2time}}
+Other calc functions: 
+\code{\link{calc_Z}()},
+\code{\link{calc_biomass_age}()},
+\code{\link{calc_pred_diet}()},
+\code{\link{calc_timestep2time}()}
 }
 \author{
 Emma E Hodgson and Kelli Faye Johnson

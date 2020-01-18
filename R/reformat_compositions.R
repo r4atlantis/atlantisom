@@ -4,8 +4,8 @@
 #' @details to be added
 #' @export
 #'
-#' @template comp_data
-#' @param round.places
+#' @param comp_data the data frame of composition data
+#' @param round.places the number of decimal places you would like your compositions rounded to; default is 4
 #' @param comp_type takes 3 possible values: lencomp, agecomp, caalcomp
 #' @return flattened comp data set for input into SS
 #'

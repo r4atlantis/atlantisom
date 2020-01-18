@@ -45,12 +45,18 @@ rm(temp)
 
 }
 \seealso{
-Other load functions: \code{\link{load_bioind}},
-  \code{\link{load_biolprm}}, \code{\link{load_boxarea}},
-  \code{\link{load_box}}, \code{\link{load_bps}},
-  \code{\link{load_catch}}, \code{\link{load_fgs}},
-  \code{\link{load_meta}}, \code{\link{load_nc}},
-  \code{\link{load_runprm}}, \code{\link{load_yoy}}
+Other load functions: 
+\code{\link{load_bioind}()},
+\code{\link{load_biolprm}()},
+\code{\link{load_boxarea}()},
+\code{\link{load_box}()},
+\code{\link{load_bps}()},
+\code{\link{load_catch}()},
+\code{\link{load_fgs}()},
+\code{\link{load_meta}()},
+\code{\link{load_nc}()},
+\code{\link{load_runprm}()},
+\code{\link{load_yoy}()}
 }
 \author{
 Kelli Faye Johnson

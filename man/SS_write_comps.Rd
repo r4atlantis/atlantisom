@@ -4,8 +4,16 @@
 \alias{SS_write_comps}
 \title{Function to write age and length composition data from \code{atlantisom} to Stock Synthesis 3.30. Note: every time this function is called, it overwrites the age and length composition data currently in the \code{ss_data_list} object.}
 \usage{
-SS_write_comps(ss_data_list, comp_matrix, data_rows, sampling_month,
-  data_type, fleet_number, bins, caal_bool)
+SS_write_comps(
+  ss_data_list,
+  comp_matrix,
+  data_rows,
+  sampling_month,
+  data_type,
+  fleet_number,
+  bins,
+  caal_bool
+)
 }
 \arguments{
 \item{ss_data_list}{the list object containing SS data}

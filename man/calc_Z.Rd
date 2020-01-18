@@ -71,10 +71,11 @@ calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm,
 
 }
 \seealso{
-Other calc functions: \code{\link{calc_biomass_age}},
-  \code{\link{calc_pred_diet}},
-  \code{\link{calc_stage2age}},
-  \code{\link{calc_timestep2time}}
+Other calc functions: 
+\code{\link{calc_biomass_age}()},
+\code{\link{calc_pred_diet}()},
+\code{\link{calc_stage2age}()},
+\code{\link{calc_timestep2time}()}
 }
 \author{
 Sean Lucey

@@ -4,8 +4,13 @@
 \alias{aggregateDensityData}
 \title{Aggregate and select density data from Atlantis output}
 \usage{
-aggregateDensityData(dat, time, species, boxes,
-  keepColumns = c("species", "agecl", "polygon", "time"))
+aggregateDensityData(
+  dat,
+  time,
+  species,
+  boxes,
+  keepColumns = c("species", "agecl", "polygon", "time")
+)
 }
 \arguments{
 \item{dat}{A \code{data.frame} of density data (structn, resn) from reading
