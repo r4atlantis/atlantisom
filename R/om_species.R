@@ -1,3 +1,4 @@
+#'Species-specific atlantisom outputs
 #'@description A wrapper function to reduce a set of \code{atlantisom} objects from atlantis
 #'output to a single species or subset of species for creating assessment input datasets.
 #'@param species The species to sample in the survey and fishery (a vector)

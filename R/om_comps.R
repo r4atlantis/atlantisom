@@ -1,4 +1,5 @@
-#'@description A wrapper function to create survey and fishery compositional data for assessment input.
+#'Generate composition data from atlantisom
+#'#'@description A wrapper function to create survey and fishery compositional data for assessment input.
 #'Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
 #'@param usersurvey survey config file in format of /config/usersurvey.R
 #'@param userfishery fishery config file in format of /config/fisherycensus.R
