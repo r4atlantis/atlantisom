@@ -4,7 +4,7 @@
 \alias{SS_write_biol}
 \title{Writes life history parameters}
 \usage{
-SS_write_biol(ctl_obj, biolprm_object, species_code, Z, wtsage)
+SS_write_biol(ctl_obj, biolprm_object, species_code, Z, wtsage, lensage)
 }
 \arguments{
 \item{ctl_obj}{list that is returned from \code{r4ss::read_ctl()} that contains the control file}
@@ -16,6 +16,8 @@ SS_write_biol(ctl_obj, biolprm_object, species_code, Z, wtsage)
 \item{Z}{scalar value for Z of the species}
 
 \item{wtsage}{two dimensional vector with column names agecl and meanwt giving mean body weight at age in grams}
+
+\item{lenage}{three dimensional vector with column names agecl, meanln, and cvln giving mean body length and cv of body length at age}
 }
 \value{
 an updated ctl_obj that has replaced parameters with the atlantis-created ones
