@@ -42,7 +42,7 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage, lens
   sb0 <- exp(bh_lnro)*sum(exp(-Z*wtsage_N[,"agecl"])*fsp*wtsage_N[,"weight"]*as.numeric(t(maturityogive[-1])))
   b0 <- sum(exp(-Z*wtsage_N[,"agecl"])*exp(bh_lnro)*wtsage_N[,"weight"])
     bh_steepness <- ((kwrr+kswr)*0.2*sb0)/(BHbeta+0.2*sb0)
-  browser()
+
   ##Function that assigns ctl values to the ones from atlantis and sets phase and upper and lower bounds
   set_par_values <- function(X, name, value, phase){
     val <- unlist(value[X])
