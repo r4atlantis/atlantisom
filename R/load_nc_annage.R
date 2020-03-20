@@ -158,7 +158,7 @@ load_nc_annage <- function(dir = getwd(), file_nc, bps, fgs, biolprm, select_gro
   final_species <- select_groups[sapply(
     lapply(select_groups, grepl, x = search_clean), any)]
   final_agecl <- maxage$maxage[
-    sapply(final_species, function(x) which(x == fgs$Name))]
+    sapply(final_species, function(x) which(x == maxage$name))]
 
   num_layers <- RNetCDF::var.get.nc(ncfile = at_out, variable = "numlayers")[, 1]
   # add sediment layer!
