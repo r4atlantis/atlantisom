@@ -40,6 +40,7 @@ Other load functions:
 \code{\link{load_catch}()},
 \code{\link{load_diet_comp}()},
 \code{\link{load_meta}()},
+\code{\link{load_nc_annage}()},
 \code{\link{load_nc}()},
 \code{\link{load_runprm}()},
 \code{\link{load_yoy}()}

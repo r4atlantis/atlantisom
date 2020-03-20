@@ -14,7 +14,8 @@ run_truth(
   file_biolprm,
   file_runprm,
   verbose = FALSE,
-  save = TRUE
+  save = TRUE,
+  annage = FALSE
 )
 }
 \arguments{
