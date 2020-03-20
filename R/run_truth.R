@@ -43,7 +43,7 @@
 #'
 run_truth <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm, file_runprm,
-  verbose = FALSE, save = TRUE){
+  verbose = FALSE, save = TRUE, annage = FALSE){
 
   # Read in information
   # Read in the functional groups csv since that is used by many functions
@@ -55,13 +55,24 @@ run_truth <- function(scenario, dir = getwd(),
   # Read in the run parameters
   runprm <- load_runprm(dir = dir, file_runprm = file_runprm)
 
-  nc_catch <- paste0("output", scenario, 'CATCH.nc')
-  dietcheck <- paste0("output", scenario, 'DietCheck.txt')
-  nc_out <- paste0("output", scenario, ".nc")
-  nc_prod <- paste0("output", scenario, "PROD.nc")
+  nc_catch <- paste0(scenario, 'CATCH.nc')
+  dietcheck <- paste0(scenario, 'DietCheck.txt')
+  nc_out <- paste0(scenario, ".nc")
+  nc_prod <- paste0(scenario, "PROD.nc")
   file_catchfish <- file.path(dir,
-    paste0("output", scenario, "CatchPerFishery.txt"))
-  file_catch <- paste0("output", scenario, "Catch.txt")
+    paste0(scenario, "CatchPerFishery.txt"))
+  file_catch <- paste0(scenario, "Catch.txt")
+
+  if(annage){
+    if(!file.exists(paste0(file.path(dir,paste0(scenario, 'ANNAGEBIO.nc'))))){
+      stop("ANNAGEBIO.nc file not found")
+    }
+    if(!file.exists(paste0(file.path(dir,paste0(scenario, 'ANNAGECATCH.nc'))))){
+      stop("ANNAGECATCH.nc file not found")
+    }
+    nc_annagebio <- paste0(scenario, 'ANNAGEBIO.nc')
+    nc_annagecatch <- paste0(scenario, 'ANNAGECATCH.nc')
+  }
 
   # Get the boundary boxes
   allboxes <- load_box(dir = dir, file_bgm = file_bgm)
@@ -246,7 +257,7 @@ run_truth <- function(scenario, dir = getwd(),
   if(verbose) message("Start writing to HDD.")
   if(save) {
     save(result,
-      file = file.path(dir, paste0("output", scenario, "run_truth.RData")))
+      file = file.path(dir, paste0(scenario, "run_truth.RData")))
   }
 
   invisible(result)
