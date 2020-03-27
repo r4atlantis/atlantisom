@@ -44,7 +44,7 @@
 
 load_nc_annage <- function(dir = getwd(), file_nc, bps, fgs, biolprm, select_groups,
   select_variable =
-  c("Nums", "Weight"),
+  c("Nums", "Weight", "Catch", "Discard"),
   check_acronyms = TRUE, bboxes = c(0), verbose = FALSE) {
   # NOTE: The extraction procedure may look a bit complex...
   # A different approach would be to
@@ -109,9 +109,12 @@ load_nc_annage <- function(dir = getwd(), file_nc, bps, fgs, biolprm, select_gro
   # Create vector of available species at the end using search_clean
   # This is needed to create species-names later on
 
+  # CHANGED hardcoded cohort number to reflect true ages from biolprm
+  # ADDED fleets to select_variable for fishery output
 
-  # CHANGED hardcoded cohort number to reflect true ages from
-
+  if(select_variable %in% c("Catch", "Discard")){
+    #concatenate select_variable "_" each fleet name
+  }
 
   # To make the creation of variables as robust as possible
   # we introduce different combinations of groups, variable, and cohort
