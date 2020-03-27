@@ -149,6 +149,33 @@ run_truth <- function(scenario, dir = getwd(),
                  bboxes = boxes)
   if(verbose) message("Catch read in.")
 
+  if(annage){
+    numsage <- load_nc_annage(dir = dir,
+                              file_nc = nc_annagebio,
+                              bps = bps,
+                              fgs = fgs,
+                              biolprm = biol,
+                              select_groups = select_groups,
+                              select_variable = "Nums",
+                              check_acronyms = TRUE,
+                              bboxes = boxes,
+                              verbose = TRUE)
+    if(verbose) message("Numbers read in from ANNAGEBIO.")
+
+    weightage <- load_nc_annage(dir = dir,
+                                file_nc = nc_annagebio,
+                                bps = bps,
+                                fgs = fgs,
+                                biolprm = biol,
+                                select_groups = select_groups,
+                                select_variable = "Weight",
+                                check_acronyms = TRUE,
+                                bboxes = boxes,
+                                verbose = TRUE)
+    if(verbose) message("Weight read in from ANNAGEBIO.")
+
+  }
+
   # May 2019 this is the catch in nums correction needed for legacy atlantis codebases
 
   # check for logfile, send warning if not found.
