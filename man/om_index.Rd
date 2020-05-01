@@ -6,8 +6,13 @@
 #'@description A wrapper function to create survey and fishery index data for assessment input.
 Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds}
 \usage{
-om_index(usersurvey = usersurvey_file, userfishery = userfishery_file,
-  omlist_ss, n_reps = n_reps, save = TRUE)
+om_index(
+  usersurvey = usersurvey_file,
+  userfishery = userfishery_file,
+  omlist_ss,
+  n_reps = n_reps,
+  save = TRUE
+)
 }
 \arguments{
 \item{usersurvey}{survey config file in format of /config/usersurvey.R}
@@ -46,8 +51,10 @@ CC3om_sard_ind <- om_index(usersurvey = here("config/usersurvey.R"),
 
 }
 \seealso{
-Other wrapper functions: \code{\link{om_comps}},
-  \code{\link{om_init}}, \code{\link{om_species}}
+Other wrapper functions: 
+\code{\link{om_comps}()},
+\code{\link{om_init}()},
+\code{\link{om_species}()}
 }
 \author{
 Sarah Gaichas

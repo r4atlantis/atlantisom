@@ -35,6 +35,9 @@ reformat_compositions <- function(comp_data,
     unmelt <- dcast(data = comp_proportion,
                     formula = time ~lower.bins,
                     value.var = "comp")
+    samp_size <- comp_proportion %>%
+      group_by(time) %>% summarise("nsamp" = sum(comp))
+    unmelt <- left_join(unmelt, samp_size, by =c("time"))
   }
 
   if(comp_type=="caalcomp"){

@@ -61,8 +61,7 @@ run_truth <- function(scenario, dir = getwd(),
   nc_prod <- paste0("output", scenario, "PROD.nc")
   file_catchfish <- file.path(dir,
     paste0("output", scenario, "CatchPerFishery.txt"))
-  file_catch <- file.path(dir,
-    paste0("output", scenario, "Catch.txt"))
+  file_catch <- paste0("output", scenario, "Catch.txt")
 
   # Get the boundary boxes
   allboxes <- load_box(dir = dir, file_bgm = file_bgm)
@@ -192,16 +191,16 @@ run_truth <- function(scenario, dir = getwd(),
   if(verbose) message("Catch per fishery read in.")
 
   # Get catch from txt. Sum per species and compare with values from nc-file!
-  catch_all <- read.table(file = file_catch, header = TRUE, sep = " ")
-  over <- colnames(catch_all)[(colnames(catch_all) %in% fgs$Code)]
-  catch_all <- reshape(catch_all[, c("Time", over)], direction = "long",
-    varying = over, v.names = "catch",
-    timevar = "species", times = over)
-  rownames(catch_all) <- 1:NROW(catch_all)
-  catch_all <- catch_all[catch_all$catch > 0,
-    -which(colnames(catch_all) == "id")]
-  catch_all$species <- fgs$Name[match(catch_all$species, fgs$Code)]
-  colnames(catch_all) <- tolower(colnames(catch_all))
+  catch_all <- load_catch(dir = dir, file = file_catch, fgs = fgs)
+  # over <- colnames(catch_all)[(colnames(catch_all) %in% fgs$Code)]
+  # catch_all <- reshape(catch_all[, c("Time", over)], direction = "long",
+  #   varying = over, v.names = "catch",
+  #   timevar = "species", times = over)
+  # rownames(catch_all) <- 1:NROW(catch_all)
+  # catch_all <- catch_all[catch_all$catch > 0,
+  #   -which(colnames(catch_all) == "id")]
+  # catch_all$species <- fgs$Name[match(catch_all$species, fgs$Code)]
+  # colnames(catch_all) <- tolower(colnames(catch_all))
   catch_all$time <- catch_all$time / runprm$toutfinc
   if(verbose) message("Catch for all fisheries in biomass read in.")
 

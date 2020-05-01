@@ -32,6 +32,7 @@ load_bps <- function(dir = getwd(), fgs, file_init){
   init <- RNetCDF::open.nc(con = file.init)
   on.exit(RNetCDF::close.nc(init))
 
+  fgs <- load_fgs(dir, fgs)
   all_groups <- fgs$Name
   init_vars <- sapply(seq_len(RNetCDF::file.inq.nc(init)$nvars - 1),
                       function(x) RNetCDF::var.inq.nc(init, x)$name)
