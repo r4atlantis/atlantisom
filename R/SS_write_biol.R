@@ -4,11 +4,11 @@
 #'@param ctl_obj list that is returned from \code{r4ss::read_ctl()} that contains the control file
 #'@param biolprm_object list with a number of atlantis biological parameters
 #'@param species_code the three-letter species code of the fish you are creating a model for
-#'@param Z scalar value for Z of the species
+#'@param M_est scalar value for M of the species
 #'@param wtsage two dimensional vector with column names agecl and meanwt giving mean body weight at age in grams
 #'@param lenage three dimensional vector with column names agecl, meanln, and cvln giving mean body length and cv of body length at age
 #'@return an updated ctl_obj that has replaced parameters with the atlantis-created ones
-SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage, lensage){
+SS_write_biol <- function(ctl_obj, biolprm_object, species_code, M_est=NULL, wtsage, lensage, lenwt_a = NULL, lenwt_b = NULL){
 
   #vector of parameters needed
   needed_pars <- c("BHalpha","BHbeta","kgw2d","redfieldcn","maturityogive","fsp","kswr","kwrr", "wl")
@@ -39,10 +39,11 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage, lens
 
   #Calculate recruitment parameters from atlantis values
   bh_lnro <- log(BHalpha) - log(kwrr+kswr)
-  sb0 <- exp(bh_lnro)*sum(exp(-Z*wtsage_N[,"agecl"])*fsp*wtsage_N[,"weight"]*as.numeric(t(maturityogive[-1])))
+  sb0 <- exp(bh_lnro)*sum(exp(-M_est*wtsage_N[,"agecl"])*fsp*wtsage_N[,"weight"]*as.numeric(t(maturityogive[-1])))
   b0 <- sum(exp(-Z*wtsage_N[,"agecl"])*exp(bh_lnro)*wtsage_N[,"weight"])
     bh_steepness <- ((kwrr+kswr)*0.2*sb0)/(BHbeta+0.2*sb0)
-  browser()
+
+
   ##Function that assigns ctl values to the ones from atlantis and sets phase and upper and lower bounds
   set_par_values <- function(X, name, value, phase){
     val <- unlist(value[X])
@@ -73,6 +74,19 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage, lens
     } else{
     l2_guess <- lensage[which.min(abs(lensage$agecl-a2)),"meanln"]
     cvo_guess <- lensage[which.min(abs(lensage$agecl-a2)),"cvln"]
+    }
+
+  #Fill in optional values
+  if(is.null(lenwt_a)){
+    lenwt_a <- wl[1]
+  }
+
+  if(is.null(lenwt_b)){
+    lenwt_b <- wl[2]
+  }
+
+  if(is.null(M_est)){
+    M_est <- 0.2
   }
 
   ctl_names <- c("SR_LN(R0)", "SR_BH_steep",
@@ -85,10 +99,12 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, Z, wtsage, lens
                  "CV_old__Fem_GP_1")
 
   ctl_values <- c(bh_lnro, bh_steepness,
-                  wl[1], wl[2], 0.4,
+                  lenwt_a,
+                  lenwt_b, M_est,
                   l1_guess, l2_guess,
                   0.4, cvy_guess, cvo_guess)
 
+  #Should the phases be automated?
   ctl_phases <- c(rep(-1,5), rep(3,3), -1,-1)
 
   #Assign control file values
