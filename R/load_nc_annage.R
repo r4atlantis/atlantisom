@@ -42,7 +42,7 @@
 #' @importFrom magrittr %>%
 #' @export
 
-load_nc_annage <- function(dir = getwd(), file_nc, bps, fgs, biolprm, select_groups,
+load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm, select_groups,
   select_variable =
   c("Nums", "Weight", "Catch", "Discard"),
   check_acronyms = TRUE, bboxes = c(0), verbose = FALSE) {
@@ -113,7 +113,15 @@ load_nc_annage <- function(dir = getwd(), file_nc, bps, fgs, biolprm, select_gro
   # ADDED fleets to select_variable for fishery output
 
   if(select_variable %in% c("Catch", "Discard")){
-    #concatenate select_variable "_" each fleet name
+    #read in fleet names
+    fleetnames <- load_fisheries(dir = dir, file_fish = file_fish)
+    #select_variable <- concatenate select_variable "_" each fleet name
+    svfish <- c()
+    for(i in select_variable){
+      sv <-paste0(i, "_", fleetnames$Code)
+      svfish <- c(svfish, sv)
+    }
+    select_variable <- svfish
   }
 
   # To make the creation of variables as robust as possible
