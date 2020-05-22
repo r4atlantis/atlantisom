@@ -33,7 +33,7 @@
 #'CC3om_2spp <- om_species(c("Pacific_sardine", "Mesopel_M_Fish"), CC3om)
 #'
 #'
-om_species <- function(species = spp, omlist, removefullom = TRUE){
+om_species <- function(species = spp, omlist, save = TRUE, removefullom = TRUE){
   # spp format c("speciesname1", "speciesname2")
   if(!all(species %in% omlist$funct.group.names)) stop("species name not found")
   species_ss <- species
@@ -89,6 +89,9 @@ om_species <- function(species = spp, omlist, removefullom = TRUE){
                     "boxpars" = omlist$boxpars,
                     "runpar" = omlist$runpar)
 
+  if(save){
+    saveRDS(omlist_ss, file.path(d.name, paste0(scenario.name, "omlist_ss.rds")))
+  }
   if(removefullom) rm(omlist) #not removing passed data object
 
   return(omlist_ss)
