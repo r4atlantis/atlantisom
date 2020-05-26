@@ -1,7 +1,7 @@
 #' Load the fisheries group file
 #'
 #' Read in the fisheries group file, which is typically saved as
-#' \code{Fisheries.csv}.
+#' \code{fisheries.csv}.
 #'
 #' @template dir
 #' @template file_fish
@@ -14,10 +14,10 @@
 #'
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' fgs <- load_fgs(d, "functionalGroups.csv")
-#' rm(fgs)
+#' fleets <- load_fisheries(d, "fisheries.csv")
+#' rm(fleets)
 #'
-load_fgs <- function(dir = getwd(), file_fish){
+load_fisheries <- function(dir = getwd(), file_fish){
   if (is.null(dir)) {
     file.fish <- file_fish
   } else {
