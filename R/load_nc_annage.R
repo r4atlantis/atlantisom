@@ -138,7 +138,11 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   maxage <- merge(biolprm$maturityogive, biolprm$agespercohort, all.x = T) %>%
     dplyr::select(code, nagecl, ageperagecl) %>%
     dplyr::mutate(maxage = nagecl * ageperagecl) %>%
-    dplyr::mutate(name = fgs$Name[match(code, fgs$Code)])
+    dplyr::mutate(name = fgs$Name[match(code, fgs$Code)]) %>%
+    dplyr::filter(!is.na(maxage))
+  
+  #limit to groups that have ages
+  select_groups <- select_groups[select_groups %in% maxage$name]
 
   search <- list()
   for (i in seq_along(select_groups)) {
