@@ -162,17 +162,43 @@ run_truth <- function(scenario, dir = getwd(),
                               verbose = TRUE)
     if(verbose) message("Numbers read in from ANNAGEBIO.")
 
-    weightage <- load_nc_annage(dir = dir,
-                                file_nc = nc_annagebio,
-                                bps = bps,
-                                fgs = fgs,
-                                biolprm = biol,
-                                select_groups = select_groups,
-                                select_variable = "Weight",
-                                check_acronyms = TRUE,
-                                bboxes = boxes,
-                                verbose = TRUE)
-    if(verbose) message("Weight read in from ANNAGEBIO.")
+    # Weight output seems wrong compared with standard nc weights
+    # Don't include until we can sort this out
+    # weightage <- load_nc_annage(dir = dir,
+    #                             file_nc = nc_annagebio,
+    #                             bps = bps,
+    #                             fgs = fgs,
+    #                             biolprm = biol,
+    #                             select_groups = select_groups,
+    #                             select_variable = "Weight",
+    #                             check_acronyms = TRUE,
+    #                             bboxes = boxes,
+    #                             verbose = TRUE)
+    # if(verbose) message("Weight read in from ANNAGEBIO.")
+
+    catchage <- load_nc_annage(dir = dir,
+                              file_nc = nc_annagecatch,
+                              bps = bps,
+                              fgs = fgs,
+                              biolprm = biol,
+                              select_groups = select_groups,
+                              select_variable = "Catch",
+                              check_acronyms = TRUE,
+                              bboxes = boxes,
+                              verbose = TRUE)
+    if(verbose) message("Catch read in from ANNAGECATCH.")
+
+    discage <- load_nc_annage(dir = dir,
+                               file_nc = nc_annagecatch,
+                               bps = bps,
+                               fgs = fgs,
+                               biolprm = biol,
+                               select_groups = select_groups,
+                               select_variable = "Discard",
+                               check_acronyms = TRUE,
+                               bboxes = boxes,
+                               verbose = TRUE)
+    if(verbose) message("Discard read in from ANNAGECATCH.")
 
   }
 
@@ -271,15 +297,32 @@ run_truth <- function(scenario, dir = getwd(),
   # does not match catch.txt output file
   # read that in separately instead
 
-  result <- list("biomass_eaten" = biomass_eaten,
-                 "biomass_ages" = biomass_ages,
-                 "catch" = catch,
-                 "catch_all" = catch_all,
-                 "nums" = nums,
-                 "resn" = resn,
-                 "structn" = structn,
-                 "biolprm" = biol,
-                 "fgs" = fgs)
+  if(!annage){
+    result <- list("biomass_eaten" = biomass_eaten,
+                   "biomass_ages" = biomass_ages,
+                   "catch" = catch,
+                   "catch_all" = catch_all,
+                   "nums" = nums,
+                   "resn" = resn,
+                   "structn" = structn,
+                   "biolprm" = biol,
+                   "fgs" = fgs)
+  }
+
+  if(annage){
+    result <- list("biomass_eaten" = biomass_eaten,
+                   "biomass_ages" = biomass_ages,
+                   "catch" = catch,
+                   "catch_all" = catch_all,
+                   "nums" = nums,
+                   "numsage" = numsage,
+                   "catchage" = catchage,
+                   "discage" = discage,
+                   "resn" = resn,
+                   "structn" = structn,
+                   "biolprm" = biol,
+                   "fgs" = fgs)
+  }
 
   if(verbose) message("Start writing to HDD.")
   if(save) {
