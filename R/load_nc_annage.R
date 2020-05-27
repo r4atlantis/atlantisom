@@ -65,6 +65,9 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
 
   # Check input of select_variable as only one value is allowed
   select_variable <- match.arg(select_variable, several.ok = FALSE)
+  
+  # select_variable gets renamed for fishery data, save input
+  input_select_variable <- select_variable
 
   # Check input structure!
   if (check_acronyms) {
@@ -113,6 +116,7 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   # ADDED fleets to select_variable for fishery output
 
   if(select_variable %in% c("Catch", "Discard")){
+    #input_select_variable <- select_variable
     #read in fleet names
     fleetnames <- load_fisheries(dir = dir, file_fish = file_fish)
     #select_variable <- concatenate select_variable "_" each fleet name
@@ -132,9 +136,9 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   names(biolprm$agespercohort) <- c("code", "ageperagecl")
 
   maxage <- merge(biolprm$maturityogive, biolprm$agespercohort, all.x = T) %>%
-    select(code, nagecl, ageperagecl) %>%
-    mutate(maxage = nagecl * ageperagecl) %>%
-    mutate(name = fgs$Name[match(code, fgs$Code)])
+    dplyr::select(code, nagecl, ageperagecl) %>%
+    dplyr::mutate(maxage = nagecl * ageperagecl) %>%
+    dplyr::mutate(name = fgs$Name[match(code, fgs$Code)])
 
   search <- list()
   for (i in seq_along(select_groups)) {
@@ -170,6 +174,12 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
     lapply(select_groups, grepl, x = search_clean), any)]
   final_agecl <- maxage$maxage[
     sapply(final_species, function(x) which(x == maxage$name))]
+
+  # Get final fleets for full age structure fishery output 
+  if(input_select_variable %in% c("Catch", "Discard")){
+    final_fleet <- fleetnames$Code[sapply(
+      lapply(select_variable, grepl, x = search_clean), any)]
+  }
 
   num_layers <- RNetCDF::var.get.nc(ncfile = at_out, variable = "numlayers")[, 1]
   # add sediment layer!
@@ -235,13 +245,26 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
 
   int_fs <- final_species
   int_fa <- final_agecl
-
+  
+  if(input_select_variable %in% c("Catch", "Discard")){
+    int_ff <- final_fleet
+    # multiple fleets per species?
+    # safest: grep species code from int_ff and match to species name
+    spcode <- stringr::str_extract(int_ff, fgs$Code)
+    spcode <- table(spcode)
+    # find nfleet for that species
+    sp_nfleet <- data.frame(species = int_fs,
+                            code = fgs$Code[fgs$Name==int_fs])
+    sp_nfleet$nfleet <- spcode[names(spcode)==sp_nfleet$code]
+  }
+  
   if (length(at_data3d) >= 1) {
     # Remove biomasspools if selected variable is "N"!
     if (select_variable == "N") {
       int_fs <- final_species[!is.element(final_species, bps)]
       int_fa <- final_agecl[!is.element(final_species, bps)]
       # Note this only works if age-structured vertebrates have 10 ageclasses
+      # there is no "N" output in annage files so has no impact
       int_fa[int_fa == 10] <- 1
     }
     for (i in seq_along(at_data3d)) {# for loop over all variables
@@ -292,28 +315,54 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
     }
 
     # Order of the data in value column = "atoutput".
-    # 1. species  --> rep each with the number of
+    # 1. species  --> rep each with the number of (fleets*)
     #                 ageclasses and n_timesteps * boxes
-    # 2. age      --> rep each (1:10 for each species) with n_timesteps * boxes
+    # 2. age      --> rep each (1:maxage for each species(*fleet)) with n_timesteps * boxes
     # 3. timestep --> rep each timestep (1:n_timesteps)
     #                 with the number of boxes and final_agecl
-    #                 (num cohorts per species)
+    #                 (num ages per species(*fleet))
     # 4. polygon  --> rep boxes times n_timesteps * final_agecl
-    #                 (num cohorts per species)
+    #                 (num ages per species(*fleet))
+    # 5. fleet    --> 
+
+    if(input_select_variable %in% c("Nums", "Weight")){
+      
     result2d <- data.frame(species = unlist(sapply(
       X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = FALSE,
-        USE.NAMES = FALSE),
-        FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+                 USE.NAMES = FALSE),
+      FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
       agecl = unlist(sapply(X = sapply(X = int_fa, FUN = seq, from = 1,
-        by = 1, simplify = FALSE, USE.NAMES = FALSE),
-        FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+                                       by = 1, simplify = FALSE, USE.NAMES = FALSE),
+                            FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
       polygon = unlist(sapply(X = n_timesteps * int_fa,
-        FUN = rep, x = boxes, simplify = FALSE, USE.NAMES = FALSE)),
+                              FUN = rep, x = boxes, simplify = FALSE, USE.NAMES = FALSE)),
       time = unlist(sapply(X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1),
-        each = length(boxes)), simplify = FALSE, USE.NAMES = FALSE)),
+                                                          each = length(boxes)), simplify = FALSE, USE.NAMES = FALSE)),
       atoutput = do.call(c, result2d),
       stringsAsFactors = F)
-    if (select_variable == "N") result2d$layer <- n_layers - 1
+      if (select_variable == "N") result2d$layer <- n_layers - 1
+    }
+    
+    #currently works with only 1 fleet, need to dimension properly for multiple
+    if(input_select_variable %in% c("Catch", "Discard")){
+      result2d <- data.frame(species = unlist(sapply(X = mapply(FUN = rep, x = int_fs, 
+                   each = int_fa,SIMPLIFY = FALSE,USE.NAMES = FALSE),
+        FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+        agecl = unlist(sapply(X = sapply(X = int_fa, FUN = seq, from = 1,
+                                         by = 1, simplify = FALSE, USE.NAMES = FALSE),
+                              FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+        polygon = unlist(sapply(X = n_timesteps * int_fa,
+                                FUN = rep, x = boxes, simplify = FALSE, USE.NAMES = FALSE)),
+        fleet = unlist(sapply(X = mapply(FUN = rep, x = int_ff, each = int_fa,
+                                         SIMPLIFY = FALSE,USE.NAMES = FALSE),
+          FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+        time = unlist(sapply(X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1),
+                                                            each = length(boxes)), simplify = FALSE, USE.NAMES = FALSE)),
+        atoutput = do.call(c, result2d),
+        stringsAsFactors = F)
+      #if (select_variable == "N") result2d$layer <- n_layers - 1
+    }
+    
   }
 
   # Combine dataframes if necessary!
