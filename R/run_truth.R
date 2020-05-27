@@ -43,7 +43,7 @@
 #'
 run_truth <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm, file_runprm,
-  verbose = FALSE, save = TRUE, annage = FALSE){
+  file_fish, verbose = FALSE, save = TRUE, annage = FALSE){
 
   # Read in information
   # Read in the functional groups csv since that is used by many functions
@@ -178,6 +178,7 @@ run_truth <- function(scenario, dir = getwd(),
 
     catchage <- load_nc_annage(dir = dir,
                               file_nc = nc_annagecatch,
+                              file_fish = file_fish,
                               bps = bps,
                               fgs = fgs,
                               biolprm = biol,
@@ -190,6 +191,7 @@ run_truth <- function(scenario, dir = getwd(),
 
     discage <- load_nc_annage(dir = dir,
                                file_nc = nc_annagecatch,
+                               file_fish = file_fish,
                                bps = bps,
                                fgs = fgs,
                                biolprm = biol,
