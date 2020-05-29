@@ -254,7 +254,7 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
     # how many unique fleets per select_group in search_clean?
     # lookup of species and fleet names
     splitfleets <- search_clean %>%
-      str_replace("\\d+_*Catch_", "-")
+      str_replace(paste0("\\d+_*",input_select_variable,"_"), "-")
     sp_fleet <- as.data.frame(unique(splitfleets)) %>%
       rename(spfleet = "unique(splitfleets)") %>%
       separate(spfleet, c("species", "fleet"), sep = "-") 
