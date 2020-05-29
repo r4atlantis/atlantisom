@@ -251,15 +251,18 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   int_fa <- final_agecl
   
   if(input_select_variable %in% c("Catch", "Discard")){
-    int_ff <- final_fleet
-    # multiple fleets per species?
-    # safest: grep species code from int_ff and match to species name
-    spcode <- stringr::str_extract(int_ff, fgs$Code)
-    spcode <- table(spcode)
-    # find nfleet for that species
-    sp_nfleet <- data.frame(species = int_fs,
-                            code = fgs$Code[fgs$Name==int_fs])
-    sp_nfleet$nfleet <- spcode[names(spcode)==sp_nfleet$code]
+    # how many unique fleets per select_group in search_clean?
+    # lookup of species and fleet names
+    splitfleets <- search_clean %>%
+      str_replace("\\d+_*Catch_", "-")
+    sp_fleet <- as.data.frame(unique(splitfleets)) %>%
+      rename(spfleet = "unique(splitfleets)") %>%
+      separate(spfleet, c("species", "fleet"), sep = "-") 
+    # lookup of number of fleets per species
+    sp_nfleet <- as.data.frame(table(sp_fleet$species)) %>%
+      rename(species = Var1, nfleet = Freq)
+    # for indexing fleets
+    int_ff <- sp_nfleet$nfleet
   }
   
   if (length(at_data3d) >= 1) {
@@ -319,14 +322,14 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
     }
 
     # Order of the data in value column = "atoutput".
-    # 1. species  --> rep each with the number of (fleets*)
-    #                 ageclasses and n_timesteps * boxes
-    # 2. age      --> rep each (1:maxage for each species(*fleet)) with n_timesteps * boxes
+    # 1. species  --> rep each with the number of 
+    #                 ageclasses * fleets and n_timesteps * boxes
+    # 2. age      --> rep each (1:maxage for each species) with n_timesteps * boxes
     # 3. timestep --> rep each timestep (1:n_timesteps)
     #                 with the number of boxes and final_agecl
-    #                 (num ages per species(*fleet))
+    #                 (num ages per species)
     # 4. polygon  --> rep boxes times n_timesteps * final_agecl
-    #                 (num ages per species(*fleet))
+    #                 (num ages per species)
     # 5. fleet    --> 
 
     if(input_select_variable %in% c("Nums", "Weight")){
@@ -347,20 +350,20 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
       if (select_variable == "N") result2d$layer <- n_layers - 1
     }
     
-    #currently works with only 1 fleet, need to dimension properly for multiple
+    #should now work properly for multiple fleets
     if(input_select_variable %in% c("Catch", "Discard")){
       result2d <- data.frame(species = unlist(sapply(X = mapply(FUN = rep, x = int_fs, 
-                   each = int_fa,SIMPLIFY = FALSE,USE.NAMES = FALSE),
+                   each = (int_fa * int_ff),SIMPLIFY = FALSE,USE.NAMES = FALSE),
         FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
-        agecl = unlist(sapply(X = sapply(X = int_fa, FUN = seq, from = 1,
+        agecl = unlist(sapply(X = sapply(X = rep(int_fa, int_ff), FUN = seq, from = 1,
                                          by = 1, simplify = FALSE, USE.NAMES = FALSE),
-                              FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
-        polygon = unlist(sapply(X = n_timesteps * int_fa,
+                              FUN = rep, each = (length(boxes) * n_timesteps), simplify = FALSE)),
+        polygon = unlist(sapply(X = n_timesteps * int_fa * int_ff,
                                 FUN = rep, x = boxes, simplify = FALSE, USE.NAMES = FALSE)),
-        fleet = unlist(sapply(X = mapply(FUN = rep, x = int_ff, each = int_fa,
-                                         SIMPLIFY = FALSE,USE.NAMES = FALSE),
-          FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
-        time = unlist(sapply(X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1),
+        fleet = unlist(sapply(X = mapply(FUN = rep, x = sp_fleet$fleet, 
+                                         each = (rep(int_fa, int_ff)),SIMPLIFY = FALSE,USE.NAMES = FALSE),
+          FUN = rep, each = (length(boxes) * n_timesteps), simplify = FALSE)),
+        time = unlist(sapply(X = int_fa * int_ff , FUN = rep, x = rep(0:(n_timesteps - 1),
                                                             each = length(boxes)), simplify = FALSE, USE.NAMES = FALSE)),
         atoutput = do.call(c, result2d),
         stringsAsFactors = F)
