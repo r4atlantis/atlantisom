@@ -72,7 +72,7 @@ om_init <- function(config = configfile){
   truecatchbio <- atlantisom::load_catch(d.name, file_catch = catch.file, fgs = funct.groups)
 
   # load YOY
-  YOY <- atlantisom::load_yoy(d.name, paste0("output", scenario.name, "YOY.txt"))
+  YOY <- atlantisom::load_yoy(d.name, paste0(scenario.name, "YOY.txt"))
 
   # load biol_prm
   biol <- atlantisom::load_biolprm(d.name, biol.prm.file)
@@ -100,7 +100,7 @@ om_init <- function(config = configfile){
     )
   } else {
     truth <- get(load(file.path(d.name,
-                                paste0("output", scenario.name, "run_truth.RData"))))
+                                paste0(scenario.name, "run_truth.RData"))))
   }
 
   omlist <-list("funct.groups" = funct.groups,
