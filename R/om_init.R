@@ -54,6 +54,7 @@ om_init <- function(config = configfile){
   # scenario.name <- "CCV3"
   # bioind.file <- "outputCCV3BiomIndx.txt"
   # catch.file <- "outputCCV3Catch.txt"
+  # annage <- FALSE
 
   #Load functional groups
   funct.groups <- atlantisom::load_fgs(dir=d.name,
@@ -94,7 +95,8 @@ om_init <- function(config = configfile){
                                    file_init = initial.conditions.file,
                                    file_biolprm = biol.prm.file,
                                    file_runprm = run.prm.file,
-                                   verbose = TRUE
+                                   verbose = TRUE,
+                                   annage = annage
     )
   } else {
     truth <- get(load(file.path(d.name,

@@ -7,11 +7,12 @@
 load_nc_annage(
   dir = getwd(),
   file_nc,
+  file_fish,
   bps,
   fgs,
   biolprm,
   select_groups,
-  select_variable = c("Nums", "Weight"),
+  select_variable = c("Nums", "Weight", "Catch", "Discard"),
   check_acronyms = TRUE,
   bboxes = c(0),
   verbose = FALSE
@@ -97,6 +98,7 @@ Other load functions:
 \code{\link{load_catch}()},
 \code{\link{load_diet_comp}()},
 \code{\link{load_fgs}()},
+\code{\link{load_fisheries}()},
 \code{\link{load_meta}()},
 \code{\link{load_nc}()},
 \code{\link{load_runprm}()},

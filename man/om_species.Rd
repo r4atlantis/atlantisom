@@ -4,7 +4,7 @@
 \alias{om_species}
 \title{Species-specific atlantisom outputs}
 \usage{
-om_species(species = spp, omlist, removefullom = TRUE)
+om_species(species = spp, omlist, save = TRUE, removefullom = TRUE)
 }
 \arguments{
 \item{species}{The species to sample in the survey and fishery (a vector)}

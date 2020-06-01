@@ -13,6 +13,7 @@ run_truth(
   file_init,
   file_biolprm,
   file_runprm,
+  file_fish,
   verbose = FALSE,
   save = TRUE,
   annage = FALSE
