@@ -85,7 +85,7 @@ om_init <- function(config = configfile){
 
   # default run_truth setup will save the file, so check for that first
   if(!file.exists(file.path(d.name,
-                            paste0("output", scenario.name, "run_truth.RData")))){
+                            paste0(scenario.name, "run_truth.RData")))){
     #Store all loaded results into an R object
     truth <- atlantisom::run_truth(scenario = scenario.name,
                                    dir = d.name,
