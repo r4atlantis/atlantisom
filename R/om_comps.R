@@ -206,7 +206,7 @@ om_comps <- function(usersurvey = usersurvey_file,
     # catch at age by area and timestep
     catch_annagenumbers <-  atlantisom::create_fishery_subset(dat = omlist_ss$truecatchage_ss,
                                                         time = fishtime,
-                                                        species = select_groups,
+                                                        species = survspp,
                                                         boxes = fishboxes)
 
     # if we want replicates for obs error this sample function will generate them
