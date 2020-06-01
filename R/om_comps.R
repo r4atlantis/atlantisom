@@ -210,7 +210,8 @@ om_comps <- function(usersurvey = usersurvey_file,
                                                         boxes = fishboxes)
 
     # if we want replicates for obs error this sample function will generate them
-    # NOTE THIS AGGREGATES ACROSS FLEETS need to change sample_fish to fix
+    # NOTE THIS AGGREGATES ACROSS FLEETS
+    # TODO: need to change sample_fish to fix
     catch_annage_comp <- list()
     for(i in 1:n_reps){
       catch_annage_comp[[i]] <- atlantisom::sample_fish(catch_numbers, fisheffN)
