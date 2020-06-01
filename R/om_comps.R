@@ -189,7 +189,7 @@ om_comps <- function(usersurvey = usersurvey_file,
     # if we want replicates for obs error this sample function will generate them
     annage_comp_data <- list()
     for(i in 1:n_reps){
-      annage_comp_data[[i]] <- atlantisom::sample_fish(survey_annN, surveffN)
+      annage_comp_data[[i]] <- atlantisom::sample_fish(survey_annageN, surveffN)
     }
 
     # save survey annual age comps
@@ -214,7 +214,7 @@ om_comps <- function(usersurvey = usersurvey_file,
     # TODO: need to change sample_fish to fix
     catch_annage_comp <- list()
     for(i in 1:n_reps){
-      catch_annage_comp[[i]] <- atlantisom::sample_fish(catch_numbers, fisheffN)
+      catch_annage_comp[[i]] <- atlantisom::sample_fish(catch_annagenumbers, fisheffN)
     }
 
     # save fishery annual age comps
