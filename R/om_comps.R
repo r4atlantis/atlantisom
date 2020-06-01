@@ -176,13 +176,63 @@ om_comps <- function(usersurvey = usersurvey_file,
     saveRDS(fishObsWtAtAge, file.path(d.name, paste0(scenario.name, "fishObsWtAtAge.rds")))
   }
 
+  if(!is.null(omlist_ss$truenumsage_ss)){
+    #numbers based fishery independent survey for age and length comps
+    # same user specifications as indices
+    survey_annageN <- atlantisom::create_survey(dat = omlist_ss$truenumsage_ss,
+                                          time = survtime,
+                                          species = survspp,
+                                          boxes = survboxes,
+                                          effic = surveffic,
+                                          selex = survselex)
+    #Sample fish for age composition
+    # if we want replicates for obs error this sample function will generate them
+    annage_comp_data <- list()
+    for(i in 1:n_reps){
+      annage_comp_data[[i]] <- atlantisom::sample_fish(survey_annN, surveffN)
+    }
+
+    # save survey annual age comps
+    if(save){
+    saveRDS(annage_comp_data, file.path(d.name, paste0(scenario.name, "survObsFullAgeComp.rds")))
+    }
+
+  }else{annage_comp_data <- NULL}
+
+  if(!is.null(omlist_ss$truecatchage_ss)){
+    #numbers based fishery independent survey for age and length comps
+    # same user specifications as indices
+    #fishery catch at age each observed timestep summed over observed polygons
+    # catch at age by area and timestep
+    catch_annagenumbers <-  atlantisom::create_fishery_subset(dat = omlist_ss$truecatchage_ss,
+                                                        time = fishtime,
+                                                        species = select_groups,
+                                                        boxes = fishboxes)
+
+    # if we want replicates for obs error this sample function will generate them
+    catch_annage_comp <- list()
+    for(i in 1:n_reps){
+      catch_annage_comp[[i]] <- atlantisom::sample_fish(catch_numbers, fisheffN)
+    }
+
+    # save fishery annual age comps
+    if(save){
+    saveRDS(catch_annage_comp, file.path(d.name, paste0(scenario.name, "fishObsFullAgeComp.rds")))
+    }
+  }else{catch_annage_comp <- NULL}
+
+  # call interpolate weight at age function to get survObsFullWtAtAge
+
 
   comps <- list("survObsAgeComp" = age_comp_data,
                 "survObsLenComp" = survObsLenComp,
                 "survObsWtAtAge" = survObsWtAtAge,
                 "fishObsAgeComp" = catch_age_comp,
                 "fishObsLenComp" = fishObsLenComp,
-                "fishObsWtAtAge" = fishObsWtAtAge)
+                "fishObsWtAtAge" = fishObsWtAtAge,
+                "survObsFullAgeComp" = annage_comp_data,
+                "fishObsFullAgeComp" = catch_annage_comp
+                )
 
   return(comps)
 }
