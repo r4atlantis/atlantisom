@@ -37,7 +37,14 @@
 
 ## ACTUAL FUNCTION ##
 calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
+  # wtagecl is mean weight at age output of calc_age2length()
+  # annages is truenumsage output of run_truth(), needs aggregation:
+  annages <- annages %>%
+    group_by(species, time, agecl) %>%
+    rename(trueage = agecl) %>%
+    summarise(truenatage = sum(atoutput))
 
+  # assuming fgs is data object already been read in by load_fgs elsewhere
   # Figure out the groups that have multiple ages classes in each stage (or
   # cohort)
   multiple_ages <- fgs[fgs$NumAgeClassSize>1, c(1,4,10)]
@@ -92,12 +99,25 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
 
   # fix oldest age
 
+  # diagnostic plot--are interpolations where we expect them?
+  wtageclann <- ggplot(wtagecl_inc, aes(avgage, atoutput)) +
+    geom_point() +
+    geom_line(aes(colour = factor(time))) +
+    scale_x_continuous(minor_breaks = c(0:20)) +
+    theme_tufte() +
+    theme(legend.position = "none",
+          panel.grid.minor.x = element_line(colour = "grey50"),
+          panel.grid.major.x = element_line(colour = "grey50"))
+
+  diag.p <- wtageclann + geom_point(data = wtage_out,
+                          mapping = aes(trueage, wtIntage))
+
   #clean up to have only standard columns
   finaldata <- data.frame("species" = wtage_out$species,
                           "agecl" = wtage_out$trueage, "polygon" = NA, "layer" = NA,
                           "time" = wtage_out$time, "atoutput" = wtage_out$wtIntage)
 
-  return(finaldata)
+  return(list(finaldata, diag.p))
 
 }
 
