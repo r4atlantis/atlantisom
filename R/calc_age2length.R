@@ -83,7 +83,9 @@ upper.bins <- 1:maxbin
 lower.bins <- c(0,upper.bins[-length(upper.bins)])
 lenfreq <- NULL
 
-if(maxbin<max(mulen$atoutput)){
+# small effective sample sizes may return 0 nums for oldest age classes, resulting in NA
+# I'd rather keep that in here then change the match function in line 67 to return 0
+if(maxbin<max(mulen$atoutput, na.rm = TRUE)){
   print("Warning: maximum bin size is smaller than the longest fish in the sample. Fish above the maximum bin size will be removed from length compositions.")
 }
 for (irow in 1:nrow(mulen))
