@@ -3,8 +3,8 @@
 #' @family calc functions
 #' @author Sarah Gaichas
 #'
-#' @template wtagecl
-#' @template annages
+#' @param wtagecl average weight at age output of the \code{calc_age2length} function
+#' @param annages truenumsage output of \code{run_truth}
 #' @template fgs
 #'
 #' @return A \code{data.frame} in long format with the following column names:
