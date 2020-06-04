@@ -59,7 +59,7 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
   # finds the average age of each agecl each timestep based on truenatage
   wtage_out <- annages %>%
     dplyr::semi_join(wtagecl, by = c("species", "time")) %>%
-    dplyr::left_join(multiple_ages, by = c("species" = "Name")) %>%
+    dplyr::inner_join(multiple_ages, by = c("species" = "Name")) %>%
     dplyr::mutate(agecl = as.integer(ceiling(trueage/NumAgeClassSize))) %>%
     dplyr::group_by(species, time, agecl) %>%
     dplyr::mutate(avgage = weighted.mean(trueage, truenatage))
