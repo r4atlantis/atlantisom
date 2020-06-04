@@ -85,16 +85,20 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
     ))
 
   # complex, but works for 2 ages/agecl, need to test more, need to fix oldest
+  # for more than 2 ages/agecl need to have a bigger lead/lag
+  # achieved by faking a scalar for lead/lag n using max() function
+  # should be ceiling I think for odd NumAgeClassSize, but not sure?
   wtage_out <- wtage_out %>%
-    dplyr::select(species, time, trueage, agecl, avgage) %>%
+    dplyr::select(species, time, trueage, NumAgeClassSize, agecl, avgage) %>%
     dplyr::left_join(wtagecl_inc) %>%
     dplyr::group_by(species, time) %>%
     dplyr::mutate(wtIntage = case_when(
-      trueage==1 ~ trueage/avgage*increment,
-      (trueage>1 & trueage<avgage) ~
-        (1-(avgage-trueage)/avgageinc)*increment + lag(atoutput),
-      (trueage>1 & trueage>avgage) ~
-        ((trueage-avgage)/lead(avgageinc))*lead(increment) + atoutput
+      (agecl==1 & trueage<avgage) ~ (1-(avgage-trueage)/avgageinc)*increment,
+      (agecl>1 & trueage<avgage) ~
+        (1-(avgage-trueage)/avgageinc)*increment +
+        lag(atoutput, ceiling(max(NumAgeClassSize)/2)),
+      (trueage>avgage) ~
+        ((trueage-avgage)/lead(avgageinc, ceiling(max(NumAgeClassSize)/2)))*lead(increment, ceiling(max(NumAgeClassSize)/2)) + atoutput
     ))
 
   # fix oldest age
@@ -103,7 +107,7 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
   wtageclann <- ggplot(wtagecl_inc, aes(avgage, atoutput)) +
     geom_point() +
     geom_line(aes(colour = factor(time))) +
-    scale_x_continuous(minor_breaks = c(0:20)) +
+    scale_x_continuous(minor_breaks = c(0:max(wtage_out$trueage))) +
     theme_tufte() +
     theme(legend.position = "none",
           panel.grid.minor.x = element_line(colour = "grey50"),
