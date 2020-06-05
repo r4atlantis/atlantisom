@@ -88,6 +88,7 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
   # for more than 2 ages/agecl need to have a bigger lead/lag
   # achieved by faking a scalar for lead/lag n using max() function
   # should be ceiling I think for odd NumAgeClassSize, but not sure?
+  # for oldest age(s), perhaps default=last(x) in lead statement
   wtage_out <- wtage_out %>%
     dplyr::select(species, time, trueage, NumAgeClassSize, agecl, avgage) %>%
     dplyr::left_join(wtagecl_inc) %>%
@@ -96,9 +97,14 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
       (agecl==1 & trueage<avgage) ~ (1-(avgage-trueage)/avgageinc)*increment,
       (agecl>1 & trueage<avgage) ~
         (1-(avgage-trueage)/avgageinc)*increment +
-        lag(atoutput, ceiling(max(NumAgeClassSize)/2)),
+        dplyr::lag(atoutput, ceiling(max(NumAgeClassSize)/2)),
       (trueage>avgage) ~
-        ((trueage-avgage)/lead(avgageinc, ceiling(max(NumAgeClassSize)/2)))*lead(increment, ceiling(max(NumAgeClassSize)/2)) + atoutput
+        (trueage-avgage)/dplyr::lead(avgageinc,
+                                     ceiling(max(NumAgeClassSize)/2),
+                                     default=last(avgageinc))*
+        dplyr::lead(increment,
+                    ceiling(max(NumAgeClassSize)/2),
+                    default=last(increment)) + atoutput
     ))
 
   # fix oldest age
