@@ -67,6 +67,20 @@ om_species <- function(species = spp, omlist, save = TRUE, removefullom = TRUE){
   # catch in numbers at agecl at full resoluation (all polygons, no layer in output)
   truecatchnum_ss <- omlist$truth$catch[omlist$truth$catch$species %in% species_ss,]
 
+  # if annage output exists, add in, otherwise fill with NULL
+  if("numsage" %in% names(omlist$truth)){
+    truenumsage_ss <- omlist$truth$numsage[omlist$truth$numsage$species %in% species_ss,]
+  } else {truenumsage_ss <- NULL}
+
+  if("catchage" %in% names(omlist$truth)){
+    truecatchage_ss <- omlist$truth$catchage[omlist$truth$catchage$species %in% species_ss,]
+  } else {truecatchage_ss <- NULL}
+
+  if("discage" %in% names(omlist$truth)){
+    truediscage_ss <- omlist$truth$discage[omlist$truth$discage$species %in% species_ss,]
+  } else {truediscage_ss <- NULL}
+
+
   #subset species biol parameters? no, may miss some globals that aren't by species
 
   #subset species functional group info
@@ -84,6 +98,9 @@ om_species <- function(species = spp, omlist, save = TRUE, removefullom = TRUE){
                     "trueresn_ss" = trueresn_ss,
                     "truestructn_ss" = truestructn_ss,
                     "truecatchnum_ss" = truecatchnum_ss,
+                    "truenumsage_ss" = truenumsage_ss,
+                    "truecatchage_ss" = truecatchage_ss,
+                    "truediscage_ss" = truediscage_ss,
                     "funct.group_ss" = funct.groups_ss,
                     "biol" = omlist$biol,
                     "boxpars" = omlist$boxpars,

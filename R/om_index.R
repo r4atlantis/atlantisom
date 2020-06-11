@@ -53,9 +53,9 @@ om_index <- function(usersurvey = usersurvey_file,
   # call sample_survey_biomass with a bunch of 1000s for weight at age
   # in the code it multiplies atoutput by wtatage/1000 so this allows us to use
   # biomass directly
-  wtage <- data.frame(species=rep(survspp, each=max(age_classes)),
-                      agecl=rep(c(1:max(age_classes)),length(survspp)),
-                      wtAtAge=rep(1000.0,length(survspp)*max(age_classes)))
+  wtage <- data.frame(species=rep(survspp, n_age_classes),
+                      agecl=unlist(sapply(n_age_classes,seq)),
+                      wtAtAge=rep(1000.0,sum(n_age_classes)))
 
   # this is the step to repeat n_reps time if we want different realizations
   # of the same survey design specified above; only observation error differs

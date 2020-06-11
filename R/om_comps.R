@@ -176,13 +176,92 @@ om_comps <- function(usersurvey = usersurvey_file,
     saveRDS(fishObsWtAtAge, file.path(d.name, paste0(scenario.name, "fishObsWtAtAge.rds")))
   }
 
+  if(!is.null(omlist_ss$truenumsage_ss)){
+    #numbers based fishery independent survey for age and length comps
+    # same user specifications as indices
+    survey_annageN <- atlantisom::create_survey(dat = omlist_ss$truenumsage_ss,
+                                          time = survtime,
+                                          species = survspp,
+                                          boxes = survboxes,
+                                          effic = surveffic,
+                                          selex = survselex)
+    #Sample fish for age composition
+    # if we want replicates for obs error this sample function will generate them
+    annage_comp_data <- list()
+    for(i in 1:n_reps){
+      annage_comp_data[[i]] <- atlantisom::sample_fish(survey_annageN, surveffN)
+    }
+
+    # save survey annual age comps
+    if(save){
+    saveRDS(annage_comp_data, file.path(d.name, paste0(scenario.name, "survObsFullAgeComp.rds")))
+    }
+
+  }else{annage_comp_data <- NULL}
+
+  if(!is.null(omlist_ss$truecatchage_ss)){
+    #fishery catch at age each observed timestep summed over observed polygons
+    # catch at age by area and timestep
+    catch_annagenumbers <-  atlantisom::create_fishery_subset(dat = omlist_ss$truecatchage_ss,
+                                                        time = fishtime,
+                                                        species = survspp,
+                                                        boxes = fishboxes)
+
+    # if we want replicates for obs error this sample function will generate them
+    # WARNING THIS AGGREGATES ACROSS FLEETS
+    # TODO: need to change sample_fish to fix
+    catch_annage_comp <- list()
+    for(i in 1:n_reps){
+      catch_annage_comp[[i]] <- atlantisom::sample_fish(catch_annagenumbers, fisheffN)
+    }
+
+    # save fishery annual age comps
+    if(save){
+    saveRDS(catch_annage_comp, file.path(d.name, paste0(scenario.name, "fishObsFullAgeComp.rds")))
+    }
+  }else{catch_annage_comp <- NULL}
+
+  # call interpolate weight at age function to get survObsFullWtAtAge
+  if(!is.null(omlist_ss$truenumsage_ss)){
+    interp_survWtAtAge <- list()
+    for(i in 1:n_reps){
+      interp_survWtAtAge[[i]] <- calc_avgwtstage2age(wtagecl = survObsWtAtAge[[i]],
+                                                     annages = omlist_ss$truenumsage_ss,
+                                                     fgs = omlist_ss$funct.group_ss)
+    }
+    if(save){
+      saveRDS(interp_survWtAtAge, file.path(d.name, paste0(scenario.name, "survObsFullWtAtAge.rds")))
+    }
+  }else{interp_survWtAtAge <- NULL}
+
+  # do we want fishery average weight at true age too? why not
+  # call interpolate weight at age function to get fishObsFullWtAtAge
+  # WARNING currently aggregates out fleet info, but no fleets in aggregate wtage
+  if(!is.null(omlist_ss$truecatchage_ss)){
+    interp_fishWtAtAge <- list()
+    for(i in 1:n_reps){
+      interp_fishWtAtAge[[i]] <- calc_avgwtstage2age(wtagecl = fishObsWtAtAge[[i]],
+                                                     annages = omlist_ss$truecatchage_ss,
+                                                     fgs = omlist_ss$funct.group_ss)
+    }
+    if(save){
+      saveRDS(interp_fishWtAtAge, file.path(d.name, paste0(scenario.name, "fishObsFullWtAtAge.rds")))
+    }
+  }else{interp_fishWtAtAge <- NULL}
+
+
 
   comps <- list("survObsAgeComp" = age_comp_data,
                 "survObsLenComp" = survObsLenComp,
                 "survObsWtAtAge" = survObsWtAtAge,
                 "fishObsAgeComp" = catch_age_comp,
                 "fishObsLenComp" = fishObsLenComp,
-                "fishObsWtAtAge" = fishObsWtAtAge)
+                "fishObsWtAtAge" = fishObsWtAtAge,
+                "survObsFullAgeComp" = annage_comp_data,
+                "fishObsFullAgeComp" = catch_annage_comp,
+                "survObsFullWtAtAge" = interp_survWtAtAge,
+                "fishObsFullWtAtAge" = interp_fishWtAtAge
+                )
 
   return(comps)
 }

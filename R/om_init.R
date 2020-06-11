@@ -54,6 +54,7 @@ om_init <- function(config = configfile){
   # scenario.name <- "CCV3"
   # bioind.file <- "outputCCV3BiomIndx.txt"
   # catch.file <- "outputCCV3Catch.txt"
+  # annage <- FALSE
 
   #Load functional groups
   funct.groups <- atlantisom::load_fgs(dir=d.name,
@@ -71,7 +72,7 @@ om_init <- function(config = configfile){
   truecatchbio <- atlantisom::load_catch(d.name, file_catch = catch.file, fgs = funct.groups)
 
   # load YOY
-  YOY <- atlantisom::load_yoy(d.name, paste0("output", scenario.name, "YOY.txt"))
+  YOY <- atlantisom::load_yoy(d.name, paste0(scenario.name, "YOY.txt"))
 
   # load biol_prm
   biol <- atlantisom::load_biolprm(d.name, biol.prm.file)
@@ -84,7 +85,7 @@ om_init <- function(config = configfile){
 
   # default run_truth setup will save the file, so check for that first
   if(!file.exists(file.path(d.name,
-                            paste0("output", scenario.name, "run_truth.RData")))){
+                            paste0(scenario.name, "run_truth.RData")))){
     #Store all loaded results into an R object
     truth <- atlantisom::run_truth(scenario = scenario.name,
                                    dir = d.name,
@@ -94,11 +95,12 @@ om_init <- function(config = configfile){
                                    file_init = initial.conditions.file,
                                    file_biolprm = biol.prm.file,
                                    file_runprm = run.prm.file,
-                                   verbose = TRUE
+                                   verbose = TRUE,
+                                   annage = annage
     )
   } else {
     truth <- get(load(file.path(d.name,
-                                paste0("output", scenario.name, "run_truth.RData"))))
+                                paste0(scenario.name, "run_truth.RData"))))
   }
 
   omlist <-list("funct.groups" = funct.groups,

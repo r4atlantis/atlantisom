@@ -13,8 +13,10 @@ run_truth(
   file_init,
   file_biolprm,
   file_runprm,
+  file_fish,
   verbose = FALSE,
-  save = TRUE
+  save = TRUE,
+  annage = FALSE
 )
 }
 \arguments{
@@ -95,7 +97,7 @@ where [...] specifies the entry used for the \code{scenario} argument.
 \examples{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 groups <- load_fgs(dir = d, "functionalGroups.csv")
-run_truth(scenario = "SETAS",
+run_truth(scenario = "outputSETAS",
   dir = d,
   file_fgs = "functionalGroups.csv",
   file_bgm = "VMPA_setas.bgm",
