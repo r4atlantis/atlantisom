@@ -17,7 +17,7 @@ sample_fishery_totcatch(dat, cv)
   \item{atoutput}
 }
 The \code{data.frame} is generated from either \code{\link{create_survey}}
-or \code{\link{create_fishery_data}}.}
+or \code{\link{create_fishery_subset}}.}
 
 \item{cv}{Coefficient of variation for the entire species specific catch
 a matrix with columns: species, cv}

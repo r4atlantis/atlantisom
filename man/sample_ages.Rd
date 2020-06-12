@@ -17,7 +17,7 @@ sample_ages(dat, prop, ageErr = NULL)
   \item{atoutput}
 }
 The \code{data.frame} is generated from either \code{\link{create_survey}}
-or \code{\link{create_fishery_data}}.}
+or \code{\link{create_fishery_subset}}.}
 
 \item{prop}{Percentage of samples for each species: a matrix with nrow=length(species). Columns:
 species:  the species name. Matches names in species

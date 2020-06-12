@@ -17,7 +17,7 @@ create_fishery_subset(dat, time, species, boxes)
   \item{atoutput}
 }
 The \code{data.frame} is generated from either \code{\link{create_survey}}
-or \code{\link{create_fishery_data}}.}
+or \code{\link{create_fishery_subset}}.}
 
 \item{time}{The timing of the survey (a vector indicating specific time steps, which are typically associated with years)
 i.e., seq(365,10*3650,365) would be an annual survey for 10 years}
