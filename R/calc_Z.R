@@ -18,6 +18,7 @@
 #'
 #'   }
 #' This function uses the YOY.txt and Nums to calculate Z.
+#' @importFrom magrittr %>%
 #' @template yoy
 #' @param nums Object containing the number at stage.
 #' @template fgs
@@ -33,7 +34,7 @@
 #' file_nc <- "outputSETAS.nc"
 #' fgs <- load_fgs(dir = dir, "functionalGroups.csv")
 #' file_init <- "INIT_VMPA_Jan2015.nc"
-#' bps <- load_bps(dir = dir, fgs, file_init)
+#' bps <- load_bps(dir = dir, "functionalGroups.csv", file_init = "INIT_VMPA_Jan2015.nc")
 #' select_groups <- fgs$Name[fgs$IsTurnedOn > 0]
 #' select_variable <- "Nums"
 #' box.info <- load_box(dir = dir, file_bgm="VMPA_setas.bgm")
@@ -137,20 +138,20 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   rectiming <- merge(rectiming, biolprm$recruit_period, by = 1)
   names(rectiming) <- c("Code", "time_spawn", "recruit_time", "recruit_period")
   rectiming <- rectiming %>%
-    mutate(recstart = time_spawn + recruit_time) %>%
-    mutate(recend = recstart + recruit_period)
+    dplyr::mutate(recstart = time_spawn + recruit_time) %>%
+    dplyr::mutate(recend = recstart + recruit_period)
 
   # Sum numbers output over all boxes/depth/cohorts
   # align model output timesteps (days) with recruitment periods (days)
   totnums <- aggregate(atoutput ~ species + time, data = nums, sum) %>%
     #mutate(time.days = (time+1)*toutinc) %>% #makes time 0 into days 0->73, etc
-    mutate(time.days = (time)*toutinc) %>% #makes time 1 into days 0->73, etc
-    mutate(yr = ceiling(time.days/365))  # yr 1 is 0:stepsperyr to match recruits yr1
+    dplyr::mutate(time.days = (time)*toutinc)   %>% #makes time 1 into days 0->73, etc
+    dplyr::mutate(yr = ceiling(time.days/365))  # yr 1 is 0:stepsperyr to match recruits yr1
 
   totnums <- merge(totnums, recruits,
                    by.x = c("yr", "species"), by.y = c("yr", "Name"),
                    all.x = TRUE) %>%
-    arrange(time)
+    dplyr::arrange(time)
 
   #subset recpars to groups of interest
   recstart_temp <- rectiming[rectiming$Code %in% totnums$group,]
@@ -170,6 +171,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
       i_tstart <- which(pick==min(pick[totnums$time.days[pick]>=recstart[i_rec]]))
       i_tstop <- which(pick==min(pick[totnums$time.days[pick]>=recend[i_rec]]))
       if (i_rec == length(recstart)) i_tstop <- length(pick)
+      if(length(i_tstart) == 0) break;
       n_t <- 1+i_tstop-i_tstart
       for (i_t in 1:n_t) {
         t_temp <- totnums$time.days[pick[i_tstart+i_t-1]]
