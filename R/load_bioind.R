@@ -18,8 +18,9 @@
 #'
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' file <- "outputSETAScatch.txt"
-#' test <- load_catch(dir = d, file_catch = file)
+#' file <- "outputSETASBiomIndx.txt"
+#' fgs <- load_fgs(dir = d, "functionalGroups.csv")
+#' test <- load_bioind(dir = d, file_bioind = file, fgs = fgs)
 load_bioind <- function(dir, file_bioind, fgs, verbose = FALSE) {
   file.bioind <- file.path(dir, file_bioind)
   truebio <- read.table(file.bioind, header = TRUE)

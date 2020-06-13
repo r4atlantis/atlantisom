@@ -26,7 +26,7 @@ Read in the fisheries group file, which is typically saved as
 }
 \examples{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-fleets <- load_fisheries(d, "fisheries.csv")
+fleets <- load_fisheries(d, "SETasFisheries.csv")
 rm(fleets)
 
 }

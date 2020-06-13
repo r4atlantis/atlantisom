@@ -4,7 +4,16 @@
 \alias{SS_write_biol}
 \title{Writes life history parameters}
 \usage{
-SS_write_biol(ctl_obj, biolprm_object, species_code, Z, wtsage, lensage)
+SS_write_biol(
+  ctl_obj,
+  biolprm_object,
+  species_code,
+  M_est = NULL,
+  wtsage,
+  lensage,
+  lenwt_a = NULL,
+  lenwt_b = NULL
+)
 }
 \arguments{
 \item{ctl_obj}{list that is returned from \code{r4ss::read_ctl()} that contains the control file}
@@ -13,7 +22,7 @@ SS_write_biol(ctl_obj, biolprm_object, species_code, Z, wtsage, lensage)
 
 \item{species_code}{the three-letter species code of the fish you are creating a model for}
 
-\item{Z}{scalar value for Z of the species}
+\item{M_est}{scalar value for M of the species}
 
 \item{wtsage}{two dimensional vector with column names agecl and meanwt giving mean body weight at age in grams}
 

@@ -35,8 +35,9 @@ This function loads the Atlantis BiomIndx.txt output file.
 }
 \examples{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-file <- "outputSETAScatch.txt"
-test <- load_catch(dir = d, file_catch = file)
+file <- "outputSETASBiomIndx.txt"
+fgs <- load_fgs(dir = d, "functionalGroups.csv")
+test <- load_bioind(dir = d, file_bioind = file, fgs = fgs)
 }
 \seealso{
 Other load functions: 

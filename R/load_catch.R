@@ -15,13 +15,15 @@
 #'
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' file <- "outputSETAScatch.txt"
-#' test <- load_catch(dir = d, file_catch = file)
+#' file <- "outputSETASCatch.txt"
+#' fgs <- load_fgs(dir = d, "functionalGroups.csv")
+#' test <- load_catch(dir = d, fgs = fgs, file_catch = file)
 load_catch <- function(dir, file_catch, fgs, verbose = FALSE) {
   file.catch <- file.path(dir, file_catch)
   catchbio <- read.table(file.catch, header = TRUE)
   catchbio <- catchbio[, -grep("TsAct", colnames(catchbio))]
 
+  fgs <- fgs[fgs$IsTurnedOn > 0,]
   fishedlookup <- fgs[fgs$IsFished > 0,]
 
   names(catchbio)[match(fishedlookup$Code,names(catchbio))] <- fishedlookup$Name

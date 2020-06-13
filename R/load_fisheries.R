@@ -14,7 +14,7 @@
 #'
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' fleets <- load_fisheries(d, "fisheries.csv")
+#' fleets <- load_fisheries(d, "SETasFisheries.csv")
 #' rm(fleets)
 #'
 load_fisheries <- function(dir = getwd(), file_fish){

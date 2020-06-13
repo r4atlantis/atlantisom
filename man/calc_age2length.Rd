@@ -60,7 +60,7 @@ Uses numbers at age, plus weight at age, and weight-length relationships to
 generate size comps
 }
 \examples{
-
+\dontrun{
 directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 load(file.path(directory, "outputSETASrun_truth.RData"))
 
@@ -68,7 +68,7 @@ lenout <- calc_age2length(
   structn=result$structn, resn=result$resn, nums=result$nums,
   biolprm = result$biolprm, fgs = result$fgs,
   CVlenage = 0.1, remove.zeroes=TRUE)
-
+}
 }
 \author{
 Gavin Fay

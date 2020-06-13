@@ -11,28 +11,30 @@ load_bps(dir = getwd(), fgs, file_init)
 \item{dir}{The directory of the atlantis model output, where the
 default is \code{getwd()}.}
 
-\item{fgs}{A data frame created by \code{\link{load_fgs}} that
-reads in the csv file containing functional group names, usually
-\code{"functionalGroups.csv"}.}
-
 \item{file_init}{A character value giving the file name of the intial conditions
 file. The file should be located in your current working directory or the
 folder you specify in \code{dir}.
 The argument can also be specified as the full path name, just as long as
 argument \code{dir} is specified as \code{NULL}.
 Usually the file is named \code{"init[...].nc".}, but it must end in \code{.nc}.}
+
+\item{file_fgs}{A character value specifying the file name of the Atlantis
+functional groups file. The file should be located in your current working
+directory or the folder you specify in \code{dir}.
+The argument can also be specified as the full path name, just as long as
+argument \code{dir} is specified as \code{NULL}.
+Usually, the filename is \code{"functionalGroups.csv"}.}
 }
 \value{
 A \code{vector} of biomass pools.
 }
 \description{
-Use \code{fgs} \code{data.frame} as read in by \code{\link{load_fgs}}
+Use \code{file_fgs} \code{data.frame} (this function will call \code{load_fgs})
 to get the biomass pool information.
 }
 \examples{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-fgs <- load_fgs(d, "functionalGroups.csv")
-bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
+bps <- load_bps(dir = d, fgs = "functionalGroups.csv", file_init = "INIT_VMPA_Jan2015.nc")
 
 }
 \seealso{

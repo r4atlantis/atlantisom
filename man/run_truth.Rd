@@ -104,7 +104,8 @@ run_truth(scenario = "outputSETAS",
   select_groups = groups[groups$IsTurnedOn > 0, "Name"],
   file_init = "INIT_VMPA_Jan2015.nc",
   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm",
-  file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml")
+  file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml",
+  file_fish = "SETasFisheries.csv")
 
 }
 \author{

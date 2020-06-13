@@ -29,7 +29,7 @@
 #' @examples
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' fgs <- load_fgs(d, "functionalGroups.csv")
-#' bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
+#' bps <- load_bps(dir = d, "functionalGroups.csv", file_init = "INIT_VMPA_Jan2015.nc")
 #' test <- load_nc(dir = d, file_nc = "outputSETASCATCH.nc",
 #'   fgs = fgs, bps = bps,
 #'   select_variable = "Catch",

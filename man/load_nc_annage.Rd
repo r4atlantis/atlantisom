@@ -73,19 +73,6 @@ A \code{data.frame} in long format with the following coumn names:
 This function loads Atlantis ANNAGEBIO and ANNAGECATCH outputfiles (netcdf) and
 converts them to a \code{data.frame}.
 }
-\examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-fgs <- load_fgs(d, "functionalGroups.csv")
-bps <- load_bps(dir = d, fgs = fgs, file_init = "INIT_VMPA_Jan2015.nc")
-test <- load_nc(dir = d, file_nc = "outputSETASCATCH.nc",
-  fgs = fgs, bps = bps,
-  select_variable = "Catch",
-  select_groups = "Pisciv_T_Fish",
-  check_acronyms = TRUE)
-str(test)
-rm(test)
-
-}
 \seealso{
 \code{\link{get_boundary}}, \code{\link{load_box}}
 

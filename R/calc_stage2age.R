@@ -25,7 +25,7 @@
 #' file_nc="outputSETAS.nc"
 #' fgs=load_fgs(dir = dir, "functionalGroups.csv")
 #' file_init="INIT_VMPA_Jan2015.nc"
-#' bps=load_bps(dir = dir, fgs, file_init)
+#' bps=load_bps(dir = dir, "functionalGroups.csv", file_init)
 #' select_groups=fgs$Name[fgs$IsTurnedOn > 0]
 #' select_variable="Nums"
 #' box.info=load_box(dir = dir, file_bgm="VMPA_setas.bgm")

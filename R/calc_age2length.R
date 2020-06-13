@@ -24,7 +24,7 @@
 #' columns to include the length bin information.
 #'
 #' @examples
-#'
+#' \dontrun{
 #' directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' load(file.path(directory, "outputSETASrun_truth.RData"))
 #'
@@ -32,7 +32,7 @@
 #'   structn=result$structn, resn=result$resn, nums=result$nums,
 #'   biolprm = result$biolprm, fgs = result$fgs,
 #'   CVlenage = 0.1, remove.zeroes=TRUE)
-#'
+#' }
 calc_age2length <- function(structn, resn, nums,
   biolprm, fgs, maxbin = 150,
   CVlenage = 0.1, remove.zeroes = TRUE) {

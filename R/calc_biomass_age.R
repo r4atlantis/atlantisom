@@ -20,7 +20,7 @@
 #' # Set up the example with input files
 #' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 #' fgs <- load_fgs(d, "functionalGroups.csv")
-#' bps <- load_bps(dir = d, fgs = fgs,
+#' bps <- load_bps(dir = d, fgs = "functionalGroups.csv",
 #'   file_init = paste0(tail(strsplit(d, "/")[[1]], 1), ".nc"))
 #' runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
 #' biolprm <- load_biolprm(dir = d,

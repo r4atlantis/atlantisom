@@ -32,8 +32,9 @@ This function loads the Atlantis catch.txt output file.
 }
 \examples{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-file <- "outputSETAScatch.txt"
-test <- load_catch(dir = d, file_catch = file)
+file <- "outputSETASCatch.txt"
+fgs <- load_fgs(dir = d, "functionalGroups.csv")
+test <- load_catch(dir = d, fgs = fgs, file_catch = file)
 }
 \seealso{
 Other load functions: 

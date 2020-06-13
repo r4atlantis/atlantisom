@@ -30,16 +30,16 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
     warning(paste("The function load_meta does not allow dir = NULL\n",
       "and dir will be set to\n", getwd(), "\nas determined using getwd()"))
   }
-  data <- list()
+  mdata <- list()
 
   # Main nc file
-  grepnc <- paste0("^output", scenario, "\\.nc")
+  grepnc <- paste0(scenario, "\\.nc")
   file <- dir(dir, pattern = grepnc, full.names = TRUE)
   connection <- RNetCDF::open.nc(file)
   on.exit(RNetCDF::close.nc(connection))
 
   # Get model name from the scenario argument
-  data$modelname <- scenario
+  mdata$modelname <- scenario
 
   # Get Atlantis version number
   file.log <- dir(dir, pattern = "^log", full.names = TRUE)
@@ -51,14 +51,14 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
       "load_meta will use the following log file:\n", tail(file.log, 1)))
     file.log <- tail(file.log, 1)
   }
-  if (!file.exists(file.log)) {
+  if (length(file.log)==0) {
     warning(paste("The log file does not exist in\n", dir, "\n",
       "and consequently the metadata will list the version number",
       "as NA."))
-    data$atlantisversion <- NA
+    mdata$atlantisversion <- NA
   } else {
-    data$atlantisversion <- readLines(file.log, n = 2)[2]
-    data$atlantisversion <- gsub("#", "", data$atlantisversion)
+    mdata$atlantisversion <- readLines(file.log, n = 2)[2]
+    mdata$atlantisversion <- gsub("#", "", mdata$atlantisversion)
   }
 
   # Get number of years, timestep, output interval,
@@ -81,20 +81,20 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
     warning(paste("The .prm file does not exist in\n", dir, "\n",
       "and consequently the metadata will list the number of years,",
       "timestep, and timestepunit as NA."))
-    data$toutstart <- NA
-    data$toutinc <- NA
-    data$toutfinc <- NA
-    data$tstop <- NA
-    data$nyears <- NA
-    data$timestep <- NA
-    data$timestepunit <- NA
-    data$outputstep <- NA
-    data$outputstepunit <- NA
-    data$hemisphere <- NA
-    data$nspp <- NA
-    data$nfleet <- NA
+    mdata$toutstart <- NA
+    mdata$toutinc <- NA
+    mdata$toutfinc <- NA
+    mdata$tstop <- NA
+    mdata$nyears <- NA
+    mdata$timestep <- NA
+    mdata$timestepunit <- NA
+    mdata$outputstep <- NA
+    mdata$outputstepunit <- NA
+    mdata$hemisphere <- NA
+    mdata$nspp <- NA
+    mdata$nfleet <- NA
   } else { # Only go here if the prm file is available
-    data <- append(data,
+    mdata <- append(mdata,
       load_runprm(dir = NULL, file.prm))
   } # Close if for prm file
 
@@ -108,18 +108,17 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
     warning(paste("The .bgm file does not exist in\n", dir, "\n",
       "and consequently the metadata will list the number",
       "of boxes and\n maximum depth as NA."))
-    data$nbox <- NA
-    data$depthmax <- NA
+    mdata$nbox <- NA
+    mdata$depthmax <- NA
   } else { # Only go here if the bgm file is available
     bgm <- readLines(file.bgm)
-    data$nbox <- grep("nbox", bgm, value = TRUE)
-    data$nbox <- gsub("nbox|[[:space:]]+", "", data$nbox)
-    data$nbox <- as.numeric(data$nbox)
+    mdata$nbox <- grep("nbox", bgm, value = TRUE)
+    mdata$nbox <- gsub("nbox|[[:space:]]+", "", mdata$nbox)
 
     # Get maximum depth
-    data$depthmax <- grep("maxwcbotz", bgm, value = TRUE)
-    data$depthmax <- gsub("maxwcbotz|[[:space:]]+", "", data$depthmax)
-    data$depthmax <- as.numeric(data$depthmax)
+    mdata$depthmax <- grep("maxwcbotz", bgm, value = TRUE)
+    mdata$depthmax <- gsub("maxwcbotz|[[:space:]]+", "", mdata$depthmax)
+    mdata$depthmax <- as.numeric(mdata$depthmax)
   } # Close if for bgm file
 
   # Get the size of the study area in kilometers^2
@@ -130,8 +129,8 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
   area <- volume[dim(volume)[1], , ] / dz[dim(dz)[1], 1, 1]
   # If the assumption of the lowest box having a height of 1 m is false you
   # would need to divide by the sum of meters of sediment here
-  data$area <- sum(area[2:dim(area)[1], 1]) / 1000000
-  data$areaunit <- "km^2"
+  mdata$area <- sum(area[2:dim(area)[1], 1]) / 1000000
+  mdata$areaunit <- "km^2"
 
-  invisible(data)
+  invisible(mdata)
 }

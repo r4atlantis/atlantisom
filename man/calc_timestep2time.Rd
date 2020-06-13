@@ -39,13 +39,14 @@ Atlantis output uses time steps, where time steps are sequential
   where zero is January 01, 1970.
 }
 \examples{
+\dontrun{
 d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
 runprm <-
 load(file = file.path(d, "outputSETASrun_truth.RData"))
 test <- calc_timestep2time(dir = d, data = result$biomass_ages,
   file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml")
 rm(test)
-
+}
 }
 \seealso{
 \code{\link{load_fgs}}
