@@ -212,8 +212,7 @@ run_truth <- function(scenario, dir = getwd(),
     #if found compare codedate and do catch numbers correction if necessary
     logfile <- paste0(file.path(dir, "log.txt"))
     codedate <- system(paste0("grep 'Atlantis SVN' ", logfile), intern = TRUE)
-    codedate <- as.Date(stringr::str_extract(codedate, "\\d+/\\d+/\\d+"),
-                        format = "%Y/%m/%d")
+    codedate <- as.Date(stringr::str_extract(codedate, "\\d+[- \\/.]\\d+[- \\/.]\\d+"))
     if(codedate < "2015-12-15"){
       if(verbose) message("Catch numbers correction needed for this codebase, starting")
       # read in initial conditions NC file
