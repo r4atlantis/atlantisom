@@ -83,6 +83,7 @@ calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
   new_nums <- merge(nums_data, Z.dataframe[,c("species", "time", "Z")],
                     by=c("species", "time"), all.x=TRUE)
 
+  new_nums <- new_nums[order(new_nums$species, new_nums$time, new_nums$agecl),]
 
   # since we have to expand the number of rows for groups with multiple true
   # age classes, we will loop through species and time, creating a new list
@@ -92,7 +93,7 @@ calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
 
   #SKG subset turnedon and only loop through species present in the nums input
   turnedon_sub <- turnedon %>%
-    filter(Name %in% new_nums$species)
+    dplyr::filter(Name %in% new_nums$species)
 
   names <- turnedon_sub$Code
 
