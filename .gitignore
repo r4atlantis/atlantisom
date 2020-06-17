@@ -19,3 +19,4 @@ inst/doc
 *.ss_new
 *.tmp
 *.exe
+.DS_Store
