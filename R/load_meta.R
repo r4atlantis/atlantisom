@@ -65,7 +65,7 @@ load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {
   # number of species, and number of fleets
   file.prm <- dir(dir, pattern = "\\.xml", full.names = TRUE)
   if (length(file.prm) > 1) {
-    temp <- dir(dir, pattern = "?run\\.xml", full.names = TRUE)
+    temp <- dir(dir, pattern = "*run.*\\.xml$", ignore.case = TRUE, full.names = TRUE)
     if (length(temp) == 0) {
       file.prm <- dir(dir, pattern = "\\.xml", full.names = TRUE)[1]
       warning(paste("There are more than one xml files in your directory:\n",
