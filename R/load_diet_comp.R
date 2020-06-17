@@ -18,20 +18,20 @@
 #' @template toutinc
 #'
 #'@return Returns a data frame of the data to be exported to the AtlantisOM list
-#'  object.
+#'  object. The atoutput column is diet proportion and there is an extra column
+#'  identifying the prey that makes up that proportion of species (predator)
+#'  diet. At present not set up for multiple stocks; function will stop.
 #'@export
 #'
 #' @examples
 #' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
 #' file_diet <- grep("DietCheck", dir(d), value = TRUE)
 #' fgs <- load_fgs(dir = d, "Functional_groups.csv")
-#' runprm <- load_runprm(d, "Run_settings.xml")
-#' temp <- load_diet_comp(dir = d, file_diet = file_diet, fgs = fgs,
-#'   toutinc = runprm$toutinc)
+#' temp <- load_diet_comp(dir = d, file_diet = file_diet, fgs = fgs)
 #' rm(temp)
 #'
 
-load_diet_comp <- function(dir = getwd(), file_diet, fgs, toutinc){
+load_diet_comp <- function(dir = getwd(), file_diet, fgs){
 
   if (is.null(dir)) {
     diet.file <- file_diet
@@ -59,31 +59,50 @@ load_diet_comp <- function(dir = getwd(), file_diet, fgs, toutinc){
   # Replace the new version with the old version variable name.
   # Makes sense to have it the other way round but keeping 'group' seems to be useful
   # for maintaining functionality for other functions dependent on output.
-  if(length(grep("Predator",colnames(diet)))>0)
-    colnames(diet) <- gsub("Predator","Group",colnames(diet))
+
+  # SKG June 2020: changing to the other way around. more new models now,
+  # only one diet function to change, and "Predator" seems clearer for users.
+  if(length(grep("Group",colnames(diet)))>0)
+    colnames(diet) <- gsub("Group","Predator",colnames(diet))
 
   # Change column order
-  diet <- diet[, c("Group", "Cohort", "Time",
-    names(diet)[which(!names(diet) %in% c("Group", "Cohort", "Time"))])]
+  diet <- diet[, c("Predator", "Cohort", "Time",
+    names(diet)[which(!names(diet) %in% c("Predator", "Cohort", "Time"))])]
 
 
   # Convert to tidy dataframe to allow joining/merging with other dataframes.
   diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
-    gather_cols = names(diet)[(which(names(diet) == "Time") + 1):NCOL(diet)])
+    #gather_cols = names(diet)[(which(names(diet) == "Updated") + 1):NCOL(diet)])
+    gather_cols = names(diet)[(which(names(diet) %in% fgs$Code))])
 
   names(diet) <- tolower(names(diet))
 
   diet$prey <- as.character(diet$prey)
-  diet$group <- as.character(diet$group)
+  diet$predator <- as.character(diet$predator)
 
   # Change species acronyms to actual names.
   species_names <- fgs[, c("Name", "Code")]
-  diet$species <- species_names$Name[match(diet$group, species_names$Code)]
+  diet$species <- species_names$Name[match(diet$predator, species_names$Code)]
   diet$prey <- species_names$Name[match(diet$prey, species_names$Code)]
-  diet <- diet[, -which(colnames(diet) == "group")]
+  #diet <- diet[, -which(colnames(diet) == "predator")]
 
-  diet$time <- diet$time / toutinc
+  # diet outputs are not all divisible by toutinc, leave in days
+  diet$time.days <- diet$time #/ toutinc
+
   #todo: fix cohort to agecl
+  diet <- diet %>%
+    dplyr::mutate(agecl = cohort + 1)
 
-  return(diet)
+  #does the Update column matter? this assumes it doesn't
+  #in SETAS_Example, it doesn't make extra comps
+
+  dietcomp <- data.frame(species = diet$species,
+                         agecl = diet$agecl,
+                         polygon = NA,
+                         layer = NA,
+                         time.days = diet$time.days,
+                         atoutput = diet$dietcomp ,
+                         prey = diet$prey)
+
+  return(dietcomp)
 }
