@@ -104,7 +104,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   colnames(recruits)[which(colnames(recruits) == "recruits")] <- "recruitsbio"
   # Get recruits in numbers rather than biomass
   recruits$recruits <- recruits$recruitsbio / recruits$sum
-  recruits$yr <- as.integer(round(recruits$Time)/365) #needed to merge with totnums
+  #recruits$yr <- as.integer(round(recruits$Time)/365) #needed to merge with totnums
 
   # June 2019:Isaac determined that yr 0 (Time 0) in the YOY file is not real, don't use it
   # code below assigns year 1 to times 0:stepperyr, all good output timesteps in truth$nums
@@ -149,7 +149,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
     dplyr::mutate(yr = ceiling(time.days/365))  # yr 1 is 0:stepsperyr to match recruits yr1
 
   totnums <- merge(totnums, recruits,
-                   by.x = c("yr", "species"), by.y = c("yr", "Name"),
+                   by.x = c("time.days", "species"), by.y = c("Time", "Name"),
                    all.x = TRUE) %>%
     dplyr::arrange(time)
 
@@ -163,7 +163,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
     pick <- which(totnums$group == group)
 
     recstart <- seq(recstart_temp$recstart[irow],by=365,length.out=nyrs)
-    recstart <- recstart[recstart<max(totnums$Time[pick])]
+    recstart <- recstart[recstart<max(totnums$time.days[pick])]
     recend <- recstart + recstart_temp$recruit_period[irow]
     #rec_times <- rbind(rec_times,cbind(group,recstart,recend))
 
