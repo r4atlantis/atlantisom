@@ -35,11 +35,12 @@ A wrapper function to reduce a set of \code{atlantisom} objects from atlantis
 output to a single species or subset of species for creating assessment input datasets.
 }
 \examples{
+\dontrun{
 # assuming CC3om is output of om_init(here("config/CC3config.r"))
 CC3om_sardine <- om_species(c("Pacific_sardine"), CC3om)
 
 CC3om_2spp <- om_species(c("Pacific_sardine", "Mesopel_M_Fish"), CC3om)
-
+}
 
 }
 \seealso{

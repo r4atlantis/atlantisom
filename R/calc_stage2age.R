@@ -15,35 +15,42 @@
 #'   by age class -- just named the same as the input to ensure make it work
 #'   with the other functions
 #'
+#' @importFrom magrittr %>%
 #' @export
 #'
 #' @examples
-#' #This is just to bring in an example data frame I can use to write the code,
-#' #much of the beginning code will be removed as I actually write the function,
-#' #but I wanted to push what I have so far!
-#' dir <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' file_nc="outputSETAS.nc"
-#' fgs=load_fgs(dir = dir, "functionalGroups.csv")
-#' file_init="INIT_VMPA_Jan2015.nc"
-#' bps=load_bps(dir = dir, "functionalGroups.csv", file_init)
-#' select_groups=fgs$Name[fgs$IsTurnedOn > 0]
+#' dir <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' file_nc="outputs.nc"
+#' fgs=load_fgs(dir = dir, "Functional_groups.csv")
+#' file_init="Initial_condition.nc"
+#' bps=load_bps(dir = dir, "Functional_groups.csv", file_init)
+#' select_groups="Demersal_S_Fish"
 #' select_variable="Nums"
-#' box.info=load_box(dir = dir, file_bgm="VMPA_setas.bgm")
+#' box.info=load_box(dir = dir, file_bgm="Geography.bgm")
 #' bboxes=get_boundary(box.info)
-#' #when calc_stage2age is run in the run_truth, it will need to have the nums
-#' #data frame and the bioprm already read in:
+#' #when calc_stage2age is run, it will need to have the nums
+#' #data frame, the YOY, the runprm and the bioprm already read in:
 #' nums_data <- load_nc(dir = dir,
-#'                      file_nc="outputSETAS.nc",
+#'                      file_nc="outputs.nc",
 #'                      bps=bps, fgs=fgs, select_groups=select_groups,
 #'                      select_variable = "Nums",
 #'                      check_acronyms = TRUE, bboxes = bboxes)
-#' biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
-#' YOY <- load_yoy(dir, file_yoy="outputSETASYOY.txt")
+#' biolprm <- load_biolprm(dir, file_biolprm="Biology.prm")
+#' YOY <- load_yoy(dir, file_yoy="outputsYOY.txt")
+#' runprm <- load_runprm(dir, file_runprm="Run_settings.xml")
+#' # aggregate across layers and polygons but not ages
+#' nums_agg <- aggregate(nums_data$atoutput,
+#'                        by=list(species = nums_data$species,
+#'                                time = nums_data$time,
+#'                                agecl = nums_data$agecl),
+#'                        sum)
+#' nums_agg <- data.frame(species = nums_agg$species,
+#'                        time = nums_agg$time, agecl = nums_agg$agecl,
+#'                        polygon = NA, layer = NA,
+#'                        atoutput = nums_agg$x)
+#' test <- calc_stage2age(nums_agg, biolprm, YOY, fgs, runprm)
+#' rm(test)
 
-## ACTUAL FUNCTION ##
-#calc_stage2age <- function(dir, nums_data, biolprm, YOY, fgs) {
-# dir not used in the function
-# need runprm to get correct toutinc to pass to calc_Z
 calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
 
   # subset the yoy for those species that are included in the fgs file

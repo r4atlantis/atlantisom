@@ -27,11 +27,12 @@
 #'@author Sarah Gaichas
 #'
 #'@examples
+#'\dontrun{
 #' # assuming CC3om is output of om_init(here("config/CC3config.r"))
 #'CC3om_sardine <- om_species(c("Pacific_sardine"), CC3om)
 #'
 #'CC3om_2spp <- om_species(c("Pacific_sardine", "Mesopel_M_Fish"), CC3om)
-#'
+#'}
 #'
 om_species <- function(species = spp, omlist, save = TRUE, removefullom = TRUE){
   # spp format c("speciesname1", "speciesname2")

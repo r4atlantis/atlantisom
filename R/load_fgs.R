@@ -13,8 +13,8 @@
 #' @return A \code{data.frame} of functional group information.
 #'
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' fgs <- load_fgs(d, "functionalGroups.csv")
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' fgs <- load_fgs(d, "Functional_groups.csv")
 #' rm(fgs)
 #'
 load_fgs <- function(dir = getwd(), file_fgs) {

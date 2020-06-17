@@ -30,17 +30,19 @@
 #' @return Returns a list object.
 #' @export
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' groups <- load_fgs(dir = d, "functionalGroups.csv")
-#' run_truth(scenario = "outputSETAS",
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' groups <- load_fgs(dir = d, "Functional_groups.csv")
+#' truth <- run_truth(scenario = "outputs",
 #'   dir = d,
-#'   file_fgs = "functionalGroups.csv",
-#'   file_bgm = "VMPA_setas.bgm",
+#'   file_fgs = "Functional_groups.csv",
+#'   file_bgm = "Geography.bgm",
 #'   select_groups = groups[groups$IsTurnedOn > 0, "Name"],
-#'   file_init = "INIT_VMPA_Jan2015.nc",
-#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm",
-#'   file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml",
-#'   file_fish = "SETasFisheries.csv")
+#'   file_init = "Initial_condition.nc",
+#'   file_biolprm = "Biology.prm",
+#'   file_runprm = "Run_settings.xml",
+#'   file_fish = "Fisheries.csv")
+#' str(truth)
+#' rm(truth)
 #'
 run_truth <- function(scenario, dir = getwd(),
   file_fgs, file_bgm, select_groups, file_init, file_biolprm, file_runprm,

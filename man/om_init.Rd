@@ -29,6 +29,7 @@ A wrapper function to initialize an \code{atlantisom} objects from atlantis
 output prior to creating assessment input datasets. This makes a large object!
 }
 \examples{
+\dontrun{
 library(here)
 CC3om <- om_init(here("config/CC3config.r"))
 
@@ -44,6 +45,7 @@ CC3om <- om_init(here("config/CC3config.r"))
 # scenario.name <- "CCV3"
 # bioind.file <- "outputCCV3BiomIndx.txt"
 # catch.file <- "outputCCV3Catch.txt"
+}
 
 }
 \seealso{

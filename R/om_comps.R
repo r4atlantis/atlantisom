@@ -24,6 +24,7 @@
 #'@author Sarah Gaichas
 #'
 #'@examples
+#'\dontrun{
 #' # assuming CC3om is output of om_init(here("config/CC3config.r"))
 #' # and CC3om_sardine <- om_species(c("Pacific_sardine"), CC3om)
 #'
@@ -33,7 +34,7 @@
 #'     n_reps = 1,
 #'     save = TRUE)
 #'
-#'
+#'}
 om_comps <- function(usersurvey = usersurvey_file,
                      userfishery = userfishery_file,
                      omlist_ss,

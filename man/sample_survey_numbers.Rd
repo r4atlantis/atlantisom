@@ -41,25 +41,24 @@ This function simply sums numbers-at-age over polygons,
   but the cv will need to be thought about.
 }
 \examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-groups <- load_fgs(dir = d, "functionalGroups.csv")
-run_truth(scenario = "SETAS",
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+species <- c("Pisciv_T_Fish","Pisciv_S_Fish")
+truth <- run_truth(scenario = "outputs",
   dir = d,
-  file_fgs = "functionalGroups.csv",
-  file_bgm = "VMPA_setas.bgm",
-  select_groups = groups[groups$IsTurnedOn > 0, "Name"],
-  file_init = "INIT_VMPA_Jan2015.nc",
-  file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm",
-  file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml")
+  file_fgs = "Functional_groups.csv",
+  file_bgm = "Geography.bgm",
+  select_groups = species,
+  file_init = "Initial_condition.nc",
+  file_biolprm = "Biology.prm",
+  file_runprm = "Run_settings.xml")
 
-species=c("Pisciv_T_Fish","Pisciv_S_Fish")
  boxes <- 1:3
 effic <- data.frame(species=c("Pisciv_T_Fish","Pisciv_S_Fish"), efficiency=c(0.3,0.1))
 selex <- data.frame(species=c(rep("Pisciv_T_Fish",10),rep("Pisciv_S_Fish",10)),
                agecl=c(1:10,1:10),
-                selex=c(0,0,0.1,0.5,0.8,1,1,1,1,1,0,0,0.1,0.3,0.5,0.7,0.9,1,1,#'1))
+                selex=c(0,0,0.1,0.5,0.8,1,1,1,1,1,0,0,0.1,0.3,0.5,0.7,0.9,1,1,1))
 
-tmp <- create_survey(dat=results$nums, time=seq(70,82,3), species=species, boxes=boxes, effic=effic, selex=sel#'ex)
+tmp <- create_survey(dat=truth$nums, time=seq(10,55,3), species=species, boxes=boxes, effic=effic, selex=selex)
 
 
 cv <- data.frame(species=species, cv=c(0.2,0.3))

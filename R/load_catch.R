@@ -14,9 +14,9 @@
 #' @export
 #'
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' file <- "outputSETASCatch.txt"
-#' fgs <- load_fgs(dir = d, "functionalGroups.csv")
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' file <- "outputsCatch.txt"
+#' fgs <- load_fgs(dir = d, "Functional_groups.csv")
 #' test <- load_catch(dir = d, fgs = fgs, file_catch = file)
 load_catch <- function(dir, file_catch, fgs, verbose = FALSE) {
   file.catch <- file.path(dir, file_catch)

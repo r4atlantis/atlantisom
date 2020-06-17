@@ -28,29 +28,29 @@
 #' @author Alexander Keth
 #'
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' fgs <- load_fgs(d, "functionalGroups.csv")
-#' bps <- load_bps(dir = d, fgs = "functionalGroups.csv",
-#'   file_init = paste0(tail(strsplit(d, "/")[[1]], 1), ".nc"))
-#' runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
-#' dietcomp <- load_diet_comp(dir = d, file_diet = "outputSETASDietCheck.txt",
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' fgs <- load_fgs(d, "Functional_groups.csv")
+#' bps <- load_bps(dir = d, fgs = "Functional_groups.csv",
+#'   file_init = "Initial_condition.nc")
+#' runprm <- load_runprm(d, "Run_settings.xml")
+#' dietcomp <- load_diet_comp(dir = d, file_diet = "outputsDietCheck.txt",
 #'   fgs = fgs, toutinc = runprm$toutinc)
-#' boxes <- get_boundary(load_box(dir = d, file_bgm = "VMPA_setas.bgm"))
-#' groups <- load_fgs(dir = d, "functionalGroups.csv")
+#' boxes <- get_boundary(load_box(dir = d, file_bgm = "Geography.bgm"))
+#' groups <- load_fgs(dir = d, "Functional_groups.csv")
 #' groups <- groups[groups$IsTurnedOn > 0, "Name"]
-#' eat <- load_nc(dir = d, file_nc = "outputSETASPROD.nc",
+#' eat <- load_nc(dir = d, file_nc = "outputsPROD.nc",
 #'   bps = bps, fgs = fgs, select_groups = groups,
 #'   select_variable = "Eat", check_acronyms = TRUE,
 #'   bboxes = boxes)
-#' grazing <- load_nc(dir = d, file_nc = "outputSETASPROD.nc",
+#' grazing <- load_nc(dir = d, file_nc = "outputsPROD.nc",
 #'   bps = bps, fgs = fgs, select_groups = groups,
 #'   select_variable = "Grazing", check_acronyms = TRUE,
 #'   bboxes = boxes)
-#' vol <- load_nc_physics(dir = d, file_nc = "outputSETAS.nc",
+#' vol <- load_nc_physics(dir = d, file_nc = "outputs.nc",
 #'   physic_variables = "volume", aggregate_layers = FALSE,
 #'   bboxes = boxes)
 #' biolprm <- load_biolprm(dir = d,
-#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+#'   file_biolprm = "Biology.prm")
 #' calcs <- calc_pred_diet(dietcomp = dietcomp, eat = eat, grazing = grazing,
 #'   vol = vol, biolprm = biolprm)
 #' rm(calcs)

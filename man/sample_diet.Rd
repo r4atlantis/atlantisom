@@ -39,25 +39,27 @@ The function takes total consumption data from an Atlantis scenario
   could be applied to obtain realistic diet composition data.
 }
 \examples{
-		setwd(file.path(system.file( package = "atlantisom"),".."))
-
-	d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-	groups <- load_fgs(dir = directory, "functionalGroups.csv")
+\dontrun{
+	d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+	groups <- load_fgs(dir = directory, "Functional_groups.csv")
 	groups <- groups[groups$IsTurnedOn > 0, "Name"]
-	results <- run_truth(scenario = "SETAS",
+	results <- run_truth(scenario = "outputs",
 	dir = d,
-	file_fgs = "functionalGroups.csv",
-	file_bgm = "VMPA_setas.bgm",
+	file_fgs = "Functional_groups.csv",
+	file_bgm = "Geography.bgm",
 	select_groups = groups,
-	file_init = "INIT_VMPA_Jan2015.nc",
-	file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+	file_init = "Initial_condition.nc",
+	file_biolprm = "Biology.prm",
+	file_runprm = "Run_settings.xml",
+   file_fish = "Fisheries.csv")
+
 	# rows should each sum to one:
 	rowSums(dat[,2:NCOL(dat)])
 	dim(dat)
 
 	obsDietComp <- sample_diet(dat)
 	dim(obsDietComp)
-
+}
 }
 \author{
 Robert Wildermuth

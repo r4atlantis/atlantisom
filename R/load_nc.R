@@ -27,10 +27,10 @@
 #' @author Alexander Keth
 #'
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' fgs <- load_fgs(d, "functionalGroups.csv")
-#' bps <- load_bps(dir = d, "functionalGroups.csv", file_init = "INIT_VMPA_Jan2015.nc")
-#' test <- load_nc(dir = d, file_nc = "outputSETASCATCH.nc",
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' fgs <- load_fgs(d, "Functional_groups.csv")
+#' bps <- load_bps(dir = d, "Functional_groups.csv", file_init = "outputs.nc")
+#' test <- load_nc(dir = d, file_nc = "outputsCATCH.nc",
 #'   fgs = fgs, bps = bps,
 #'   select_variable = "Catch",
 #'   select_groups = "Pisciv_T_Fish",

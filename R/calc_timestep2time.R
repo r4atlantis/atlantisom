@@ -21,14 +21,13 @@
 #'   is returned.
 #'
 #' @examples
-#' \dontrun{
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' runprm <-
-#' load(file = file.path(d, "outputSETASrun_truth.RData"))
+#'
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' load(file = file.path(d, "outputsrun_truth.RData"))
 #' test <- calc_timestep2time(dir = d, data = result$biomass_ages,
-#'   file_runprm = "VMPA_setas_run_fishing_F_Trunk.xml")
+#'   file_runprm = "Run_settings.xml")
 #' rm(test)
-#' }
+#'
 calc_timestep2time <- function(dir = getwd(), data, file_runprm){
   if (!is.null(dir)) file_runprm <- file.path(dir, file_runprm)
 

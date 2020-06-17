@@ -39,6 +39,7 @@ Generate index data from atlantisom
 Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
 }
 \examples{
+\dontrun{
 # assuming CC3om is output of om_init(here("config/CC3config.r"))
 # and CC3om_sardine <- om_species(c("Pacific_sardine"), CC3om)
 
@@ -47,7 +48,7 @@ CC3om_sard_ind <- om_index(usersurvey = here("config/usersurvey.R"),
     omlist_ss = CC3om_sardine,
     n_reps = 5,
     save = TRUE)
-
+}
 
 }
 \seealso{

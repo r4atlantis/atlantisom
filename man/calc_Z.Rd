@@ -47,25 +47,25 @@ Steps included when translating from stages (i.e.,
 This function uses the YOY.txt and Nums to calculate Z.
 }
 \examples{
-dir <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-file_nc <- "outputSETAS.nc"
-fgs <- load_fgs(dir = dir, "functionalGroups.csv")
-file_init <- "INIT_VMPA_Jan2015.nc"
-bps <- load_bps(dir = dir, "functionalGroups.csv", file_init = "INIT_VMPA_Jan2015.nc")
+dir <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+file_nc <- "outputs.nc"
+fgs <- load_fgs(dir = dir, "Functional_groups.csv")
+file_init <- "Initial_condition.nc"
+bps <- load_bps(dir = dir, "Functional_groups.csv", file_init = "Initial_condition.nc")
 select_groups <- fgs$Name[fgs$IsTurnedOn > 0]
 select_variable <- "Nums"
-box.info <- load_box(dir = dir, file_bgm="VMPA_setas.bgm")
+box.info <- load_box(dir = dir, file_bgm="Geography.bgm")
 bboxes <- get_boundary(box.info)
 #when calc_stage2age is run in the run_truth, it will need to have the nums
 #data frame and the bioprm already read in:
 nums_data <- load_nc(dir = dir,
-                     file_nc="outputSETAS.nc",
+                     file_nc="outputs.nc",
                      bps=bps, fgs=fgs, select_groups=select_groups,
                      select_variable = "Nums",
                      check_acronyms = TRUE, bboxes = bboxes)
-biolprm <- load_biolprm(dir, file_biolprm="VMPA_setas_biol_fishing_Trunk.prm")
-run <- load_runprm(dir, "VMPA_setas_run_fishing_F_Trunk.xml")
-yoy <- load_yoy(dir = dir, file_yoy = "outputSETASYOY.txt")
+biolprm <- load_biolprm(dir, file_biolprm="Biology.prm")
+run <- load_runprm(dir, "Run_settings.xml")
+yoy <- load_yoy(dir = dir, file_yoy = "outputsYOY.txt")
 calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm,
   toutinc = run$toutinc)
 

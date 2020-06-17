@@ -21,6 +21,7 @@
 #'@author Sarah Gaichas
 #'
 #'@examples
+#'\dontrun{
 #'library(here)
 #'CC3om <- om_init(here("config/CC3config.r"))
 #'
@@ -36,7 +37,7 @@
 #' # scenario.name <- "CCV3"
 #' # bioind.file <- "outputCCV3BiomIndx.txt"
 #' # catch.file <- "outputCCV3Catch.txt"
-
+#' }
 #'
 om_init <- function(config = configfile){
 

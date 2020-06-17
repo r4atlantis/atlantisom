@@ -25,8 +25,8 @@ Read in the \code{.bgm} file that specifies the the box coordinates
 for an Atlantis scenario.
 }
 \examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-boxes <- load_box(dir = d, file_bgm = "VMPA_setas.bgm")
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+boxes <- load_box(dir = d, file_bgm = "Geography.bgm")
 rm("boxes")
 
 }

@@ -31,9 +31,9 @@ This function loads the Atlantis catch.txt output file.
   fished in the \code{functionalGroups.csv} file.
 }
 \examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-file <- "outputSETASCatch.txt"
-fgs <- load_fgs(dir = d, "functionalGroups.csv")
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+file <- "outputsCatch.txt"
+fgs <- load_fgs(dir = d, "Functional_groups.csv")
 test <- load_catch(dir = d, fgs = fgs, file_catch = file)
 }
 \seealso{

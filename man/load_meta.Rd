@@ -27,8 +27,8 @@ Open the necessary files to document the atlantis model used
 for generating data from the scenario
 }
 \examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-temp <- load_meta(d, "SETAS", verbose = FALSE)
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+temp <- load_meta(d, "outputs", verbose = FALSE)
 rm(temp)
 
 }

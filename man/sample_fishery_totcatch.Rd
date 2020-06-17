@@ -37,6 +37,16 @@ This function simply creates an observed total catch time series from
   total catch input using by applying a user-specified cv.
   The result is a coastwide catch (tons) estimate in tons from the fishery.
 }
+\examples{
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+groups <- c("Pisciv_T_Fish","Pisciv_S_Fish")
+file <- "outputsCatch.txt"
+fgs <- load_fgs(dir = d, "Functional_groups.csv")
+truetotcatch <- load_catch(dir = d, fgs = fgs, file_catch = file)
+groupcatch <- truetotcatch[truetotcatch$species \%in\% groups, ]
+cv <- data.frame(species=groups, cv=c(0.2,0.3))
+fishObsCatch <- sample_fishery_totcatch(dat=groupcatch,cv=cv)
+}
 \author{
 Poseidon
 }

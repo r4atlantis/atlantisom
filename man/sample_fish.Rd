@@ -53,28 +53,26 @@ The function takes numbers-at-age data from an Atlantis scenario
   strata which are conglomerations of subsets of boxes.
 }
 \examples{
-		setwd(file.path(system.file( package = "atlantisom"),".."))
-
-	directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-	scenario <- "SETAS"
-	groups <- load_fgs(dir = directory, "functionalGroups.csv")
-	groups <- groups[groups$IsTurnedOn > 0, "Name"]
+	directory <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+	scenario <- "outputs"
+	species <- c("Pisciv_T_Fish","Pisciv_S_Fish")
 	results <- run_truth(scenario = scenario,
 	dir = directory,
-	file_fgs = "functionalGroups.csv",
-	file_bgm = "VMPA_setas.bgm",
-	select_groups = groups,
-	file_init = "INIT_VMPA_Jan2015.nc",
-	file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
+	file_fgs = "Functional_groups.csv",
+	file_bgm = "Geography.bgm",
+	select_groups = species,
+	file_init = "Initial_condition.nc",
+	file_biolprm = "Biology.prm",
+	file_runprm = "Run_settings.xml",
+   file_fish = "Fisheries.csv")
 
-	species=c("Pisciv_T_Fish","Pisciv_V_Fish")
     boxes <- 1:3
-	effic <- data.frame(species=c("Pisciv_T_Fish","Pisciv_V_Fish"), efficiency=c(0.3,0.1))
-	selex <- data.frame(species=c(rep("Pisciv_T_Fish",10),rep("Pisciv_V_Fish",10)),
+	effic <- data.frame(species=c("Pisciv_T_Fish","Pisciv_S_Fish"), efficiency=c(0.3,0.1))
+	selex <- data.frame(species=c(rep("Pisciv_T_Fish",10),rep("Pisciv_S_Fish",10)),
 	                agecl=c(1:10,1:10),
 	                selex=c(0,0,0.1,0.5,0.8,1,1,1,1,1,0,0,0.1,0.3,0.5,0.7,0.9,1,1,1))
 
-	tmp <- create_survey(dat=results$nums, time=seq(70,82,3), species=species, boxes=boxes, effic=effic, selex=selex)
+	tmp <- create_survey(dat=results$nums, time=seq(10,55,3), species=species, boxes=boxes, effic=effic, selex=selex)
 	effN <- data.frame(species=species, effN=c(200, 500))
 	samp <- sample_fish(tmp, effN=effN)
 

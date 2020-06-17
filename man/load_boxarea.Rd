@@ -25,8 +25,8 @@ dataframe with the columns polygon and area.
 This function extracts the box area for each polygon from the atlantis bgm-file.
 }
 \examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-boxarea <- load_boxarea(dir = d, file_bgm = "VMPA_setas.bgm")
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+boxarea <- load_boxarea(dir = d, file_bgm = "Geography.bgm")
 rm("boxarea")
 
 }

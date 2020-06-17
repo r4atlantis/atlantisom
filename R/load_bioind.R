@@ -17,9 +17,9 @@
 #' @export
 #'
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' file <- "outputSETASBiomIndx.txt"
-#' fgs <- load_fgs(dir = d, "functionalGroups.csv")
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' file <- "outputsBiomIndx.txt"
+#' fgs <- load_fgs(dir = d, "Functional_groups.csv")
 #' test <- load_bioind(dir = d, file_bioind = file, fgs = fgs)
 load_bioind <- function(dir, file_bioind, fgs, verbose = FALSE) {
   file.bioind <- file.path(dir, file_bioind)

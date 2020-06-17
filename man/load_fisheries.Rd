@@ -25,8 +25,8 @@ Read in the fisheries group file, which is typically saved as
 \code{fisheries.csv}.
 }
 \examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-fleets <- load_fisheries(d, "SETasFisheries.csv")
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+fleets <- load_fisheries(d, "Fisheries.csv")
 rm(fleets)
 
 }

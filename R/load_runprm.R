@@ -9,8 +9,8 @@
 #' @author Emma E Hodgson, Kelli Faye Johnson
 #' @export
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' runprm <- load_runprm(d, "Run_settings.xml")
 #' rm(runprm)
 #'
 load_runprm <- function(dir = getwd(), file_runprm) {

@@ -13,8 +13,8 @@
 #' @return A \code{data.frame} of functional group information.
 #'
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' fleets <- load_fisheries(d, "SETasFisheries.csv")
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' fleets <- load_fisheries(d, "Fisheries.csv")
 #' rm(fleets)
 #'
 load_fisheries <- function(dir = getwd(), file_fish){

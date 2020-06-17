@@ -25,8 +25,8 @@ Read in the functional group file, which is typically saved as
 \code{functionalGroups.csv}.
 }
 \examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-fgs <- load_fgs(d, "functionalGroups.csv")
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+fgs <- load_fgs(d, "Functional_groups.csv")
 rm(fgs)
 
 }

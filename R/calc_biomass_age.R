@@ -18,23 +18,23 @@
 #'
 #' @examples
 #' # Set up the example with input files
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' fgs <- load_fgs(d, "functionalGroups.csv")
-#' bps <- load_bps(dir = d, fgs = "functionalGroups.csv",
-#'   file_init = paste0(tail(strsplit(d, "/")[[1]], 1), ".nc"))
-#' runprm <- load_runprm(d, "VMPA_setas_run_fishing_F_Trunk.xml")
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' fgs <- load_fgs(d, "Functional_groups.csv")
+#' bps <- load_bps(dir = d, fgs = "Functional_groups.csv",
+#'   file_init = "Initial_condition.nc")
+#' runprm <- load_runprm(d, "Run_settings.xml")
 #' biolprm <- load_biolprm(dir = d,
-#'   file_biolprm = "VMPA_setas_biol_fishing_Trunk.prm")
-#' boxes <- get_boundary(load_box(dir = d, file_bgm = "VMPA_setas.bgm"))
+#'   file_biolprm = "Biology.prm")
+#' boxes <- get_boundary(load_box(dir = d, file_bgm = "Geography.bgm"))
 #'
 #' # Get the catch values
-#' catch <- load_nc(dir = d, file_nc = "outputSETASCATCH.nc",
+#' catch <- load_nc(dir = d, file_nc = "outputsCATCH.nc",
 #'   bps = bps, fgs = fgs, select_groups = fgs[fgs$IsTurnedOn > 0, "Name"],
 #'   select_variable = "Catch", check_acronyms = TRUE, bboxes = boxes)
-#' structn <- load_nc(dir = d, file_nc = "outputSETAS.nc",
+#' structn <- load_nc(dir = d, file_nc = "outputs.nc",
 #'   bps = bps, fgs = fgs, select_groups = fgs[fgs$IsTurnedOn > 0, "Name"],
 #'   select_variable = "StructN", check_acronyms = TRUE, bboxes = boxes)
-#' resn <- load_nc(dir = d, file_nc = "outputSETAS.nc",
+#' resn <- load_nc(dir = d, file_nc = "outputs.nc",
 #'   bps = bps, fgs = fgs, select_groups = fgs[fgs$IsTurnedOn > 0, "Name"],
 #'   select_variable = "ResN", check_acronyms = TRUE, bboxes = boxes)
 #'

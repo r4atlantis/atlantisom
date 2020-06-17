@@ -61,13 +61,19 @@ generate size comps
 }
 \examples{
 \dontrun{
-directory <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-load(file.path(directory, "outputSETASrun_truth.RData"))
-
+directory <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+load(file.path(directory, "outputsrun_truth.RData"))
+# WARNING: EXTREMELY LONG RUN TIME for all species at full model resolution!
+# even one species has a long run time; this works but takes minutes to return
+result$structn <- result$structn[result$structn$species == "Demersal_S_Fish",]
+result$resn <- result$resn[result$resn$species == "Demersal_S_Fish",]
+result$nums <- result$nums[result$nums$species == "Demersal_S_Fish",]
 lenout <- calc_age2length(
   structn=result$structn, resn=result$resn, nums=result$nums,
   biolprm = result$biolprm, fgs = result$fgs,
   CVlenage = 0.1, remove.zeroes=TRUE)
+str(lenout)
+rm(lenout)
 }
 }
 \author{

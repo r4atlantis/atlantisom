@@ -13,8 +13,8 @@
 #' @export
 #'
 #' @examples
-#' d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-#' temp <- load_meta(d, "SETAS", verbose = FALSE)
+#' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+#' temp <- load_meta(d, "outputs", verbose = FALSE)
 #' rm(temp)
 #'
 load_meta <- function(dir = getwd(), scenario, verbose = FALSE) {

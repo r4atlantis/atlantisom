@@ -26,8 +26,8 @@ This function loads the Atlantis young of the year file.
   on in the \code{functionalGroups.csv} file.
 }
 \examples{
-d <- system.file("extdata", "INIT_VMPA_Jan2015", package = "atlantisom")
-file <- "outputSETASYOY.txt"
+d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
+file <- "outputsYOY.txt"
 test <- load_yoy(dir = d, file_yoy = file)
 }
 \seealso{

@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<AttributeGroup AttributeGroupName="AtlantisRunParameters">
+  <AttributeSubGroup AttributeGroupName="SubModelSetup" AttributeDescription="Determine which sub-models are active">
+    <Attribute AttributeName="flagecon_on" AttributeDescription="Flag showing whether want economics loaded and submodel run (1) or not (0)" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="1"/>
+    <Attribute AttributeName="flag_fisheries_on" AttributeDescription="Flag showing whether want fisheries loaded and submodel run (1) or not (0)" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="1"/>
+    <Attribute AttributeName="flag_skip_biol" AttributeDescription="Flag showing whether want biological model run (1) or not (0 - only used when debugging fisheries)" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flag_skip_phys" AttributeDescription="Flag showing whether want physics loaded and submodel run (1) or not (0). Should only be used for debugging." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="1"/>
+    <Attribute AttributeName="check_dups" AttributeDescription="Turn on to check for duplicates in prm files. Turning on will significantly slow down prm file read in - only use from time to time." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="1"/>
+  </AttributeSubGroup>
+  <AttributeSubGroup AttributeGroupName="ScenarioOptions" AttributeDescription="The diagnostic output settings">
+    <Attribute AttributeName="title" AttributeDescription="ScenarioName" AttributeValue="SE" AttributeType="String" AttributeRecommendedValue=""/>
+    <Attribute AttributeName="dt" AttributeDescription="Model Time Step in hours" AttributeUnits="Hours" AttributeValue="12 hour" AttributeType="Integer" AttributeRecommendedValue="12"/>
+    <Attribute AttributeName="tstop" AttributeDescription="Stop model after the given number of days" AttributeValue="1825 day" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flagIsEstuary" AttributeDescription="Flag indicating model is an estuary." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flagAllowLand" AttributeDescription="Flag indicating model can include land." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flagpassivetracer" AttributeDescription="Flag indicating want a passive tracer to track to check transports" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="fishmove" AttributeDescription="Set to 0 to turn vertebrate movement off for debugging purposes" AttributeValue="1" AttributeType="Boolean" AttributeRecommendedValue="1"/>
+    <Attribute AttributeName="flaghemisphere" AttributeDescription="Flag for hemisphere model is in (0 = southern; 1 = northern)." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="trackAtomicRatio" AttributeDescription="Flag to turn on tracking atomic ratios." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="external_populations" AttributeDescription="Flag indicating use of external population model" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flag_multiyr_migs" AttributeDescription="Flag to turn on multiyear migrations." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="track_rugosity_arag" AttributeDescription="Flag to turn on tracking of rugosity and aragonite saturaiton." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="track_pH" AttributeDescription="Flag to turn on tracking of pH." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="mirror_invalid" AttributeDescription="Flag to indicate how to deal with invalid hydrodynamic exchanges." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flag_replicated_old" AttributeDescription="Flag to replicate old model results before the trunk code was merged." AttributeValue="1" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flag_old_embryo_init" AttributeDescription="Flag to use the old means of having embryoes carried over from spawning pre-model start." AttributeValue="1" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flag_replicate_old_calendar" AttributeDescription="Flag to replicate old calendar for aging and spawning - when done once per year rather than having 1 queue for the entire model run." AttributeValue="1" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flag_sanity_check" AttributeDescription="Flag to trigger sanity checks." AttributeValue="1" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+  </AttributeSubGroup>
+  <AttributeSubGroup AttributeGroupName="ContaminantSettings" AttributeDescription="Contaminant Settings">
+    <Attribute AttributeName="track_contaminants" AttributeDescription="Flag to turn on tracking of contaminants.." AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+  </AttributeSubGroup>
+  <AttributeSubGroup AttributeGroupName="OutputOptions" AttributeDescription="Model Output Settings">
+    <Attribute AttributeName="toutstart" AttributeDescription="Output start day" AttributeValue="0 day" AttributeType="Float" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="toutinc" AttributeDescription="Write output with this periodicity" AttributeValue="30 day" AttributeType="Float" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="toutfinc" AttributeDescription="Write fisheries output with this periodicity" AttributeValue="30 day" AttributeType="Float" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="tburnday" AttributeDescription="Day of run where burn-in conditions relaxed" AttributeValue="0 day" AttributeType="Float" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="tsumout" AttributeDescription="Write stock state summary with this periodicity" AttributeValue="30 day" AttributeType="Float" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="fishout" AttributeDescription="Switch to turn fisheries output on = 1, off = 0" AttributeValue="1" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flag_age_output" AttributeDescription="Age structured outputt on = 1, off = 0" AttributeValue="1" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flagreusefile" AttributeDescription="Switch to show want to append output file no = 0, yes = 1, replace = 2" AttributeValue="2" AttributeType="Lookup" AttributeRecommendedValue="0">
+      <Lookup>
+        <LookupValue LookupValue="0" LookupDescription="No"/>
+        <LookupValue LookupValue="1" LookupDescription="Yes"/>
+        <LookupValue LookupValue="2" LookupDescription="Replace"/>
+      </Lookup>
+    </Attribute>
+    <Attribute AttributeName="flagannual_Mest" AttributeDescription="Write out mortality per predator annually (1) or not (0)" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+  </AttributeSubGroup>
+  <AttributeSubGroup AttributeGroupName="DiagnosticOutput" AttributeDescription="The diagnostic output settings">
+    <Attribute AttributeName="verbose" AttributeDescription="Detailed logged output" AttributeValue="0" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="checkbox" AttributeDescription="Give detailed logged output for this box" AttributeValue="0" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="checkstart" AttributeDescription="Start detailed logged output from this day in the model run" AttributeValue="366666660 day" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="checkstop" AttributeDescription="Stop detailed logged output after this day in the model run" AttributeValue="366666660 day" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="fishtest" AttributeDescription="Count up total population for each vertebrate after each main subroutine: 0=no, 1=yes" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flaggape" AttributeDescription="Periodically list prey vs gape statistics (tuning diagnostic)" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flagchecksize" AttributeDescription="Periodically list relative size (tuning diagnostic)" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flagagecheck" AttributeDescription="Periodically list age structure per cohort (tuning diagnostic)" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="flagdietcheck" AttributeDescription="Whether want detailed diet output" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="checkNH" AttributeDescription="Give detailed logged output for NH in checkbox" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="checkDL" AttributeDescription="Give detailed logged output for DL in checkbox" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="checkDR" AttributeDescription="Give detailed logged output for DR in checkbox" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="checkbiom" AttributeDescription="Give detailed logged output for biomasses in checkbox" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="which_fleet" AttributeDescription="ID number of fleet to track (if don't want to track anything set to a value greater than the number of fleets)" AttributeValue="33" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="which_check" AttributeDescription="ID number of group to track (if don't want to track anything set to a value greater than the number of groups)" AttributeValue="80" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="habitat_check" AttributeDescription="Which habitat to check the above group in." AttributeValue="0" AttributeType="Lookup" AttributeRecommendedValue="0">
+      <Lookup>
+        <LookupValue LookupValue="0" LookupDescription="Water Column"/>
+        <LookupValue LookupValue="1" LookupDescription="Sediment"/>
+        <LookupValue LookupValue="2" LookupDescription="Epibenthic Layer"/>
+      </Lookup>
+    </Attribute>
+    <Attribute AttributeName="move_check" AttributeDescription="ID number of group where tracking movement (if don't want to track anything set to a value greater than the number of groups)" AttributeValue="67" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="debug" AttributeDescription="Debugging option" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0">
+      <Lookup>
+        <LookupValue LookupValue="0" LookupDescription="No Debugging"/>
+        <LookupValue LookupValue="1" LookupDescription="Debug Fishing"/>
+        <LookupValue LookupValue="2" LookupDescription="Debug Discards"/>
+        <LookupValue LookupValue="3" LookupDescription="Debug Historical Fishing"/>
+        <LookupValue LookupValue="4" LookupDescription="Debug Assessments"/>
+        <LookupValue LookupValue="5" LookupDescription="Debug MPAs"/>
+        <LookupValue LookupValue="6" LookupDescription="Debug Effort"/>
+        <LookupValue LookupValue="7" LookupDescription="Debug Economic Effort"/>
+        <LookupValue LookupValue="8" LookupDescription="Debug Economics"/>
+        <LookupValue LookupValue="9" LookupDescription="Debug Quota Calculations"/>
+        <LookupValue LookupValue="10" LookupDescription="Debug Aging"/>
+        <LookupValue LookupValue="11" LookupDescription="Debug Recruitment"/>
+        <LookupValue LookupValue="12" LookupDescription="Debug Spawning"/>
+        <LookupValue LookupValue="13" LookupDescription="Debug Migration"/>
+        <LookupValue LookupValue="14" LookupDescription="Debug Movement"/>
+        <LookupValue LookupValue="15" LookupDescription="Debug Stocks"/>
+        <LookupValue LookupValue="16" LookupDescription="Debug Biomass Calculations"/>
+        <LookupValue LookupValue="17" LookupDescription="Debug Feeding"/>
+        <LookupValue LookupValue="18" LookupDescription="Debug everything"/>
+        <LookupValue LookupValue="19" LookupDescription="Not Used"/>
+        <LookupValue LookupValue="20" LookupDescription="Debug Biological Process Functions - Huge log files created."/>
+        <LookupValue LookupValue="21" LookupDescription="Debug Group Process Functions - Huge log files created."/>
+        <LookupValue LookupValue="22" LookupDescription="Debug CLAM-Atlantis Linkage"/>
+        <LookupValue LookupValue="23" LookupDescription="Debug Deposition"/>
+        <LookupValue LookupValue="24" LookupDescription="Debug Mortality Scalar Code"/>
+      </Lookup>
+    </Attribute>
+    <Attribute AttributeName="debug_it" AttributeValue="0" AttributeType="Boolean" AttributeRecommendedValue="0"/>
+  </AttributeSubGroup>
+  <AttributeSubGroup AttributeGroupName="GroupOptions" AttributeDescription="Parameters defining the numbers of certain types of groups.">
+    <Attribute AttributeName="K_num_tot_sp" AttributeDescription="Total number of groups in the model" AttributeValue="35" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="K_num_stocks_per_sp" AttributeDescription="Maximum number of stocks per group in the model" AttributeValue="4" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="K_num_detritus" AttributeDescription="Total number of detritus groups in the model (labile and refractory; water column and sediments)" AttributeValue="3" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="K_num_bed_types" AttributeDescription="Maximum number of seabed types (currently only reef, soft and flat)" AttributeValue="3" AttributeType="Integer" AttributeRecommendedValue="0"/>
+    <Attribute AttributeName="K_num_cover_types" AttributeDescription="Maximum number of habitat types" AttributeValue="9" AttributeType="Integer" AttributeRecommendedValue="0"/>
+  </AttributeSubGroup>
+  <AttributeSubGroup AttributeGroupName="FishingOptions" AttributeDescription="Parameters the number of fleets.">
+    <Attribute AttributeName="K_num_catchqueue" AttributeDescription="Length of the catch queue in days for use in running average of recent catch (typically a week or month)" AttributeValue="7" AttributeType="Integer" AttributeRecommendedValue="1"/>
+    <Attribute AttributeName="K_num_fisheries" AttributeDescription="Maximum number of fisheries" AttributeValue="33" AttributeType="Integer" AttributeRecommendedValue="33"/>
+    <Attribute AttributeName="K_num_ports" AttributeDescription="Number of ports in the model area" AttributeValue="17" AttributeType="Integer" AttributeRecommendedValue="5"/>
+    <Attribute AttributeName="K_num_reg" AttributeDescription="Maximum number of management zonings used in the model" AttributeValue="2" AttributeType="Integer" AttributeRecommendedValue="5"/>
+    <Attribute AttributeName="K_num_markets" AttributeDescription="Maxiumum number of markets in the model area" AttributeValue="2" AttributeType="Integer" AttributeRecommendedValue="5"/>
+  </AttributeSubGroup>
+  <AttributeSubGroup AttributeGroupName="ScaleGroupDensities" AttributeDescription="Scale the vertebrate groups in the model. Only values for the vertebrate groups are used- other groups should just be 1.0">
+    <Attribute AttributeName="flagscaleinit" AttributeDescription="Flag to indicate whether scaling initial vertebrate densities (1=yes, 0=no)" AttributeValue="1" AttributeType="Boolean" AttributeRecommendedValue="1"/>
+    <Attribute AttributeName="init_scalar" AttributeDescription="Scale the vertebrate groups in the model. Only values for the vertebrate groups are used- other groups should just be 1.0" AttributeValue="100 0.15 2 0.75 0.1 2 2 2 2 1 20 20 1 1 1 1 1 1 10 10 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1" AttributeType="FloatArray" ArrayLength="35"/>
+  </AttributeSubGroup>
+</AttributeGroup>
