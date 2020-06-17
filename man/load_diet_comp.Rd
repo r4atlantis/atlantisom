@@ -4,7 +4,7 @@
 \alias{load_diet_comp}
 \title{Load Atlantis diet composition data from \code{diet_check.txt}}
 \usage{
-load_diet_comp(dir = getwd(), file_diet, fgs, toutinc)
+load_diet_comp(dir = getwd(), file_diet, fgs)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
@@ -26,7 +26,9 @@ model. The value can either be specified manually or read in from the
 }
 \value{
 Returns a data frame of the data to be exported to the AtlantisOM list
- object.
+ object. The atoutput column is diet proportion and there is an extra column
+ identifying the prey that makes up that proportion of species (predator)
+ diet. At present not set up for multiple stocks; function will stop.
 }
 \description{
 Imports the \code{diet_check.txt} output file from an Atlantis run
@@ -38,9 +40,7 @@ prey species.
 d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
 file_diet <- grep("DietCheck", dir(d), value = TRUE)
 fgs <- load_fgs(dir = d, "Functional_groups.csv")
-runprm <- load_runprm(d, "Run_settings.xml")
-temp <- load_diet_comp(dir = d, file_diet = file_diet, fgs = fgs,
-  toutinc = runprm$toutinc)
+temp <- load_diet_comp(dir = d, file_diet = file_diet, fgs = fgs)
 rm(temp)
 
 }
