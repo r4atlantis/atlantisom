@@ -37,6 +37,8 @@
 #' # scenario.name <- "CCV3"
 #' # bioind.file <- "outputCCV3BiomIndx.txt"
 #' # catch.file <- "outputCCV3Catch.txt"
+#' # annage <- FALSE
+#' # fisheries.file <- "CalCurrentV3Fisheries.csv"
 #' }
 #'
 om_init <- function(config = configfile){
@@ -56,6 +58,7 @@ om_init <- function(config = configfile){
   # bioind.file <- "outputCCV3BiomIndx.txt"
   # catch.file <- "outputCCV3Catch.txt"
   # annage <- FALSE
+  # fisheries.file <- "CalCurrentV3Fisheries.csv"
 
   #Load functional groups
   funct.groups <- atlantisom::load_fgs(dir=d.name,

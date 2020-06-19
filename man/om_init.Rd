@@ -45,6 +45,8 @@ CC3om <- om_init(here("config/CC3config.r"))
 # scenario.name <- "CCV3"
 # bioind.file <- "outputCCV3BiomIndx.txt"
 # catch.file <- "outputCCV3Catch.txt"
+# annage <- FALSE
+# fisheries.file <- "CalCurrentV3Fisheries.csv"
 }
 
 }
