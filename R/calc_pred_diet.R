@@ -52,11 +52,12 @@
 #'   bboxes = boxes)
 #' biolprm <- load_biolprm(dir = d,
 #'   file_biolprm = "Biology.prm")
+#' runprm <- load_runprm(dir = d, file_runprm = "Run_settings.xml")
 #' calcs <- calc_pred_diet(dietcomp = dietcomp, eat = eat, grazing = grazing,
-#'   vol = vol, biolprm = biolprm)
+#'   vol = vol, biolprm = biolprm, runprm = runprm)
 #' rm(calcs)
 #'
-calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
+calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm, runprm){
 
   # Conversion factor from mg N to tonnes wet-weight
   bio_conv <- biolprm$redfieldcn * biolprm$kgw2d / 1000000000
