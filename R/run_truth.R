@@ -280,7 +280,8 @@ run_truth <- function(scenario, dir = getwd(),
   # catchbio <- calc_biomass_age(nums = catch,
   #   resn = resn, structn = structn, biolprm = biol)
   biomass_eaten <- calc_pred_diet(dietcomp = diet,
-    eat = eat, grazing = grazing, vol = vol, biolprm = biol)
+    eat = eat, grazing = grazing, vol = vol, biolprm = biol,
+    runprm = runprm)
   biomass_ages <- calc_biomass_age(nums = nums,
     resn = resn, structn = structn, biolprm = biol)
   # bio_catch <- calc_biomass_age(nums = catch,

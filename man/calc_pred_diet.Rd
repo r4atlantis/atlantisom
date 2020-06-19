@@ -4,7 +4,7 @@
 \alias{calc_pred_diet}
 \title{Calculate eaten biomass in tonnes for each functional group.}
 \usage{
-calc_pred_diet(dietcomp, eat, grazing, vol, biolprm)
+calc_pred_diet(dietcomp, eat, grazing, vol, biolprm, runprm)
 }
 \arguments{
 \item{dietcomp}{A \code{data.frame} containing the diet proportions for
@@ -62,8 +62,9 @@ vol <- load_nc_physics(dir = d, file_nc = "outputs.nc",
   bboxes = boxes)
 biolprm <- load_biolprm(dir = d,
   file_biolprm = "Biology.prm")
+runprm <- load_runprm(dir = d, file_runprm = "Run_settings.xml")
 calcs <- calc_pred_diet(dietcomp = dietcomp, eat = eat, grazing = grazing,
-  vol = vol, biolprm = biolprm)
+  vol = vol, biolprm = biolprm, runprm = runprm)
 rm(calcs)
 
 }
