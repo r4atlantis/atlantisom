@@ -45,7 +45,7 @@ bps <- load_bps(dir = d, fgs = "Functional_groups.csv",
   file_init = "Initial_condition.nc")
 runprm <- load_runprm(d, "Run_settings.xml")
 dietcomp <- load_diet_comp(dir = d, file_diet = "outputsDietCheck.txt",
-  fgs = fgs, toutinc = runprm$toutinc)
+  fgs = fgs)
 boxes <- get_boundary(load_box(dir = d, file_bgm = "Geography.bgm"))
 groups <- load_fgs(dir = d, "Functional_groups.csv")
 groups <- groups[groups$IsTurnedOn > 0, "Name"]

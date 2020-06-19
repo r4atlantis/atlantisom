@@ -24,6 +24,7 @@
 #'   species, agecl, time, polygon, atoutput, vol, prey, dietcomp, bio_eaten
 #'
 #' @family calc functions
+#' @importFrom magrittr %>%
 #' @export
 #' @author Alexander Keth
 #'
@@ -34,7 +35,7 @@
 #'   file_init = "Initial_condition.nc")
 #' runprm <- load_runprm(d, "Run_settings.xml")
 #' dietcomp <- load_diet_comp(dir = d, file_diet = "outputsDietCheck.txt",
-#'   fgs = fgs, toutinc = runprm$toutinc)
+#'   fgs = fgs)
 #' boxes <- get_boundary(load_box(dir = d, file_bgm = "Geography.bgm"))
 #' groups <- load_fgs(dir = d, "Functional_groups.csv")
 #' groups <- groups[groups$IsTurnedOn > 0, "Name"]
@@ -60,7 +61,8 @@ calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
   # Conversion factor from mg N to tonnes wet-weight
   bio_conv <- biolprm$redfieldcn * biolprm$kgw2d / 1000000000
 
-  dietcomp <- dietcomp[dietcomp$dietcomp > 0, ]
+  dietcomp <- dietcomp[dietcomp$atoutput > 0, ]
+  names(dietcomp)[names(dietcomp)=="atoutput"] <- "dietfrac"
 
   # Eat and grazing are per species, agecl, polygon, and time.
   # Whereas, the dietcomp data do not have polygon.
@@ -68,15 +70,22 @@ calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
   vol <- aggregate(atoutput ~ polygon + time, data = vol, sum)
   colnames(vol)[colnames(vol) == "atoutput"] <- "vol"
 
+  # But is it appropriate to apply global dietcomp to each polygon?
+  # should we also aggregate polygons?
+
   # Combine eat and grazing! Calculate eaten biomass
   biomass_eaten <- rbind(eat, grazing)
   biomass_eaten <- merge(biomass_eaten, vol,
     by = c("time", "polygon"))
 
-  # todo: change diet to age class rather than cohort
+  # done: change diet to age class rather than cohort (in load_diet_comp)
   # todo: previously AK noted that the bio_eaten values were too high
   # the new values need to be checked to see if they give realistic
   # results
+
+  # get biomass_eaten timestep to match time.days now in diet comp
+  biomass_eaten <- biomass_eaten %>%
+    dplyr::mutate(time.days = (time)*runprm$toutinc)
 
   # merge the biomass eaten and diet composition information
   # although there will be observations for eating and grazing,
@@ -84,10 +93,10 @@ calc_pred_diet <- function(dietcomp, eat, grazing, vol, biolprm){
   # these rows are removed, but could be added as na if the argument
   # all.x = TRUE were added to the following function call.
   biomass_eaten <- merge(biomass_eaten, dietcomp,
-    by.x = c("species", "agecl", "time"),
-    by.y = c("species", "cohort", "time"))
+    by.x = c("species", "agecl", "time.days"),
+    by.y = c("species", "agecl", "time.days"))
   biomass_eaten$bio_eaten <- with(biomass_eaten,
-    atoutput * vol * dietcomp * bio_conv)
+    atoutput * vol * dietfrac * bio_conv)
 
   return(biomass_eaten)
 }
