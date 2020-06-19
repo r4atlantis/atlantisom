@@ -100,7 +100,8 @@ om_init <- function(config = configfile){
                                    file_biolprm = biol.prm.file,
                                    file_runprm = run.prm.file,
                                    verbose = TRUE,
-                                   annage = annage
+                                   annage = annage,
+                                   file_fish = fisheries.file
     )
   } else {
     truth <- get(load(file.path(d.name,
