@@ -272,8 +272,7 @@ run_truth <- function(scenario, dir = getwd(),
   catch_all$time <- catch_all$time / runprm$toutfinc
   if(verbose) message("Catch for all fisheries in biomass read in.")
 
-  diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs,
-    toutinc = runprm$toutinc)
+  diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs)
 
   # May 2019 let's not do the catch calcs until they are corrected
 
