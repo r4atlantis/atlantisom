@@ -67,6 +67,7 @@ biomassatage <- calc_biomass_age(nums = catch,
 \seealso{
 Other calc functions: 
 \code{\link{calc_Z}()},
+\code{\link{calc_age2length}()},
 \code{\link{calc_avgwtstage2age}()},
 \code{\link{calc_pred_diet}()},
 \code{\link{calc_stage2age}()},
