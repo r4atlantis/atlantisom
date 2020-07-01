@@ -39,10 +39,18 @@ reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
 \item{maxbin}{The upper length (cm) bin applied to all species sampled. The default
-value is 150.}
+value is 150.
+Optionally, a \code{data.frame} can be supplied for multiple species with different
+species lengths: Columns are:
+                species: the species name. Matches names in species
+                maxlenbin:  the upper length (cm) bin applied to that species}
 
-\item{CVlenage}{The variability in length at age (currently same for all species)
-The default value is 0.1.}
+\item{CVlenage}{The variability in length at age (same for all species)
+The default value is 0.1.
+Optionally, a \code{data.frame} can be supplied for multiple species with different
+CV of length at age: Columns are:
+                species: the species name. Matches names in species
+                cvlenage:  the variability in length at age for that species}
 
 \item{remove.zeroes}{Logical asking whether to only return numbers at length for
 combinations of species, age, box, depth, etc that have numbers>0.
@@ -76,6 +84,16 @@ str(lenout)
 rm(lenout)
 }
 }
+\seealso{
+Other calc functions: 
+\code{\link{calc_Z}()},
+\code{\link{calc_avgwtstage2age}()},
+\code{\link{calc_biomass_age}()},
+\code{\link{calc_pred_diet}()},
+\code{\link{calc_stage2age}()},
+\code{\link{calc_timestep2time}()}
+}
 \author{
 Gavin Fay
 }
+\concept{calc functions}
