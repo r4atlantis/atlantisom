@@ -1,6 +1,7 @@
 #'Species-specific atlantisom outputs
 #'@description A wrapper function to reduce a set of \code{atlantisom} objects from atlantis
 #'output to a single species or subset of species for creating assessment input datasets.
+#'Optionally includes diet data (set diet=TRUE in function call, default is FALSE)
 #'@param species The species to sample in the survey and fishery (a vector)
 #'@param omlist output of \code{om_init}
 #'@return Returns an omlist_ss list object containing dataframes and lists:
@@ -15,9 +16,10 @@
 #'  \item{trueresn_ss, reserve nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truestructn_ss, structural nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truecatchnum_ss, fishery catch at age output of \code{run_truth}, species_ss only}
+#'  \item{truebioeaten_ss, biomass_eaten output of \code{run_truth}, species_ss only}
 #'  \item{funct.groups_ss, dataframe of species characteristics, species_ss only}
 #'  \item{biol, list of biological parameters passed from input omlist}
-#'  \item{boxpars, dataframe o spatial parameters}
+#'  \item{boxpars, dataframe of spatial parameters}
 #'  \item{runpar, list of run parameters passed from input omlist}
 #' },
 #'
@@ -34,7 +36,8 @@
 #'CC3om_2spp <- om_species(c("Pacific_sardine", "Mesopel_M_Fish"), CC3om)
 #'}
 #'
-om_species <- function(species = spp, omlist, save = TRUE, removefullom = TRUE){
+om_species <- function(species = spp, omlist, save = TRUE,
+                       diet = FALSE, removefullom = TRUE){
   # spp format c("speciesname1", "speciesname2")
   if(!all(species %in% omlist$funct.group.names)) stop("species name not found")
   species_ss <- species
@@ -81,6 +84,9 @@ om_species <- function(species = spp, omlist, save = TRUE, removefullom = TRUE){
     truediscage_ss <- omlist$truth$discage[omlist$truth$discage$species %in% species_ss,]
   } else {truediscage_ss <- NULL}
 
+  if(diet){
+    truebioeaten_ss <- omlist$truth$biomass_eaten[omlist$truth$biomass_eaten$species %in% species_ss,]
+  } else {truebioeaten_ss <- NULL}
 
   #subset species biol parameters? no, may miss some globals that aren't by species
 
@@ -102,6 +108,7 @@ om_species <- function(species = spp, omlist, save = TRUE, removefullom = TRUE){
                     "truenumsage_ss" = truenumsage_ss,
                     "truecatchage_ss" = truecatchage_ss,
                     "truediscage_ss" = truediscage_ss,
+                    "truebioeaten_ss" = truebioeaten_ss,
                     "funct.group_ss" = funct.groups_ss,
                     "biol" = omlist$biol,
                     "boxpars" = omlist$boxpars,
