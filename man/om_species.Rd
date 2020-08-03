@@ -4,7 +4,13 @@
 \alias{om_species}
 \title{Species-specific atlantisom outputs}
 \usage{
-om_species(species = spp, omlist, save = TRUE, removefullom = TRUE)
+om_species(
+  species = spp,
+  omlist,
+  save = TRUE,
+  diet = FALSE,
+  removefullom = TRUE
+)
 }
 \arguments{
 \item{species}{The species to sample in the survey and fishery (a vector)}
@@ -24,15 +30,17 @@ Returns an omlist_ss list object containing dataframes and lists:
  \item{trueresn_ss, reserve nitrogen output of \code{run_truth}, species_ss only}
  \item{truestructn_ss, structural nitrogen output of \code{run_truth}, species_ss only}
  \item{truecatchnum_ss, fishery catch at age output of \code{run_truth}, species_ss only}
+ \item{truebioeaten_ss, biomass_eaten output of \code{run_truth}, species_ss only}
  \item{funct.groups_ss, dataframe of species characteristics, species_ss only}
  \item{biol, list of biological parameters passed from input omlist}
- \item{boxpars, dataframe o spatial parameters}
+ \item{boxpars, dataframe of spatial parameters}
  \item{runpar, list of run parameters passed from input omlist}
 },
 }
 \description{
 A wrapper function to reduce a set of \code{atlantisom} objects from atlantis
 output to a single species or subset of species for creating assessment input datasets.
+Optionally includes diet data (set diet=TRUE in function call, default is FALSE)
 }
 \examples{
 \dontrun{
