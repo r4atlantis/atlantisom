@@ -37,6 +37,7 @@ Other load functions:
 \code{\link{load_boxarea}()},
 \code{\link{load_bps}()},
 \code{\link{load_catch}()},
+\code{\link{load_detailed_diet_comp}()},
 \code{\link{load_diet_comp}()},
 \code{\link{load_fgs}()},
 \code{\link{load_fisheries}()},
