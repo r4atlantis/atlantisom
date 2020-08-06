@@ -41,7 +41,11 @@ load_detailed_diet_comp <- function(dir = getwd(), file_diet, fgs){
   } else {
     diet.file <- file.path(dir, file_diet)
   }
-  diet <- data.table::fread(diet.file, data.table = FALSE)
+  diet <- data.table::fread(diet.file)
+
+  # remove all 0 prey rows
+  diet <- diet[as.logical(rowSums(diet[,-c(1:5)] != 0)), ]
+
 
   # SKG June 2020: changing to the other way around. more new models now,
   # only one diet function to change, and "Predator" seems clearer for users.
@@ -53,13 +57,13 @@ load_detailed_diet_comp <- function(dir = getwd(), file_diet, fgs){
     names(diet)[which(!names(diet) %in% c("Predator", "Cohort", "Time", "Box", "Layer"))])]
 
   #remove rows that are all 0 prey
-  diet <- diet[apply(diet[,-c(1:5)], 1, function(x) !all(x==0)),]
+  #diet <- diet[apply(diet[,-c(1:5)], 1, function(x) !all(x==0)),]
 
   #should do the same thing faster
   #diet <- diet[as.logical(abs(as.matrix(diet[,-c(1:5)])) %*% rep(1L,ncol(diet[,-c(1:5)]))), ]
 
-  # slightly slower but maybe less memory intensive?
-  #diet <- diet[as.logical(rowSums(diet[,-c(1:5)] != 0)), ]
+  # dataframe
+  diet <- as.data.frame(diet)
 
   # Convert to tidy dataframe to allow joining/merging with other dataframes.
   diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
