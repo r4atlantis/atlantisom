@@ -56,7 +56,10 @@ load_detailed_diet_comp <- function(dir = getwd(), file_diet, fgs){
   #diet <- diet[apply(diet[,-c(1:5)], 1, function(x) !all(x==0)),]
 
   #should do the same thing faster
-  diet <- diet[as.logical(abs(as.matrix(diet[,-c(1:5)])) %*% rep(1L,ncol(diet[,-c(1:5)]))), ]
+  #diet <- diet[as.logical(abs(as.matrix(diet[,-c(1:5)])) %*% rep(1L,ncol(diet[,-c(1:5)]))), ]
+
+  # slightly slower but maybe less memory intensive?
+  diet <- diet[as.logical(rowSums(diet[,-c(1:5)] != 0)), ]
 
   # Convert to tidy dataframe to allow joining/merging with other dataframes.
   diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
