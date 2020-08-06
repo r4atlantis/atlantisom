@@ -63,15 +63,20 @@ load_detailed_diet_comp <- function(dir = getwd(), file_diet, fgs){
   #diet <- diet[as.logical(abs(as.matrix(diet[,-c(1:5)])) %*% rep(1L,ncol(diet[,-c(1:5)]))), ]
 
   # dataframe
-  diet <- as.data.frame(diet)
+  #diet <- as.data.frame(diet)
 
-  # Convert to tidy dataframe to allow joining/merging with other dataframes.
-  diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
-    #gather_cols = names(diet)[(which(names(diet) == "Updated") + 1):NCOL(diet)])
-    gather_cols = names(diet)[(which(names(diet) %in% fgs$Code))])
+  diet <- data.table::melt(diet, id = 1:5,
+               variable.name="prey",
+               value.name = "dietcomp")
+
+  # # Convert to tidy dataframe to allow joining/merging with other dataframes.
+  # diet <- tidyr::gather_(data = diet, key_col = "prey", value_col = "dietcomp",
+  #   #gather_cols = names(diet)[(which(names(diet) == "Updated") + 1):NCOL(diet)])
+  #   gather_cols = names(diet)[(which(names(diet) %in% fgs$Code))])
 
   # Get rid of 0 dietcomp rows to make manageable size
-  diet <- filter(diet, dietcomp>0)
+  diet <- diet[dietcomp>0]
+  #diet <- filter(diet, dietcomp>0)
 
   names(diet) <- tolower(names(diet))
 
@@ -88,8 +93,9 @@ load_detailed_diet_comp <- function(dir = getwd(), file_diet, fgs){
   diet$time.days <- diet$time #/ toutinc
 
   #fix cohort to agecl
-  diet <- diet %>%
-    dplyr::mutate(agecl = cohort + 1)
+  # diet <- diet %>%
+  #   dplyr::mutate(agecl = cohort + 1)
+  diet <- diet[, agecl := cohort + 1]
 
   # drop redundant columns and reorder
   diet <- diet[,c("species", "agecl", "time.days", "box", "layer", "prey", "dietcomp")]
