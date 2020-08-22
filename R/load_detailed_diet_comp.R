@@ -43,8 +43,8 @@ load_detailed_diet_comp <- function(dir = getwd(), file_diet, fgs){
   }
   diet <- data.table::fread(diet.file)
 
-  # remove all 0 prey rows
-  diet <- diet[as.logical(rowSums(diet[,-c(1:5)] != 0)), ]
+  # remove all 0 prey rows--done with awk statement first, file is too big for R to do this
+  #diet <- diet[as.logical(rowSums(diet[,-c(1:5)] != 0)), ]
 
 
   # SKG June 2020: changing to the other way around. more new models now,
