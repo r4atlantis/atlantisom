@@ -82,9 +82,9 @@ om_comps <- function(usersurvey = usersurvey_file,
                                                         boxes = survboxes)
 
   #dont sample these, just aggregate them using median
-  structnss <- atlantisom::sample_fish(survey_aggresn, surveffN, sample = FALSE)
+  structnss <- atlantisom::sample_fish(survey_aggstructn, surveffN, sample = FALSE)
 
-  resnss <- atlantisom::sample_fish(survey_aggstructn, surveffN, sample = FALSE)
+  resnss <- atlantisom::sample_fish(survey_aggresn, surveffN, sample = FALSE)
 
   #this is all input into the length function, replicates follow age comp reps
   #  separating the length comps from the weight at age here
