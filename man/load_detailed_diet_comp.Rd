@@ -11,7 +11,7 @@ load_detailed_diet_comp(dir = getwd(), file_diet, fgs)
 default is \code{getwd()}.}
 
 \item{file_diet}{A character value, specifying the file name of the
-\code{DetailedDietCheck.txt} output file from Atlantis.
+\code{DetailedDietCheck.txt} output file from Atlantis (or see above).
 This file is read with \code{data.table::fread()}, so it can be
 compressed with a .gz suffix, or uncompressed as a .txt file.
 If \code{is.null(dir)}, then \code{file_diet} can be the full file
@@ -34,6 +34,21 @@ and converts the file from wide format to long, where there are seven
 columns: (predator) species, age class, time in days, polygon, layer,
 diet composition in tons (assuming flagdietcheck=1), and prey (species).
 Only non-zero values for diet compostion are included.
+}
+\details{
+NOTE: \code{DetaileDietCheck.txt} is extremely large. We recommend working
+with it compressed and using the following pre-processing steps
+at the command line to remove the all-0 rows:
+Execute in terminal from the directory with the .gz file in it:
+\code{zcat < [...]DetailedDietCheck.txt.gz | awk 'NR > 1{s=0; for (i=6;i<=NF;i++) s+=$i; if (s!=0)print}' | gzip > DetDiet.gz}
+On linux it would just be zcat filename; macOS needs zcat < filename to work.
+The awk statement is saying after the header row (NR>1), sum up the values
+from column 6 to the last column and keep the row if they are >0.
+The last pipe sends the new file to a zip file.
+The column names will be lost, so strip them from the file and cat back together:
+\code{zcat < [...]DetailedDietCheck.txt.gz | head -n1 | gzip > DetDietHead.gz}
+\code{cat DetDietHead.gz DetDiet.gz > [...]DetDiet.gz}
+Then use [...]DetDiet.gz as your input to this function
 }
 \examples{
 \dontrun{

@@ -29,7 +29,8 @@ Imports:
     tidyr,
     magrittr,
     chron,
-    xml2
+    xml2,
+    data.table
 Suggests: 
     knitr,
     rmarkdown

@@ -6,12 +6,27 @@
 #' diet composition in tons (assuming flagdietcheck=1), and prey (species).
 #' Only non-zero values for diet compostion are included.
 #'
+#' NOTE: \code{DetaileDietCheck.txt} is extremely large. We recommend working
+#' with it compressed and using the following pre-processing steps
+#' at the command line to remove the all-0 rows:
+#' Execute in terminal from the directory with the .gz file in it:
+#' \code{zcat < [...]DetailedDietCheck.txt.gz | awk 'NR > 1{s=0; for (i=6;i<=NF;i++) s+=$i; if (s!=0)print}' | gzip > DetDiet.gz}
+#' On linux it would just be zcat filename; macOS needs zcat < filename to work.
+#' The awk statement is saying after the header row (NR>1), sum up the values
+#' from column 6 to the last column and keep the row if they are >0.
+#' The last pipe sends the new file to a zip file.
+#' The column names will be lost, so strip them from the file and cat back together:
+#' \code{zcat < [...]DetailedDietCheck.txt.gz | head -n1 | gzip > DetDietHead.gz}
+#' \code{cat DetDietHead.gz DetDiet.gz > [...]DetDiet.gz}
+#' Then use [...]DetDiet.gz as your input to this function
+#'
+#'
 #' @family load functions
 #' @author Sarah Gaichas
 #'
 #' @template dir
 #' @param file_diet A character value, specifying the file name of the
-#'   \code{DetailedDietCheck.txt} output file from Atlantis.
+#'   \code{DetailedDietCheck.txt} output file from Atlantis (or see above).
 #'   This file is read with \code{data.table::fread()}, so it can be
 #'   compressed with a .gz suffix, or uncompressed as a .txt file.
 #'   If \code{is.null(dir)}, then \code{file_diet} can be the full file
@@ -23,7 +38,9 @@
 #'  object. The atoutput column is diet in tons and there is an extra column
 #'  identifying the prey that makes up that proportion of species (predator)
 #'  diet.
-#'@export
+#'
+#' @import data.table
+#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -52,18 +69,12 @@ load_detailed_diet_comp <- function(dir = getwd(), file_diet, fgs){
   if(length(grep("Group",colnames(diet)))>0)
     colnames(diet) <- gsub("Group","Predator",colnames(diet))
 
+  # Change column order NOT DATA TABLE SAFE
+  #diet <- diet[, c("Predator", "Cohort", "Time", "Box", "Layer",
+  #  names(diet)[which(!names(diet) %in% c("Predator", "Cohort", "Time", "Box", "Layer"))])]
+
   # Change column order
-  diet <- diet[, c("Predator", "Cohort", "Time", "Box", "Layer",
-    names(diet)[which(!names(diet) %in% c("Predator", "Cohort", "Time", "Box", "Layer"))])]
-
-  #remove rows that are all 0 prey
-  #diet <- diet[apply(diet[,-c(1:5)], 1, function(x) !all(x==0)),]
-
-  #should do the same thing faster
-  #diet <- diet[as.logical(abs(as.matrix(diet[,-c(1:5)])) %*% rep(1L,ncol(diet[,-c(1:5)]))), ]
-
-  # dataframe
-  #diet <- as.data.frame(diet)
+  data.table::setcolorder(diet, c("Predator", "Cohort", "Time", "Box", "Layer"))
 
   diet <- data.table::melt(diet, id = 1:5,
                variable.name="prey",
@@ -97,8 +108,8 @@ load_detailed_diet_comp <- function(dir = getwd(), file_diet, fgs){
   #   dplyr::mutate(agecl = cohort + 1)
   diet <- diet[, agecl := cohort + 1]
 
-  # drop redundant columns and reorder
-  diet <- diet[,c("species", "agecl", "time.days", "box", "layer", "prey", "dietcomp")]
+  # drop redundant columns and reorder NOT DATA TABLE SAFE
+  #diet <- diet[,c("species", "agecl", "time.days", "box", "layer", "prey", "dietcomp")]
 
   #leave layer info for now, this is a load function
 
