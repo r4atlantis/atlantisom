@@ -16,7 +16,6 @@
 #'  \item{trueresn_ss, reserve nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truestructn_ss, structural nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truecatchnum_ss, fishery catch at age output of \code{run_truth}, species_ss only}
-#'  \item{truebioeaten_ss, biomass_eaten output of \code{run_truth}, species_ss only}
 #'  \item{funct.groups_ss, dataframe of species characteristics, species_ss only}
 #'  \item{biol, list of biological parameters passed from input omlist}
 #'  \item{boxpars, dataframe of spatial parameters}
@@ -37,7 +36,7 @@
 #'}
 #'
 om_species <- function(species = spp, omlist, save = TRUE,
-                       diet = FALSE, removefullom = TRUE){
+                       removefullom = TRUE){
   # spp format c("speciesname1", "speciesname2")
   if(!all(species %in% omlist$funct.group.names)) stop("species name not found")
   species_ss <- species
@@ -84,9 +83,13 @@ om_species <- function(species = spp, omlist, save = TRUE,
     truediscage_ss <- omlist$truth$discage[omlist$truth$discage$species %in% species_ss,]
   } else {truediscage_ss <- NULL}
 
-  if(diet){
-    truebioeaten_ss <- omlist$truth$biomass_eaten[omlist$truth$biomass_eaten$species %in% species_ss,]
-  } else {truebioeaten_ss <- NULL}
+  # biomass_eaten is not correct by polygon, and also appears inflated
+  # a separate set of functions will get true diet by polygon from the
+  # DetailedDietCheck.txt file
+
+  # if(diet){
+  #   truebioeaten_ss <- omlist$truth$biomass_eaten[omlist$truth$biomass_eaten$species %in% species_ss,]
+  # } else {truebioeaten_ss <- NULL}
 
   #subset species biol parameters? no, may miss some globals that aren't by species
 
@@ -108,7 +111,6 @@ om_species <- function(species = spp, omlist, save = TRUE,
                     "truenumsage_ss" = truenumsage_ss,
                     "truecatchage_ss" = truecatchage_ss,
                     "truediscage_ss" = truediscage_ss,
-                    "truebioeaten_ss" = truebioeaten_ss,
                     "funct.group_ss" = funct.groups_ss,
                     "biol" = omlist$biol,
                     "boxpars" = omlist$boxpars,
