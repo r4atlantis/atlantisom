@@ -58,7 +58,7 @@ om_index <- function(usersurvey = usersurvey_file,
     # call sample_survey_biomass with a bunch of 1000s for weight at age
     # in the code it multiplies atoutput by wtatage/1000 so this allows us to use
     # biomass directly
-    wtage <- data.frame(species=rep(survspp, n_age_classes),
+    wtage <- data.frame(species=rep(names(age_classes), n_age_classes),
                         agecl=unlist(sapply(n_age_classes,seq)),
                         wtAtAge=rep(1000.0,sum(n_age_classes)))
 
