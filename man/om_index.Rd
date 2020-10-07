@@ -4,7 +4,9 @@
 \alias{om_index}
 \title{Generate index data from atlantisom
 #'@description A wrapper function to create survey and fishery index data for assessment input.
-Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds}
+Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
+Results for more than one survey are generated with multiple survey config files and
+saved as separate .rds files.}
 \usage{
 om_index(
   usersurvey = usersurvey_file,
@@ -37,6 +39,8 @@ Returns list objects containing dataframes of survey biomass index and total cat
 Generate index data from atlantisom
 #'@description A wrapper function to create survey and fishery index data for assessment input.
 Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
+Results for more than one survey are generated with multiple survey config files and
+saved as separate .rds files.
 }
 \examples{
 \dontrun{
