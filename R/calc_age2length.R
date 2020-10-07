@@ -126,6 +126,7 @@ for (irow in 1:nrow(mulen))
 #for (irow in 1:500)
   {
   group <- nums$species[irow]
+  group <- factor(group, levels=levels(groups))
   igroup <- which(groups==group)
   box <- nums$polygon[irow]
   layer <- nums$layer[irow]
