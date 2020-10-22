@@ -36,7 +36,7 @@ read_savedsurvs <- function(dir, type){
                         pattern = c("*surveyB.rds", "*survObsAgeComp.rds", "*survObsLenComp.rds", "*survObsWtAtAge.rds",
                                     "*survObsFullAgeComp.rds", "*survObsFullWtAtAge.rds"))
 
-  survs <- list.files(dir=dir, pattern = as.character(datlook$pattern[datlook$dattype %in% type]), full.names = TRUE)
+  survs <- list.files(path=dir, pattern = as.character(datlook$pattern[datlook$dattype %in% type]), full.names = TRUE)
 
   survey.name <-  str_match(survs, paste0(scenario.name,"_\\s*(.*?)\\s",datlook$pattern[datlook$dattype==type]))[,2]
 
