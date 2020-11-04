@@ -97,7 +97,8 @@ om_index <- function(usersurvey = usersurvey_file,
   }
 
   if(save){
-    saveRDS(fishObsCatchB, file.path(d.name, paste0(scenario.name, "fishCatch.rds")))
+    saveRDS(fishObsCatchB, file.path(d.name, paste0(scenario.name, "_",
+                                                    fishery.name, "fishCatch.rds")))
   }
 
   indices <- list("survObsBiomB" = survObsBiomBs,

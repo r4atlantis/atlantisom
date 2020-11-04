@@ -63,7 +63,7 @@ om_comps <- function(usersurvey = usersurvey_file,
                                           species = survspp,
                                           boxes = survboxes,
                                           effic = surveffic,
-                                          selex = survselex)
+                                          selex = survselex.agecl)
 
     #Sample fish for age composition
     # if we want replicates for obs error this sample function will generate them
@@ -149,7 +149,8 @@ om_comps <- function(usersurvey = usersurvey_file,
 
   # save fishery age comps
   if(save){
-    saveRDS(catch_age_comp, file.path(d.name, paste0(scenario.name, "fishObsAgeComp.rds")))
+    saveRDS(catch_age_comp, file.path(d.name, paste0(scenario.name, "_",
+                                                     fishery.name, "fishObsAgeComp.rds")))
   }
 
   #Get catch weights for length comp calc
@@ -192,8 +193,10 @@ om_comps <- function(usersurvey = usersurvey_file,
   }
 
   if(save){
-    saveRDS(fishObsLenComp, file.path(d.name, paste0(scenario.name, "fishObsLenComp.rds")))
-    saveRDS(fishObsWtAtAge, file.path(d.name, paste0(scenario.name, "fishObsWtAtAge.rds")))
+    saveRDS(fishObsLenComp, file.path(d.name, paste0(scenario.name, "_",
+                                                     fishery.name, "fishObsLenComp.rds")))
+    saveRDS(fishObsWtAtAge, file.path(d.name, paste0(scenario.name, "_",
+                                                     fishery.name, "fishObsWtAtAge.rds")))
   }
 
   if(!is.null(omlist_ss$truenumsage_ss)){
@@ -247,7 +250,8 @@ om_comps <- function(usersurvey = usersurvey_file,
 
     # save fishery annual age comps
     if(save){
-    saveRDS(catch_annage_comp, file.path(d.name, paste0(scenario.name, "fishObsFullAgeComp.rds")))
+    saveRDS(catch_annage_comp, file.path(d.name, paste0(scenario.name,"_",
+                                                        fishery.name, "fishObsFullAgeComp.rds")))
     }
   }else{catch_annage_comp <- NULL}
 
@@ -283,7 +287,8 @@ om_comps <- function(usersurvey = usersurvey_file,
                                                      fgs = omlist_ss$funct.group_ss)
     }
     if(save){
-      saveRDS(interp_fishWtAtAge, file.path(d.name, paste0(scenario.name, "fishObsFullWtAtAge.rds")))
+      saveRDS(interp_fishWtAtAge, file.path(d.name, paste0(scenario.name,"_",
+                                                           fishery.name, "fishObsFullWtAtAge.rds")))
     }
   }else{interp_fishWtAtAge <- NULL}
 
