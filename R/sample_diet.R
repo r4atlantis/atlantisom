@@ -3,30 +3,29 @@
 #' @description Create sampled diet composition data from the total consumption
 #'    in an Atlantis scenario. Observation error and bias are added.
 #'
-#' @details The function takes total consumption data from an Atlantis scenario
-#'   where the data was read in from Atlantis output using \code{???}. One does
-#'   not need to use these functions to create \code{dat}, rather you must only
+#' @details The function takes diet composition data from an Atlantis scenario
+#'   where the data was read in from Atlantis output using \code{load_diet_comp} or
+#'   \code{load_detailed_diet_comp}.
+#'   One does not need to use these functions to create \code{dat}, rather you must only
 #'   ensure that the structure of \code{dat} is the same.
-#'   Currently, the function creates sampled diet composition by removing
-#'   non-sampled and non-enumerated species groups from the total
-#'   consumption table from Atlantis.
-#'   Bias is added by setting infrequently consumed (<0.25) prey groups to
-#'   zero at random.
-#'   Error is incorporated into proportional composition entries by
-#'   adding uniform error to true values to half of the observations.
-#'   The function adjusts the remaining table so each row sums to one
-#'   before returning the "observed" mean diet composition summary table.
-#'   The function needs to be generalized to any Atlantis system by
-#'   selecting common species group identifiers to remove from the table.
-#'   Also, more realistic observation error and bias distributions
-#'   could be applied to obtain realistic diet composition data.
+#'   The user supplies a parameter \code{unidprey} that determines bias in sample diet
+#'   composition. Bias is added by allocating a random portion of each group to an
+#'   "unidentified prey" category. The default \code{unidprey} is 0 which results in
+#'   no reallocation of prey to unidentified categories.
+#'   The user supplies a parameter \code{alphamult} that detemines observation error
+#'   for sample diet compostion strays using a dirichlet distribution. The default
+#'   \code{alphamult} is 10000000 which results in minimal observation error in diet
+#'   composition. Lower values of \code{alphamult} increase observation error.
+#'   The function adjusts the remaining diet so each predator diet per agecl (if in
+#'   the input data) and time.days sums to one.
 
-#' @author Robert Wildermuth
+#' @author Robert Wildermuth, Sarah Gaichas
 #' @export
-#' @param dat A \code{data.frame} containing sampled predator species
-#'   identifiers  in the first
-#'   column and prey species consumption proportions in the remaining columns.
+#' @param dat A \code{data.frame} containing species (predator), agecl, time.days,
+#'  atoutput (diet proportion) and prey species
 #' @template fgs
+#' @param alphamult
+#' @param unidprey
 #'
 #' @examples
 #' \dontrun{
@@ -51,26 +50,30 @@
 #'		dim(obsDietComp)
 #'}
 
-sample_diet <- function(dat, fgs) {
+sample_diet <- function(dat, fgs, unidprey = 0, alphamult = 10000000) {
 
-  # first remove species not sampled and not quantified in gut analyses
-  colnames(fgs) <- tolower(colnames(fgs))
-  # check for GroupType
-  if (!"grouptype" %in% colnames(fgs)) {
-    stop(paste("The column GroupType is not in your functional groups\n",
-      "file and thus sample_diet does not know which groups to sample.\n",
-      "The column InvertType might work but needs to be renamed GroupType."))
-  }
-  fgs$grouptype <- tolower(fgs$grouptype)
-  nonsampledtypes <- c("bird", "mammal", "cep", "sed_ep_ff", "sed_ep_other",
-    "mob_ep_other", "pwn", "lg_zoo", "lg_inf", "phytoben")
-  nonSampled <- subset(fgs, isfished == 0 | grouptype %in% nonsampledtypes |
-    code == "REP")
-  notenumeratedtypes <- c("bird", "mammal", "cep", "sed_ep_other", "lg_zoo",
-    "lg_inf", "phytoben")
-  notEnum <- subset(fgs, grouptype %in% notenumeratedtypes | code == "BFF")
-
-  dat <- dat[!(dat$Predator %in% nonSampled), !(colnames(dat) %in% notEnum)]
+  # # first remove species not sampled and not quantified in gut analyses
+  # colnames(fgs) <- tolower(colnames(fgs))
+  #
+  # # check for GroupType or InvertType
+  # if (!("grouptype" | "inverttype") %in% colnames(fgs)) {
+  #   stop(paste("The columns GroupType  or InvertType ars not in your functional\n",
+  #     "groups file and thus sample_diet does not know which groups to sample."))
+  # }
+  #
+  # # change inverttype to grouptype, contents should be the same
+  # if("inverttype" %in% names(fgs)) names(fgs)[names(fgs) == 'inverttype'] <- 'grouptype'
+  #
+  # fgs$grouptype <- tolower(fgs$grouptype)
+  # nonsampledtypes <- c("bird", "mammal", "cep", "sed_ep_ff", "sed_ep_other",
+  #   "mob_ep_other", "pwn", "lg_zoo", "lg_inf", "phytoben")
+  # nonSampled <- subset(fgs, isfished == 0 | grouptype %in% nonsampledtypes |
+  #   code == "REP")
+  # notenumeratedtypes <- c("bird", "mammal", "cep", "sed_ep_other", "lg_zoo",
+  #   "lg_inf", "phytoben")
+  # notEnum <- subset(fgs, grouptype %in% notenumeratedtypes | code == "BFF")
+  #
+  # dat <- dat[!(dat$Predator %in% nonSampled), !(colnames(dat) %in% notEnum)]
 
   # add uniform error to half of the "observations"
   nPreyObs <- NROW(dat) * (NCOL(dat)-1)

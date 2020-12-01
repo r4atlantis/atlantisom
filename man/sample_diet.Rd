@@ -7,9 +7,8 @@
 sample_diet(dat, fgs)
 }
 \arguments{
-\item{dat}{A \code{data.frame} containing sampled predator species
-identifiers  in the first
-column and prey species consumption proportions in the remaining columns.}
+\item{dat}{A \code{data.frame} containing species (predator), agecl, time.days,
+atoutput (diet proportion) and prey species}
 
 \item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
@@ -20,23 +19,24 @@ Create sampled diet composition data from the total consumption
    in an Atlantis scenario. Observation error and bias are added.
 }
 \details{
-The function takes total consumption data from an Atlantis scenario
-  where the data was read in from Atlantis output using \code{???}. One does
-  not need to use these functions to create \code{dat}, rather you must only
+The function takes diet composition data from an Atlantis scenario
+  where the data was read in from Atlantis output using \code{load_diet_comp}.
+  It assumes
+  One does not need to use these functions to create \code{dat}, rather you must only
   ensure that the structure of \code{dat} is the same.
-  Currently, the function creates sampled diet composition by removing
-  non-sampled and non-enumerated species groups from the total
-  consumption table from Atlantis.
+  Can we give an effN type input to determine sample size and error by group?
+  Or scale by biomass?
   Bias is added by setting infrequently consumed (<0.25) prey groups to
   zero at random.
   Error is incorporated into proportional composition entries by
   adding uniform error to true values to half of the observations.
-  The function adjusts the remaining table so each row sums to one
-  before returning the "observed" mean diet composition summary table.
+  The function adjusts the remaining diet so each predator diet per time.days
+  sums to one.
   The function needs to be generalized to any Atlantis system by
   selecting common species group identifiers to remove from the table.
   Also, more realistic observation error and bias distributions
   could be applied to obtain realistic diet composition data.
+  Diriclet Ainsworth et al
 }
 \examples{
 \dontrun{
@@ -62,5 +62,5 @@ The function takes total consumption data from an Atlantis scenario
 }
 }
 \author{
-Robert Wildermuth
+Robert Wildermuth, Sarah Gaichas
 }
