@@ -4,7 +4,7 @@
 \alias{sample_diet}
 \title{Sample total consumption to create diet composition data}
 \usage{
-sample_diet(dat, fgs)
+sample_diet(dat, fgs, unidprey = 0, alphamult = 1e+07)
 }
 \arguments{
 \item{dat}{A \code{data.frame} containing species (predator), agecl, time.days,
@@ -13,6 +13,8 @@ atoutput (diet proportion) and prey species}
 \item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
+
+\item{unidprey}{}
 }
 \description{
 Create sampled diet composition data from the total consumption
@@ -20,23 +22,20 @@ Create sampled diet composition data from the total consumption
 }
 \details{
 The function takes diet composition data from an Atlantis scenario
-  where the data was read in from Atlantis output using \code{load_diet_comp}.
-  It assumes
+  where the data was read in from Atlantis output using \code{load_diet_comp} or
+  \code{load_detailed_diet_comp}.
   One does not need to use these functions to create \code{dat}, rather you must only
   ensure that the structure of \code{dat} is the same.
-  Can we give an effN type input to determine sample size and error by group?
-  Or scale by biomass?
-  Bias is added by setting infrequently consumed (<0.25) prey groups to
-  zero at random.
-  Error is incorporated into proportional composition entries by
-  adding uniform error to true values to half of the observations.
-  The function adjusts the remaining diet so each predator diet per time.days
-  sums to one.
-  The function needs to be generalized to any Atlantis system by
-  selecting common species group identifiers to remove from the table.
-  Also, more realistic observation error and bias distributions
-  could be applied to obtain realistic diet composition data.
-  Diriclet Ainsworth et al
+  The user supplies a parameter \code{unidprey} ranging from 0 to 1 that determines
+  bias in sample diet composition. Bias is added by allocating a random portion of
+  each group to an "unidentified prey" category. The default \code{unidprey} is 0
+  which results in no reallocation of prey to unidentified categories.
+  The user supplies a parameter \code{alphamult} that detemines observation error
+  for sample diet compostion strays using a dirichlet distribution. The default
+  \code{alphamult} is 10000000 which results in minimal observation error in diet
+  composition. Lower values of \code{alphamult} increase observation error.
+  The function adjusts the remaining diet so each predator diet per agecl (if in
+  the input data) and time.days sums to one.
 }
 \examples{
 \dontrun{
