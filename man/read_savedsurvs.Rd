@@ -28,8 +28,8 @@ Users must enter the path where the survey output files are stored and the type 
 output file to be read in.
 }
 \details{
-\code{om_species} and \code{om_comps} allow for multiple surveys. Users
-must define a survey.name in each survey config file which is used to name the file
+\code{om_species}, \code{om_comps}, and \code{om_diet} allow for multiple surveys.
+Users must define a survey.name in each survey config file which is used to name the file
 that is output by each survey function, and is then read back in to name list
 output for each survey in the saved .rds file.
 }

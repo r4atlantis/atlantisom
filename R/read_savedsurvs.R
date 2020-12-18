@@ -7,8 +7,8 @@
 #' @template dir
 #' @template type
 #'
-#' @details \code{om_species} and \code{om_comps} allow for multiple surveys. Users
-#' must define a survey.name in each survey config file which is used to name the file
+#' @details \code{om_species}, \code{om_comps}, and \code{om_diet} allow for multiple surveys.
+#' Users must define a survey.name in each survey config file which is used to name the file
 #' that is output by each survey function, and is then read back in to name list
 #' output for each survey in the saved .rds file.
 #'
@@ -32,9 +32,11 @@
 #'
 read_savedsurvs <- function(dir, type){
 
-  datlook <- data.frame(dattype = c('survB', 'survAge', 'survLen', 'survWtage', 'survAnnAge', 'survAnnWtage'),
+  datlook <- data.frame(dattype = c('survB', 'survAge', 'survLen', 'survWtage', 'survAnnAge', 'survAnnWtage',
+                                    'survDiet'),
                         pattern = c("*surveyB.rds", "*survObsAgeComp.rds", "*survObsLenComp.rds", "*survObsWtAtAge.rds",
-                                    "*survObsFullAgeComp.rds", "*survObsFullWtAtAge.rds"))
+                                    "*survObsFullAgeComp.rds", "*survObsFullWtAtAge.rds",
+                                    "*surveydiet.rds"))
 
   survs <- list.files(path=dir, pattern = as.character(datlook$pattern[datlook$dattype %in% type]), full.names = TRUE)
 
