@@ -11,12 +11,9 @@ saved as separate .rds files.}
 om_diet(
   config = configfile,
   dietfile = file_diet,
-  fgs = fgs,
   usersurvey = usersurvey_file,
   omlist_ss,
   n_reps = n_reps,
-  unidprey = 0,
-  alphamult = 1e+07,
   save = TRUE
 )
 }
@@ -31,22 +28,11 @@ If \code{is.null(dir)}, then \code{file_diet} can be the full file
 path or a file in your current working directory, or the \code{file_diet}
 will be appended to \code{dir} using \code{file.path}.}
 
-\item{fgs}{A data frame created by \code{\link{load_fgs}} that
-reads in the csv file containing functional group names, usually
-\code{"functionalGroups.csv"}.}
-
 \item{usersurvey}{survey config file in format of /config/usersurvey.R}
 
 \item{omlist_ss}{output of \code{om_species}}
 
 \item{n_reps}{number of replicate age, length, and weight-at-age compositions to be generated}
-
-\item{unidprey}{default (0) returns correctly identified prey, while
-decimal values up to 1 allocate up to that proportion of prey to an unidentified
-category at random.}
-
-\item{alphamult}{default (10000000) returns true diet comps, while a
-lower number (~10) returns high variance diet comp}
 
 \item{A}{logical value specifying if the function should save the output
 to the disk or not. The default is \code{TRUE}.}

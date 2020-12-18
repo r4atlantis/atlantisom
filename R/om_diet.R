@@ -14,12 +14,6 @@
 #'@param usersurvey survey config file in format of /config/usersurvey.R
 #'@param omlist_ss output of \code{om_species}
 #'@param n_reps number of replicate age, length, and weight-at-age compositions to be generated
-#'@param alphamult default (10000000) returns true diet comps, while a
-#'   lower number (~10) returns high variance diet comp
-#'@param unidprey default (0) returns correctly identified prey, while
-#'   decimal values up to 1 allocate up to that proportion of prey to an unidentified
-#'   category at random.
-#'@template fgs
 #'@template save
 #'@return Returns a list object containing dataframes of survey diet proportion:
 #' \itemize{
@@ -45,13 +39,16 @@
 #'}
 om_diet<- function(config = configfile,
                    dietfile = file_diet,
-                   fgs = fgs,
                    usersurvey = usersurvey_file,
                    omlist_ss,
                    n_reps = n_reps,
-                   unidprey = 0,
-                   alphamult = 10000000,
                    save = TRUE){
+
+  source(config)
+
+  #Load functional groups
+  fgs <- atlantisom::load_fgs(dir=d.name,
+                                       file_fgs = functional.groups.file)
 
   # load or read in saved detailed diet
   if(!file.exists(file.path(d.name,
