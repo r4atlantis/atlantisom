@@ -4,39 +4,43 @@
 \alias{sample_diet}
 \title{Sample total consumption to create diet composition data}
 \usage{
-sample_diet(dat, fgs)
+sample_diet(dat, fgs, unidprey = 0, alphamult = 1e+07)
 }
 \arguments{
-\item{dat}{A \code{data.frame} containing sampled predator species
-identifiers  in the first
-column and prey species consumption proportions in the remaining columns.}
+\item{dat}{A \code{data.frame} containing species (predator), agecl, time.days,
+atoutput (diet proportion) and prey species}
 
 \item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
+
+\item{unidprey}{default (0) returns correctly identified prey, while
+decimal values up to 1 allocate up to that proportion of prey to an unidentified
+category at random.}
+
+\item{alphamult}{default (10000000) returns true diet comps, while a
+lower number (~10) returns high variance diet comp}
 }
 \description{
 Create sampled diet composition data from the total consumption
    in an Atlantis scenario. Observation error and bias are added.
 }
 \details{
-The function takes total consumption data from an Atlantis scenario
-  where the data was read in from Atlantis output using \code{???}. One does
-  not need to use these functions to create \code{dat}, rather you must only
+The function takes diet composition data from an Atlantis scenario
+  where the data was read in from Atlantis output using \code{load_diet_comp} or
+  \code{load_detailed_diet_comp}.
+  One does not need to use these functions to create \code{dat}, rather you must only
   ensure that the structure of \code{dat} is the same.
-  Currently, the function creates sampled diet composition by removing
-  non-sampled and non-enumerated species groups from the total
-  consumption table from Atlantis.
-  Bias is added by setting infrequently consumed (<0.25) prey groups to
-  zero at random.
-  Error is incorporated into proportional composition entries by
-  adding uniform error to true values to half of the observations.
-  The function adjusts the remaining table so each row sums to one
-  before returning the "observed" mean diet composition summary table.
-  The function needs to be generalized to any Atlantis system by
-  selecting common species group identifiers to remove from the table.
-  Also, more realistic observation error and bias distributions
-  could be applied to obtain realistic diet composition data.
+  The user supplies a parameter \code{unidprey} ranging from 0 to 1 that determines
+  bias in sample diet composition. Bias is added by allocating a random portion of
+  each group to an "unidentified prey" category. The default \code{unidprey} is 0
+  which results in no reallocation of prey to unidentified categories.
+  The user supplies a parameter \code{alphamult} that detemines observation error
+  for sample diet compostion strays using a dirichlet distribution. The default
+  \code{alphamult} is 10000000 which results in minimal observation error in diet
+  composition. Lower values of \code{alphamult} increase observation error.
+  The function adjusts the remaining diet so each predator diet per agecl (if in
+  the input data) and time.days sums to one.
 }
 \examples{
 \dontrun{
@@ -62,5 +66,5 @@ The function takes total consumption data from an Atlantis scenario
 }
 }
 \author{
-Robert Wildermuth
+Robert Wildermuth, Sarah Gaichas
 }

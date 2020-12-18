@@ -273,15 +273,18 @@ run_truth <- function(scenario, dir = getwd(),
   if(verbose) message("Catch for all fisheries in biomass read in.")
 
   diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs)
+  diet <- diet[diet$atoutput>0,]
+  if(verbose) message("Global diet composition (proportion) read in.")
 
   # May 2019 let's not do the catch calcs until they are corrected
+  # Sept 2020 nor the biomass_eaten
 
   if(verbose) message("Start calc_functions")
   # catchbio <- calc_biomass_age(nums = catch,
   #   resn = resn, structn = structn, biolprm = biol)
-  biomass_eaten <- calc_pred_diet(dietcomp = diet,
-    eat = eat, grazing = grazing, vol = vol, biolprm = biol,
-    runprm = runprm)
+  # biomass_eaten <- calc_pred_diet(dietcomp = diet,
+  #   eat = eat, grazing = grazing, vol = vol, biolprm = biol,
+  #   runprm = runprm)
   biomass_ages <- calc_biomass_age(nums = nums,
     resn = resn, structn = structn, biolprm = biol)
   # bio_catch <- calc_biomass_age(nums = catch,
@@ -301,21 +304,26 @@ run_truth <- function(scenario, dir = getwd(),
   # does not match catch.txt output file
   # read that in separately instead
 
+  # SKG Sept 2020, no export of biomass_eaten
+  # does not match DetailedDietCheck.txt output
+  # polygon-specific consumption will be from DetailedDietCheck
+  # files are too big to combine; do separately from run_truth
+  # export model-wide true diet comp though
+
   if(!annage){
-    result <- list("biomass_eaten" = biomass_eaten,
-                   "biomass_ages" = biomass_ages,
+    result <- list("biomass_ages" = biomass_ages,
                    "catch" = catch,
                    "catch_all" = catch_all,
                    "nums" = nums,
                    "resn" = resn,
                    "structn" = structn,
+                   "diet" = diet,
                    "biolprm" = biol,
                    "fgs" = fgs)
   }
 
   if(annage){
-    result <- list("biomass_eaten" = biomass_eaten,
-                   "biomass_ages" = biomass_ages,
+    result <- list("biomass_ages" = biomass_ages,
                    "catch" = catch,
                    "catch_all" = catch_all,
                    "nums" = nums,
@@ -324,6 +332,7 @@ run_truth <- function(scenario, dir = getwd(),
                    "discage" = discage,
                    "resn" = resn,
                    "structn" = structn,
+                   "diet" = diet,
                    "biolprm" = biol,
                    "fgs" = fgs)
   }

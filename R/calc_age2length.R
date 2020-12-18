@@ -4,6 +4,8 @@
 #' Uses numbers at age, plus weight at age, and weight-length relationships to
 #' generate size comps
 #'
+#' @family calc functions
+#' @importFrom magrittr %>%
 #' @author Gavin Fay
 #' @export
 #' @template structn
@@ -13,8 +15,16 @@
 #' @template fgs
 #' @param maxbin The upper length (cm) bin applied to all species sampled. The default
 #' value is 150.
-#' @param CVlenage The variability in length at age (currently same for all species)
+#' Optionally, a \code{data.frame} can be supplied for multiple species with different
+#' species lengths: Columns are:
+#'                 species: the species name. Matches names in species
+#'                 maxlenbin:  the upper length (cm) bin applied to that species
+#' @param CVlenage The variability in length at age (same for all species)
 #' The default value is 0.1.
+#' Optionally, a \code{data.frame} can be supplied for multiple species with different
+#' CV of length at age: Columns are:
+#'                 species: the species name. Matches names in species
+#'                 cvlenage:  the variability in length at age for that species
 #' @param remove.zeroes  Logical asking whether to only return numbers at length for
 #' combinations of species, age, box, depth, etc that have numbers>0.
 #' The default value is \code{TRUE}.
@@ -45,23 +55,38 @@ calc_age2length <- function(structn, resn, nums,
 
 ### Inputs required
 ### Ages (hard-wired right now for 10 cohorts per group). This can be modified.
+# calculate this for standard age classes, not annage output. leave hard-wired
 ages = 1:10
-
-### Length structure - making very fine (and appropriate for fish),
-# but presumably this could be something
-# that is pre-specified in the call to the function, and would likely change by species
-# Perhaps solution is to make number of length bins fixed across groups, but
-# change the upper limits for each length bin
-upper.bins <- 1:maxbin
-
-# CV length at age for each species is Needed to create the age-length key.
-# This could conceivably be passed to the function with vals for each species.
 
 ## Get group codes to calculate size comps for
 #groups <- as.factor(fgs$Name)
 groups <- unique(as.factor(structn$species)) # use nums instead of structn?
 
 times <- unique(structn$time) # use nums instead of structn?
+
+### Length structure - making very fine (and appropriate for fish),
+# but presumably this could be something
+# that is pre-specified in the call to the function, and would likely change by species
+# Perhaps solution is to make number of length bins fixed across groups, but
+# change the upper limits for each length bin
+# SG changing to allow input by species or (default) single value
+if(length(maxbin)==1){
+  #set maxbin for all species to the single input value
+  maxbin <- data.frame(species = groups,
+                       maxlenbin = rep(maxbin, length(groups))
+                       )
+}
+
+# CV length at age for each species is Needed to create the age-length key.
+# This could conceivably be passed to the function with vals for each species.
+# SG changing to allow single CV or by species
+if(length(CVlenage)==1){
+  #set CVlenage for all species to the single input value
+  CVlenage <- data.frame(species = groups,
+                         cvlenage = rep(CVlenage, length(groups))
+                         )
+}
+
 
 #calculate mean length at age
 mulen <- nums
@@ -85,26 +110,33 @@ muweight$atoutput <- li_a_use*mulen$atoutput^li_b_use
 # #calculate length comps
 #(numbers at length at max resolution - can then be collapsed to appropriate
 #spatial/temporal resolution later)
-upper.bins <- 1:maxbin
-lower.bins <- c(0,upper.bins[-length(upper.bins)])
 lenfreq <- NULL
 
 # small effective sample sizes may return 0 nums for oldest age classes, resulting in NA
 # I'd rather keep that in here then change the match function in line 67 to return 0
-if(maxbin<max(mulen$atoutput, na.rm = TRUE)){
+spmax <- mulen %>%
+  dplyr::group_by(species) %>%
+  dplyr::summarise(maxmulen = max(atoutput, na.rm = TRUE)) %>%
+  dplyr::left_join(maxbin)
+
+if(any(spmax$maxlenbin<spmax$maxmulen)){
   print("Warning: maximum bin size is smaller than the longest fish in the sample. Fish above the maximum bin size will be removed from length compositions.")
 }
 for (irow in 1:nrow(mulen))
 #for (irow in 1:500)
   {
   group <- nums$species[irow]
+  group <- factor(group, levels=levels(groups))
   igroup <- which(groups==group)
   box <- nums$polygon[irow]
   layer <- nums$layer[irow]
   time <- nums$time[irow]
   age <- nums$agecl[irow]
 
-  sigma = sqrt(log((CVlenage^2)+1))
+  upper.bins <- 1:maxbin$maxlenbin[which(maxbin$species==group)]
+  lower.bins <- c(0,upper.bins[-length(upper.bins)])
+
+  sigma = sqrt(log((CVlenage$cvlenage[which(CVlenage$species==group)]^2)+1))
   muuse <- log(mulen$atoutput[irow]) - 0.5*(sigma^2)
   CumFracperbin <- plnorm(upper.bins,muuse,sigma)
   Fracperbin <- c(CumFracperbin[1],diff(CumFracperbin))

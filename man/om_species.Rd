@@ -26,13 +26,14 @@ Returns an omlist_ss list object containing dataframes and lists:
  \item{truecatchnum_ss, fishery catch at age output of \code{run_truth}, species_ss only}
  \item{funct.groups_ss, dataframe of species characteristics, species_ss only}
  \item{biol, list of biological parameters passed from input omlist}
- \item{boxpars, dataframe o spatial parameters}
+ \item{boxpars, dataframe of spatial parameters}
  \item{runpar, list of run parameters passed from input omlist}
 },
 }
 \description{
 A wrapper function to reduce a set of \code{atlantisom} objects from atlantis
 output to a single species or subset of species for creating assessment input datasets.
+Optionally includes diet data (set diet=TRUE in function call, default is FALSE)
 }
 \examples{
 \dontrun{
@@ -46,6 +47,7 @@ CC3om_2spp <- om_species(c("Pacific_sardine", "Mesopel_M_Fish"), CC3om)
 \seealso{
 Other wrapper functions: 
 \code{\link{om_comps}()},
+\code{\link{om_diet}()},
 \code{\link{om_index}()},
 \code{\link{om_init}()}
 }

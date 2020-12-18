@@ -89,25 +89,26 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
 
   # fix oldest age
 
-  # diagnostic plot--are interpolations where we expect them?
-  wtageclann <- ggplot(wtagecl_inc, aes(avgage, atoutput)) +
-    geom_point() +
-    geom_line(aes(colour = factor(time))) +
-    scale_x_continuous(minor_breaks = c(0:max(wtage_out$trueage))) +
-    theme_tufte() +
-    theme(legend.position = "none",
-          panel.grid.minor.x = element_line(colour = "grey50"),
-          panel.grid.major.x = element_line(colour = "grey50"))
-
-  diag.p <- wtageclann + geom_point(data = wtage_out,
-                          mapping = aes(trueage, wtIntage))
+  # # diagnostic plot--are interpolations where we expect them?
+  # wtageclann <- ggplot(wtagecl_inc, aes(avgage, atoutput)) +
+  #   geom_point() +
+  #   geom_line(aes(colour = factor(time))) +
+  #   scale_x_continuous(minor_breaks = c(0:max(wtage_out$trueage))) +
+  #   theme_tufte() +
+  #   theme(legend.position = "none",
+  #         panel.grid.minor.x = element_line(colour = "grey50"),
+  #         panel.grid.major.x = element_line(colour = "grey50"))
+  #
+  # diag.p <- wtageclann + geom_point(data = wtage_out,
+  #                         mapping = aes(trueage, wtIntage))
 
   #clean up to have only standard columns
   finaldata <- data.frame("species" = wtage_out$species,
                           "agecl" = wtage_out$trueage, "polygon" = NA, "layer" = NA,
                           "time" = wtage_out$time, "atoutput" = wtage_out$wtIntage)
 
-  return(list(finaldata, diag.p))
+  #return(list(finaldata, diag.p))
+  return(finaldata)
 
 }
 

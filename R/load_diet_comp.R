@@ -98,8 +98,6 @@ load_diet_comp <- function(dir = getwd(), file_diet, fgs){
 
   dietcomp <- data.frame(species = diet$species,
                          agecl = diet$agecl,
-                         polygon = NA,
-                         layer = NA,
                          time.days = diet$time.days,
                          atoutput = diet$dietcomp ,
                          prey = diet$prey)

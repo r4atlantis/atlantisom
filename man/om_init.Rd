@@ -53,6 +53,7 @@ CC3om <- om_init(here("config/CC3config.r"))
 \seealso{
 Other wrapper functions: 
 \code{\link{om_comps}()},
+\code{\link{om_diet}()},
 \code{\link{om_index}()},
 \code{\link{om_species}()}
 }

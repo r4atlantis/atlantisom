@@ -43,6 +43,11 @@
 aggregateData <- function(dat, time, species, boxes,
   keepColumns = c("species", "agecl", "polygon", "time")) {
 
+  # diet data has explicit time in days column, rename here
+  if("time.days" %in% names(dat) & !("time" %in% names(dat))) {
+    names(dat)[names(dat) == 'time.days'] <- 'time'
+  }
+
   #first select the appropriate rows (time and box)
   sampDat <- dat[dat$time%in%time &
                  dat$polygon%in%boxes &

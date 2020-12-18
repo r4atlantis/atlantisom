@@ -3,30 +3,33 @@
 #' @description Create sampled diet composition data from the total consumption
 #'    in an Atlantis scenario. Observation error and bias are added.
 #'
-#' @details The function takes total consumption data from an Atlantis scenario
-#'   where the data was read in from Atlantis output using \code{???}. One does
-#'   not need to use these functions to create \code{dat}, rather you must only
+#' @details The function takes diet composition data from an Atlantis scenario
+#'   where the data was read in from Atlantis output using \code{load_diet_comp} or
+#'   \code{load_detailed_diet_comp}.
+#'   One does not need to use these functions to create \code{dat}, rather you must only
 #'   ensure that the structure of \code{dat} is the same.
-#'   Currently, the function creates sampled diet composition by removing
-#'   non-sampled and non-enumerated species groups from the total
-#'   consumption table from Atlantis.
-#'   Bias is added by setting infrequently consumed (<0.25) prey groups to
-#'   zero at random.
-#'   Error is incorporated into proportional composition entries by
-#'   adding uniform error to true values to half of the observations.
-#'   The function adjusts the remaining table so each row sums to one
-#'   before returning the "observed" mean diet composition summary table.
-#'   The function needs to be generalized to any Atlantis system by
-#'   selecting common species group identifiers to remove from the table.
-#'   Also, more realistic observation error and bias distributions
-#'   could be applied to obtain realistic diet composition data.
+#'   The user supplies a parameter \code{unidprey} ranging from 0 to 1 that determines
+#'   bias in sample diet composition. Bias is added by allocating a random portion of
+#'   each group to an "unidentified prey" category. The default \code{unidprey} is 0
+#'   which results in no reallocation of prey to unidentified categories.
+#'   The user supplies a parameter \code{alphamult} that detemines observation error
+#'   for sample diet compostion strays using a dirichlet distribution. The default
+#'   \code{alphamult} is 10000000 which results in minimal observation error in diet
+#'   composition. Lower values of \code{alphamult} increase observation error.
+#'   The function adjusts the remaining diet so each predator diet per agecl (if in
+#'   the input data) and time.days sums to one.
 
-#' @author Robert Wildermuth
+#' @author Robert Wildermuth, Sarah Gaichas
+#' @importFrom magrittr %>%
 #' @export
-#' @param dat A \code{data.frame} containing sampled predator species
-#'   identifiers  in the first
-#'   column and prey species consumption proportions in the remaining columns.
+#' @param dat A \code{data.frame} containing species (predator), agecl, time.days,
+#'  atoutput (diet proportion) and prey species
 #' @template fgs
+#' @param alphamult default (10000000) returns true diet comps, while a
+#'   lower number (~10) returns high variance diet comp
+#' @param unidprey default (0) returns correctly identified prey, while
+#'   decimal values up to 1 allocate up to that proportion of prey to an unidentified
+#'   category at random.
 #'
 #' @examples
 #' \dontrun{
@@ -51,69 +54,116 @@
 #'		dim(obsDietComp)
 #'}
 
-sample_diet <- function(dat, fgs) {
+sample_diet <- function(dat, fgs, unidprey = 0, alphamult = 10000000) {
 
-  # first remove species not sampled and not quantified in gut analyses
+  # dat can be long format output of load_diet_comp, or create_survey_diet, both have layers aggregated
+  # load_diet_comp output has no polygon column and atoutput is proportion,
+  # create_survey_diet output has polygon column and atoutput is consumption in tons
+  # first aggregate to get global diet comp by species, agecl, time in proportion, if not already in that form
+
+  if("polygon" %in% names(dat)){
+    #sum over boxes and assume sampling occurs coastwide (the sampled boxes were already subset in create functions)
+    dat2 <- aggregate(dat$atoutput,list(dat$species,dat$agecl,dat$time, dat$prey),sum)
+    names(dat2) <- c("species","agecl","time","prey", "sumcons")
+
+    dat2 <- dat2 %>%
+      dplyr::group_by(species, agecl, time) %>%
+      dplyr::mutate(totcons = sum(sumcons)) %>%
+      dplyr::mutate(dietprop = sumcons/totcons) %>%
+      dplyr::arrange(species, agecl, time)
+
+    # rename to match output of load_diet_comp
+    names(dat2)[names(dat2) == 'dietprop'] <- 'atoutput'
+    names(dat2)[names(dat2) == 'time'] <- 'time.days'
+
+  } else dat2 <- dat
+
+  # leave as age class specific
+
+  # then apply id/aggregation bias--this adds prey categories that don't exist??
+  # user specified max proportion to reallocate
+  # apply taxonomically, allocating fish prey to fish unid, invert prey to invert unid, then some portion unid
+  # phytoplankton and zooplankton prey direct to unid?
+
+  # use grouptype column to allocate
   colnames(fgs) <- tolower(colnames(fgs))
-  # check for GroupType
-  if (!"grouptype" %in% colnames(fgs)) {
-    stop(paste("The column GroupType is not in your functional groups\n",
-      "file and thus sample_diet does not know which groups to sample.\n",
-      "The column InvertType might work but needs to be renamed GroupType."))
+
+  # check for GroupType or InvertType
+  if (!("grouptype" %in% colnames(fgs) | "inverttype"%in% colnames(fgs))) {
+    stop(paste("The columns GroupType or InvertType ars not in your functional\n",
+               "groups file."))
   }
+
+  # change inverttype to grouptype, contents should be the same
+  if("inverttype" %in% names(fgs)) names(fgs)[names(fgs) == 'inverttype'] <- 'grouptype'
+
   fgs$grouptype <- tolower(fgs$grouptype)
-  nonsampledtypes <- c("bird", "mammal", "cep", "sed_ep_ff", "sed_ep_other",
-    "mob_ep_other", "pwn", "lg_zoo", "lg_inf", "phytoben")
-  nonSampled <- subset(fgs, isfished == 0 | grouptype %in% nonsampledtypes |
-    code == "REP")
-  notenumeratedtypes <- c("bird", "mammal", "cep", "sed_ep_other", "lg_zoo",
-    "lg_inf", "phytoben")
-  notEnum <- subset(fgs, grouptype %in% notenumeratedtypes | code == "BFF")
 
-  dat <- dat[!(dat$Predator %in% nonSampled), !(colnames(dat) %in% notEnum)]
+  # associate prey categories (atlantis user guide I Table 8) with unid categories
+  fgs<- fgs %>%
+    dplyr::mutate(unidtype = dplyr::case_when((grouptype %in% c("mammal",
+                                                  "bird",
+                                                  "reptile")) ~ "Unid_Vert",
+                                (grouptype %in% c("fish",
+                                                  "shark")) ~ "Unid_Fish",
+                                (grouptype %in% c("fish_invert",
+                                                  "cep",
+                                                  "pwn",
+                                                  "lg_inf",
+                                                  "sm_inf",
+                                                  "sed_ep_ff",
+                                                  "sed_ep_other",
+                                                  "mobile_ep_other",
+                                                  "coral",
+                                                  "sponge")) ~ "Unid_Invert",
+                                (grouptype %in% c("lg_zoo",
+                                                  "med_zoo",
+                                                  "sm_zoo",
+                                                  "dinoflag",
+                                                  "lg_phy",
+                                                  "sm_phy")) ~ "Unid_Plankton",
+                                TRUE ~ "Unid"))
 
-  # add uniform error to half of the "observations"
-  nPreyObs <- NROW(dat) * (NCOL(dat)-1)
-  for(obs in 1:(nPreyObs/2)){
-    # determine row and column indices
-    rowR <- sample(1:NROW(dat), 1)
-    colC <- sample(2:NCOL(dat), 1)
+  # associate prey with prey category
+  # randomly assign up to unidprey % of prey in each prey category to associated unid category
+  # take remainder for identified prey
 
-    dat[rowR, colC] <- dat[rowR, colC] + runif(1, -0.1, 0.1)
-  }
+  fgsprey <- fgs[,c("name", "unidtype")]
+  names(fgsprey)[names(fgsprey) == 'name'] <- 'prey'
 
-  # add bias by removing little-observed prey at random
-  for(i in 1:NROW(dat)){
-    for(j in 2:NCOL(dat)){
-      if(dat[i,j] < 0.25 & runif(1) < 0.15){
-        dat[i,j] <- 0
-      }
-    }
-  }
+  dat2 <- dplyr::left_join(dat2, fgsprey) %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(unidprop = runif(1, 0, unidprey*atoutput),
+           sampprop = atoutput - unidprop)
 
-  # recalibrate so that rows add to 1
-  # first need to adjust/account for negative values
-  baseAdd <- min(dat[,2:NCOL(dat)])
-  if(baseAdd < 0){
+  # add rows with unid categories and sum prop assigned to the category
 
-    for(i in 1:NROW(dat)){
-      for(j in 2:NCOL(dat)){
-        if(dat[i,j] != 0){
-          dat[i,j] <- dat[i,j]-baseAdd
-        }
-      }
-    }
+  unidrows <- dat2 %>%
+    #select(-atoutput, -prey, -sampprop) %>%
+    dplyr::group_by(species, time.days, agecl, unidtype) %>%
+    dplyr::summarise(unidtot = sum(unidprop)) %>%
+    dplyr::ungroup() %>%
+    dplyr::rename(prey = unidtype, sampprop = unidtot)
 
-  }
+  dat2 <- dat2 %>%
+    dplyr::select(species, time.days, agecl, prey, sampprop) %>%
+    dplyr::full_join(unidrows)
 
+  # then apply Dirichlet obs error; Dirichlet equivalent of rmultinom(1, effN, trueagecomp)?
+  # see e.g., https://rdrr.io/cran/DirichletReg/man/Dirichlet.html
+  # alpha vector is the diet comp scaled by a user-supplied multiplier
+  # default to a very high multiplier for close-to-true diet comp
+  # lower multipliers stray further from true diet comp, alpha<1 goes way off
 
-  for(r in 1:NROW(dat)){
+  #tidy
+  dat2 <- dat2 %>%
+    dplyr::filter(sampprop>0) %>%
+    dplyr::group_by(species, time.days, agecl) %>%
+    dplyr::do(mutate(., dietSamp = DirichletReg::rdirichlet(1, alphamult * sampprop))) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(-sampprop)
 
-    denom <- rowSums(dat[r,2:NCOL(dat)])
-    dat[r,2:NCOL(dat)] <- (dat[r,2:NCOL(dat)])/denom
-  }
+  # returns diet proportions with observation error: Dirichlet, and bias from unknown id
 
-  return(dat)
+  return(dat2)
 }
-
-
