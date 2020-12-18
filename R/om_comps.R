@@ -8,16 +8,18 @@
 #'@param omlist_ss output of \code{om_species}
 #'@param n_reps number of replicate age, length, and weight-at-age compositions to be generated
 #'@template save
-#'@return Returns list objects containing dataframes of survey biomass index and total catch:
+#'@return Returns list objects containing dataframes of survey catch, length, and weight at age class and age:
 #' \itemize{
-#'  \item{survObsBiomB, list of replicate dataframes of observed survey biomass (tons)}
-#'  \item{fishObsCatchB, list of replicate dataframes of observed fishery catch (tons)}
 #'  \item{survObsAgeComp, list of replicate dataframes of observed survey age comp (n fish)}
 #'  \item{survObsLenComp, list of replicate dataframes of observed survey length comp (n fish)}
-#'  \item{survObsWtAtAge, list of replicate dataframes of observed survey weight at age (n fish)}
+#'  \item{survObsWtAtAge, list of replicate dataframes of observed survey weight at age (avg wt)}
 #'  \item{fishObsAgeComp, list of replicate dataframes of observed fishery age comp (n fish)}
 #'  \item{fishObsLenComp, list of replicate dataframes of observed fishery length comp (n fish)}
-#'  \item{fishObsWtAtAge, list of replicate dataframes of observed fishery weight at age (n fish)}
+#'  \item{fishObsWtAtAge, list of replicate dataframes of observed fishery weight at age (avg wt)}
+#'  \item{survObsFullAgeComp, list of replicate dataframes of observed survey annual age comp (n fish)}
+#'  \item{fishObsFullAgeComp, list of replicate dataframes of observed fishery age comp (n fish)}
+#'  \item{survObsFullWtAtAge, list of replicate dataframes of observed survey weight at annual age (avg wt)}
+#'  \item{fishObsFullWtAtAge, list of replicate dataframes of observed fishery weight at annual age (avg wt)}
 #' },
 #'
 #'@export

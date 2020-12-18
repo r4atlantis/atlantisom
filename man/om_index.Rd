@@ -58,6 +58,7 @@ CC3om_sard_ind <- om_index(usersurvey = here("config/usersurvey.R"),
 \seealso{
 Other wrapper functions: 
 \code{\link{om_comps}()},
+\code{\link{om_diet}()},
 \code{\link{om_init}()},
 \code{\link{om_species}()}
 }

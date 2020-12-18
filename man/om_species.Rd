@@ -47,6 +47,7 @@ CC3om_2spp <- om_species(c("Pacific_sardine", "Mesopel_M_Fish"), CC3om)
 \seealso{
 Other wrapper functions: 
 \code{\link{om_comps}()},
+\code{\link{om_diet}()},
 \code{\link{om_index}()},
 \code{\link{om_init}()}
 }

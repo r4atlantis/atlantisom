@@ -25,8 +25,11 @@
 #' @param dat A \code{data.frame} containing species (predator), agecl, time.days,
 #'  atoutput (diet proportion) and prey species
 #' @template fgs
-#' @param alphamult
-#' @param unidprey
+#' @param alphamult default (10000000) returns true diet comps, while a
+#'   lower number (~10) returns high variance diet comp
+#' @param unidprey default (0) returns correctly identified prey, while
+#'   decimal values up to 1 allocate up to that proportion of prey to an unidentified
+#'   category at random.
 #'
 #' @examples
 #' \dontrun{

@@ -14,7 +14,12 @@ atoutput (diet proportion) and prey species}
 reads in the csv file containing functional group names, usually
 \code{"functionalGroups.csv"}.}
 
-\item{unidprey}{}
+\item{unidprey}{default (0) returns correctly identified prey, while
+decimal values up to 1 allocate up to that proportion of prey to an unidentified
+category at random.}
+
+\item{alphamult}{default (10000000) returns true diet comps, while a
+lower number (~10) returns high variance diet comp}
 }
 \description{
 Create sampled diet composition data from the total consumption
