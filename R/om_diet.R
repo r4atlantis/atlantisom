@@ -102,4 +102,6 @@ om_diet<- function(config = configfile,
 
   }
 
+  return(survObsDiets)
+
 }
