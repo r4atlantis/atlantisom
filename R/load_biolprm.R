@@ -112,7 +112,7 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   return(list("wl" = wl, "redfieldcn" = r.cn, "kgw2d" = kgw2d,
     "agespercohort" = agespercohort, "ageofmaturity" = ageofmaturity,
     "maturityogive" = maturityogive, "vertebrates" = vertebrates,
-    "kswr" = kwsr, "kwrr" = kwrr, "fsp" = fsp, "BHalpha" = BHalpha,
+    "kwsr" = kwsr, "kwrr" = kwrr, "fsp" = fsp, "BHalpha" = BHalpha,
     "BHbeta" = BHbeta, "r.rs" = r.rs, "time_spawn" = time_spawn,
     "recruit_period" = recruit_period, "recruit_time" = recruit_time))
 
