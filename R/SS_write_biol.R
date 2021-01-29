@@ -11,7 +11,7 @@
 SS_write_biol <- function(ctl_obj, biolprm_object, species_code, M_est=NULL, wtsage, lensage, lenwt_a = NULL, lenwt_b = NULL){
 
   #vector of parameters needed
-  needed_pars <- c("BHalpha","BHbeta","kgw2d","redfieldcn","maturityogive","fsp","kswr","kwrr", "wl")
+  needed_pars <- c("BHalpha","BHbeta","kgw2d","redfieldcn","maturityogive","fsp","kwsr","kwrr", "wl")
   ind <- rep(0,length(needed_pars))
 
   #Extract needed parameters from a list and assign them to unique vars
@@ -38,10 +38,10 @@ SS_write_biol <- function(ctl_obj, biolprm_object, species_code, M_est=NULL, wts
     mutate(weight=meanwt*20*5.7)
 
   #Calculate recruitment parameters from atlantis values
-  bh_lnro <- log(BHalpha) - log(kwrr+kswr)
+  bh_lnro <- log(BHalpha) - log(kwrr+kwsr)
   sb0 <- exp(bh_lnro)*sum(exp(-M_est*wtsage_N[,"agecl"])*fsp*wtsage_N[,"weight"]*as.numeric(t(maturityogive[-1])))
   b0 <- sum(exp(-Z*wtsage_N[,"agecl"])*exp(bh_lnro)*wtsage_N[,"weight"])
-    bh_steepness <- ((kwrr+kswr)*0.2*sb0)/(BHbeta+0.2*sb0)
+    bh_steepness <- ((kwrr+kwsr)*0.2*sb0)/(BHbeta+0.2*sb0)
 
   ##Function that assigns ctl values to the ones from atlantis and sets phase and upper and lower bounds
   set_par_values <- function(X, name, value, phase){
