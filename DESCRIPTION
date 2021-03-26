@@ -27,11 +27,13 @@ Imports:
     stringr,
     dplyr,
     tidyr,
+    ggplot2,
     magrittr,
     chron,
     xml2,
     data.table,
-    r4ss
+    r4ss,
+    here
 Suggests: 
     knitr,
     rmarkdown,
