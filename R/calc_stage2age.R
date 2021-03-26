@@ -19,6 +19,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' dir <- system.file("extdata", "SETAS_Example", package = "atlantisom")
 #' file_nc="outputs.nc"
 #' fgs=load_fgs(dir = dir, "Functional_groups.csv")
@@ -50,6 +51,7 @@
 #'                        atoutput = nums_agg$x)
 #' test <- calc_stage2age(nums_agg, biolprm, YOY, fgs, runprm)
 #' rm(test)
+#' }
 
 calc_stage2age <- function(nums_data, biolprm, yoy, fgs, runprm) {
 

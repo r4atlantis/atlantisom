@@ -24,6 +24,7 @@ Will be called in the run_truth file, and requires inputs from
 \code{\link{load_biolprm}}.
 }
 \examples{
+\dontrun{
 dir <- system.file("extdata", "SETAS_Example", package = "atlantisom")
 file_nc="outputs.nc"
 fgs=load_fgs(dir = dir, "Functional_groups.csv")
@@ -55,6 +56,7 @@ nums_agg <- data.frame(species = nums_agg$species,
                        atoutput = nums_agg$x)
 test <- calc_stage2age(nums_agg, biolprm, YOY, fgs, runprm)
 rm(test)
+}
 }
 \seealso{
 Other calc functions: 
