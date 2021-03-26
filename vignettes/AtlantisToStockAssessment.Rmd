@@ -15,7 +15,7 @@ First, you will want to load packages and initialize the correct file and workin
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyr)
-require(dplyr)
+library(dplyr)
 library(ggplot2)
 library(data.table)
 library(here)
@@ -24,10 +24,10 @@ library(here)
 If you want to load the local of the atlantisom R package, use devtools:
 
 ```{r message=FALSE, warning=FALSE}
-require(devtools)
+#library(devtools)
 #package.dir <- "C:/Users/chris/Documents/Github/atlantisom"
-package.dir <- here()
-devtools::load_all(package.dir)
+#package.dir <- here()
+#devtools::load_all(package.dir)
 library(atlantisom)
 ```
 
@@ -42,7 +42,7 @@ devtools::install_github("r4atlantis\atlantisom")
 You will first need to tell `atlantisom` to know where to look for the output and input files from your atlantis model run. Here, we will give the directory where the Atlantis inputs and outputs are stored `d.name`, the location of the functional groups file `functional.group.file` (.csv), the biomass pools file `biomass.pools.file` (.nc), the box locations file `box.file` (.bgm), an `initial.conditions.file` (.nc), the biology .prm file `biol.prm.file` (.prm), and the run .prm file `run.prm.file` (.prm). You will also need to specify a scenario name, which will be used to define the output files (i.e. output is stored in a number of netCDF files of the format: output<scenario><value>.nc). All of these files should be stored in `d.name`.
 
 ```{r initialize, eval = FALSE}
-ss.directory <- here("inst/extdata/Sardine_SS_files")
+#ss.directory <- here("inst/extdata/Sardine_SS_files")
 
 #Need a way to manage data that doesn't rely on specific paths
 d.name <- here("non_synced_data/CalCurrentSummitScenario1")
@@ -87,7 +87,7 @@ Now the R object `results` with the comprehensive results from the Atlantis mode
 
 There are a number of functions to "sample" biological data from this comprehensive Atlantis output. These include `create_survey`, `sample_ages`, `sample_diet`, `sample_fish`, and `sample_survey_biomass`. Below, we use the `sample_survey_biomass` function to extract time series of a biomass index for a survey and fisheries CPUE for Pacific sardine. 
 
-```{r}
+```{r, eval = FALSE, echo = TRUE}
 species=c("Pacific_sardine")
 
 ####### Boxes = spatial area, use all for now
@@ -130,9 +130,10 @@ catchObsBiom <- sample_survey_biomass(dat=fishery,cv=cv,wtAtAge)
 
 We now have the full time series of catch and survey biomass from the atlantis output for Pacific sardine. Next, we read in the dummy SS data (`.dat`) file and replace the abundance indices with the sampled time series.
 
-```{r}
+```{r, eval = FALSE, echo = TRUE}
 #Read in dummy data
-sardine.dat <- r4ss::SS_readdat_3.30(file.path(ss.directory, "sardEM_3_3.dat"))
+file <- system.file("extdata","Sardine_SS_files",file="sardEM_3_3.dat",package="atlantisom")
+sardine.dat <- r4ss::SS_readdat_3.30(file)
 
 #Replace CPUE observations for first time series with output from Atlantis - last 25 years
 # SS units are metric tons, so we divide by 1000
