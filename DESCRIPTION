@@ -30,9 +30,12 @@ Imports:
     magrittr,
     chron,
     xml2,
-    data.table
+    data.table,
+    r4ss
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    ggforce,
+    ggthemes
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
