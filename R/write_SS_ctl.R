@@ -1,6 +1,14 @@
-#'@description Function to write SS control file changes in line with Atlantis operating model. The function modifies the key biological
-#'and selectivity parameter initial values and bounds. These parameters include: LN(R0), h, M, L1, L2, k, CV_young, CV_old
+#' write SS control
+#'
+#'
+#'@description Function to write SS control file changes in line with Atlantis operating model.
+#'The function modifies the key biological and selectivity parameter initial values and bounds.
+#'These parameters include: LN(R0), h, M, L1, L2, k, CV_young, CV_old
 #'TO DO: add in logic to modify which parameters are fixed and which are estimated
+#'
+#'@param wt_len_obj ??
+#'@param biolprm_obj ??
+#'
 
 write_SS_ctl <- function(wt_len_obj, biolprm_obj, ...){
 
