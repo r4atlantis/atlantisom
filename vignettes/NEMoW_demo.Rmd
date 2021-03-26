@@ -2,17 +2,14 @@
 title: "atlantisom demo notebook"
 author: "Sarah Gaichas and Christine Stawitz"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-output:
-  rmarkdown::html_vignette:
-    toc: true
-    number_sections: true
-    fig_caption: true
+output: rmarkdown::html_vignette
 bibliography: refs.bib
 csl: cjfas.csl
 vignette: >
   %\VignetteIndexEntry{atlantisom demo notebook}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
+  
 ---
 
 ```{r setup, include=FALSE}
