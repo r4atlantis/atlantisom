@@ -2,7 +2,17 @@
 title: "AtlantisOMtoSSVignette"
 author: "Christine Stawitz, Sarah Gaichas"
 date: "May 8, 2019"
-output: html_document
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: true
+    fig_caption: true
+bibliography: refs.bib
+csl: cjfas.csl
+vignette: >
+  %\VignetteIndexEntry{AtlantisOMtoSSVignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
