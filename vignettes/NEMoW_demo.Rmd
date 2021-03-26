@@ -16,7 +16,6 @@ library(ggplot2)
 library(data.table)
 library(ggforce)
 library(ggthemes)
-library(devtools)
 #devtools::install_github("r4atlantis/atlantisom")
 library(atlantisom)
 ```
