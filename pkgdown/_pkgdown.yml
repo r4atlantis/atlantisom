@@ -1,0 +1,71 @@
+url: https://r4atlantis.github.io/atlantisom
+
+reference:
+- title: "Load"
+  desc: "Functions that read in output from Atlantis."
+- contents:
+  - load_bioind
+  - load_biolprm
+  - load_box
+  - load_boxarea
+  - load_bps
+  - load_catch
+  - load_detailed_diet_comp
+  - load_diet_comp
+  - load_fgs
+  - load_fisheries
+  - load_meta
+  - load_nc
+  - load_nc_annage
+  - load_nc_physics
+  - load_runprm
+  - load_yoy
+- title: "Create"
+  desc: "Functions that conduct run multiple sample functions to create either fishery-independent or fishery-dependent data."
+- contents:
+  - create_env
+  - create_fishery_subset
+  - create_survey
+  - create_survey_diet
+- title: "Sample"
+  desc: "Functions for manipulate Atlantis data which signifies the truth.
+   These manipulations generate sampled data for use in various estimation models."
+- contents:
+  - sample_ages
+  - sample_diet
+  - sample_fish
+  - sample_fishery_totcatch
+  - sample_survey_biomass
+  - sample_survey_numbers
+- title: "Write"
+  desc: " Functions for writing output the disk."
+- contents:
+  - write_meta
+- title: "Other"
+  desc: "Need to categorize"
+- contents:
+  - aggregate_comps
+  - aggregateData
+  - aggregateDensityData
+  - calc_age2length
+  - calc_avgwtstage2age
+  - calc_biomass_age
+  - calc_pred_diet
+  - calc_stage2age
+  - calc_timestep2time
+  - calc_Z
+  - get_boundary
+  - om_comps
+  - om_diet
+  - om_index
+  - om_init
+  - om_species
+  - read_savedsurvs
+  - reformat_compositions
+  - run_stocksynthesis
+  - run_truth
+  - SS_write_biol
+  - SS_write_comps
+  - SS_write_EWAA
+  - SS_write_ts
+

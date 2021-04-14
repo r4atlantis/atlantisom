@@ -1,3 +1,6 @@
+#' Read SS dat
+#'
+#'
 #'@description A wrapper function to read in an SS .dat file, modify it to add a catch vector, survey CPUE, CAAL and length comp data
 #' from a survey, and age and length comp data from a fishery using the \code{atlantisom} functions to take data from atlantis.
 #'@param model_dir the directory (relative to inst extdata) your SS files are in
@@ -9,7 +12,11 @@
 #'@param fleets a vector corresponding to the index of your fishing fleet followed by the index of your survey fleet
 #'@param survey_lencomp output from the atlantisom \code{calc_age2length()} function for the survey
 #'@param fishery_lencomp output from the atlantisom \code{calc_age2length()} function for the fishery
+#'
+#'
 #'@return stocksynthesis.data the dat file list object
+#'
+#'
 
 write_SS_dat <- function(model_dir, datfile_name, survey_ts, fishery_ts, survey_config, fishery_config, fleets = c(2,1),
                          survey_lencomp, fishery_lencomp){

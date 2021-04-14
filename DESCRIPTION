@@ -20,6 +20,7 @@ Description: The atlantisom package develops data sets for use in other
     modelling frameworks from an Atlantis scenario. Functions located within
     the package may be helpful for users of Atlantis wishing to look at model
     output as well.
+Encoding: UTF-8
 License: What license is it under?
 LazyData: TRUE
 Imports: 
@@ -27,12 +28,18 @@ Imports:
     stringr,
     dplyr,
     tidyr,
+    ggplot2,
     magrittr,
     chron,
     xml2,
-    data.table
+    data.table,
+    r4ss,
+    here,
+    DirichletReg
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    ggforce,
+    ggthemes
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1

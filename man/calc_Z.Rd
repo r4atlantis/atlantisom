@@ -47,6 +47,7 @@ Steps included when translating from stages (i.e.,
 This function uses the YOY.txt and Nums to calculate Z.
 }
 \examples{
+\dontrun{
 dir <- system.file("extdata", "SETAS_Example", package = "atlantisom")
 file_nc <- "outputs.nc"
 fgs <- load_fgs(dir = dir, "Functional_groups.csv")
@@ -68,7 +69,7 @@ run <- load_runprm(dir, "Run_settings.xml")
 yoy <- load_yoy(dir = dir, file_yoy = "outputsYOY.txt")
 calc_Z(yoy = yoy, nums = nums_data, fgs = fgs, biolprm = biolprm,
   toutinc = run$toutinc)
-
+}
 }
 \seealso{
 Other calc functions: 

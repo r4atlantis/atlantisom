@@ -1,17 +1,13 @@
 ---
 title: "An introduction to atlantisom for simulating multispecies observations"
 date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    toc: true
-    number_sections: true
-    fig_caption: true
+output: rmarkdown::html_vignette
 bibliography: refs.bib
 csl: cjfas.csl
 vignette: >
-  %\VignetteIndexEntry{An introduction to atlantisom}
+  %\VignetteIndexEntry{An introduction to atlantisom for simulating multispecies observations}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, echo = FALSE, message = FALSE}
