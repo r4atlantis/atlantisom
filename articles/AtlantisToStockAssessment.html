@@ -75,7 +75,7 @@
 
       
 
-      </header><script src="AtlantisToStockAssessment_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="AtlantisToStockAssessment_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>AtlantisOMtoSSVignette</h1>
@@ -109,7 +109,7 @@
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">atlantisom</span><span class="op">)</span></code></pre></div>
 <p>Or you can install directly from the Github repository.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"r4atlantis\atlantisom"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r4atlantis\atlantisom"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="initializing-input-files-and-directories" class="section level2">
 <h2 class="hasAnchor">
@@ -126,30 +126,30 @@
 <h2 class="hasAnchor">
 <a href="#getting-the-true-operating-model-values" class="anchor"></a>Getting the “true” operating model values</h2>
 <p>There are a number of functions in the package that begin with the prefix <code>load</code> that load various files. See documentation if you’d only like to load one file. The <code><a href="../reference/run_truth.html">atlantisom::run_truth()</a></code> function uses the above file definitions and calls a number of the <code>load</code> functions to read in all of the atlantis output. Note: this call reads in a number of large .nc files, so it will take a few minutes to return.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Load functional groups</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>funct.groups <span class="ot">&lt;-</span> <span class="fu">load_fgs</span>(<span class="at">dir=</span>d.name,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">file_fgs =</span> functional.groups.file)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Get just the names of active functional groups</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>funct.group.names <span class="ot">&lt;-</span> funct.groups <span class="sc">%&gt;%</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(IsTurnedOn <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Name) <span class="sc">%&gt;%</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  .<span class="sc">$</span>Name</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(<span class="fu">file.path</span>(d.name,<span class="st">"outputCCV3run_truth.RData"</span>))){</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#Store all loaded results into an R object</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">run_truth</span>(<span class="at">scenario =</span> scenario.name,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>          <span class="at">dir =</span> d.name,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_fgs =</span> functional.groups.file,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_bgm =</span> box.file,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>          <span class="at">select_groups =</span> funct.group.names,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_init =</span> initial.conditions.file,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_biolprm =</span> biol.prm.file,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>          <span class="at">file_runprm =</span> run.prm.file</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>          <span class="fu">save</span>(results, <span class="at">file =</span> <span class="st">"outputCCV3run_truth.RData"</span>)</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span>{</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">get</span>(<span class="fu">load</span>(<span class="fu">file.path</span>(d.name,<span class="st">"outputCCV3run_truth.RData"</span>)))</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co">#Load functional groups</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>funct.groups &lt;-<span class="st"> </span><span class="kw">load_fgs</span>(<span class="dt">dir=</span>d.name,</span>
+<span id="cb5-3"><a href="#cb5-3"></a>                         <span class="dt">file_fgs =</span> functional.groups.file)</span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">#Get just the names of active functional groups</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>funct.group.names &lt;-<span class="st"> </span>funct.groups <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-6"><a href="#cb5-6"></a><span class="st">  </span><span class="kw">filter</span>(IsTurnedOn <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="st">  </span><span class="kw">select</span>(Name) <span class="op">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="st">  </span>.<span class="op">$</span>Name</span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="cf">if</span>(<span class="op">!</span><span class="kw">file.exists</span>(<span class="kw">file.path</span>(d.name,<span class="st">"outputCCV3run_truth.RData"</span>))){</span>
+<span id="cb5-11"><a href="#cb5-11"></a><span class="co">#Store all loaded results into an R object</span></span>
+<span id="cb5-12"><a href="#cb5-12"></a>results &lt;-<span class="st"> </span><span class="kw">run_truth</span>(<span class="dt">scenario =</span> scenario.name,</span>
+<span id="cb5-13"><a href="#cb5-13"></a>          <span class="dt">dir =</span> d.name,</span>
+<span id="cb5-14"><a href="#cb5-14"></a>          <span class="dt">file_fgs =</span> functional.groups.file,</span>
+<span id="cb5-15"><a href="#cb5-15"></a>          <span class="dt">file_bgm =</span> box.file,</span>
+<span id="cb5-16"><a href="#cb5-16"></a>          <span class="dt">select_groups =</span> funct.group.names,</span>
+<span id="cb5-17"><a href="#cb5-17"></a>          <span class="dt">file_init =</span> initial.conditions.file,</span>
+<span id="cb5-18"><a href="#cb5-18"></a>          <span class="dt">file_biolprm =</span> biol.prm.file,</span>
+<span id="cb5-19"><a href="#cb5-19"></a>          <span class="dt">file_runprm =</span> run.prm.file</span>
+<span id="cb5-20"><a href="#cb5-20"></a>          <span class="kw">save</span>(results, <span class="dt">file =</span> <span class="st">"outputCCV3run_truth.RData"</span>)</span>
+<span id="cb5-21"><a href="#cb5-21"></a>)</span>
+<span id="cb5-22"><a href="#cb5-22"></a>} <span class="cf">else</span>{</span>
+<span id="cb5-23"><a href="#cb5-23"></a>  results &lt;-<span class="st"> </span><span class="kw">get</span>(<span class="kw">load</span>(<span class="kw">file.path</span>(d.name,<span class="st">"outputCCV3run_truth.RData"</span>)))</span>
+<span id="cb5-24"><a href="#cb5-24"></a>}</span></code></pre></div>
 <p>Now the R object <code>results</code> with the comprehensive results from the Atlantis model has been read in.</p>
 </div>
 <div id="simulating-sampling-from-an-atlantis-om" class="section level2">
