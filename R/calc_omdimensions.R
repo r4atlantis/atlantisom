@@ -2,7 +2,8 @@
 #'
 #'@NoRd
 #'
-
+  # This is the current script which needs to change into a set of functions
+  # script only works with certain directory structure
   # #survey species inherited from omlist_ss
   # survspp <- omlist_ss$species_ss
   # # survey season and other time dimensioning parameters
