@@ -1,4 +1,5 @@
 #'Initializes atlantisom
+#'
 #'@description A wrapper function to initialize an \code{atlantisom} objects from atlantis
 #'output prior to creating assessment input datasets. This makes a large object!
 #'@param config file specifying directory with atlantis model outputs and identifying key files

@@ -2,11 +2,7 @@
 % Please edit documentation in R/om_comps.R
 \name{om_comps}
 \alias{om_comps}
-\title{Generate composition data from atlantisom
-#'@description A wrapper function to create survey and fishery compositional data for assessment input.
-Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
-Results for more than one survey are generated with multiple survey config files and
-saved as separate .rds files.}
+\title{Generate composition data from atlantisom}
 \usage{
 om_comps(
   usersurvey = usersurvey_file,
@@ -44,7 +40,6 @@ Returns list objects containing dataframes of survey catch, length, and weight a
 },
 }
 \description{
-Generate composition data from atlantisom
 #'@description A wrapper function to create survey and fishery compositional data for assessment input.
 Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
 Results for more than one survey are generated with multiple survey config files and

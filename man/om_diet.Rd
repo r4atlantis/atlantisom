@@ -2,11 +2,7 @@
 % Please edit documentation in R/om_diet.R
 \name{om_diet}
 \alias{om_diet}
-\title{Generate diet composition data from atlantisom
-#'@description A wrapper function to create survey diet composition data for model input.
-Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
-Results for more than one survey are generated with multiple survey config files and
-saved as separate .rds files.}
+\title{Generate diet composition data from atlantisom}
 \usage{
 om_diet(
   config = configfile,
@@ -44,7 +40,6 @@ Returns a list object containing dataframes of survey diet proportion:
 },
 }
 \description{
-Generate diet composition data from atlantisom
 #'@description A wrapper function to create survey diet composition data for model input.
 Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
 Results for more than one survey are generated with multiple survey config files and

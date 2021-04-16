@@ -1,4 +1,5 @@
 #'Generate composition data from atlantisom
+#'
 #'#'@description A wrapper function to create survey and fishery compositional data for assessment input.
 #'Takes the output of \code{om_species}. Wrapper can generate replicates. Saves output as .rds
 #'Results for more than one survey are generated with multiple survey config files and
