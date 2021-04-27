@@ -5,6 +5,7 @@ reference:
   desc: "Functions that read in output from Atlantis."
 - contents:
   - load_bioind
+  - load_agebioind
   - load_biolprm
   - load_box
   - load_boxarea
