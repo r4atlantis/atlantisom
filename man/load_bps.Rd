@@ -41,6 +41,7 @@ bps <- load_bps(dir = d, fgs = "Functional_groups.csv", file_init = "Initial_con
 \code{\link{load_fgs}}
 
 Other load functions: 
+\code{\link{load_agebioind}()},
 \code{\link{load_bioind}()},
 \code{\link{load_biolprm}()},
 \code{\link{load_boxarea}()},

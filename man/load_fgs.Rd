@@ -32,6 +32,7 @@ rm(fgs)
 }
 \seealso{
 Other load functions: 
+\code{\link{load_agebioind}()},
 \code{\link{load_bioind}()},
 \code{\link{load_biolprm}()},
 \code{\link{load_boxarea}()},

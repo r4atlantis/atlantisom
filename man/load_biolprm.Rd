@@ -32,6 +32,7 @@ rm(biolprm)
 }
 \seealso{
 Other load functions: 
+\code{\link{load_agebioind}()},
 \code{\link{load_bioind}()},
 \code{\link{load_boxarea}()},
 \code{\link{load_box}()},
