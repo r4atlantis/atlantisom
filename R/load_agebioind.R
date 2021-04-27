@@ -17,20 +17,21 @@
 #' @export
 #'
 #' @examples
-#' \dontrun {
+#' \dontrun{
 #' d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
 #' file <- "outputsAgeBiomIndx.txt"
 #' fgs <- load_fgs(dir = d, "Functional_groups.csv")
 #' test <- load_agebioind(dir = d, file_bioind = file, fgs = fgs)
 #' }
+
 load_agebioind <- function(dir, file_bioind, fgs, verbose = FALSE) {
   file.bioind <- file.path(dir, file_bioind)
   truebio <- read.table(file.bioind, header = TRUE)
 
   truebio <- truebio %>%
     tidyr::pivot_longer(.,cols=contains("."),names_to = "code",values_to = "atoutput") %>%
-    dplyr::mutate(age = as.numeric(unlist(stringr::str_split(code,"\\."))[2])) %>%
-    dplyr::mutate(code = unlist(stringr::str_split(code,"\\."))[1])
+    dplyr::mutate(age = stringr::str_extract(code,"[^.]+$")) %>%
+    dplyr::mutate(code = stringr::str_extract(code,"^[a-z,A-Z]+"))
 
   groupslookup <- fgs[fgs$IsTurnedOn > 0,] %>%
     dplyr::select(Code,Name)
@@ -38,10 +39,8 @@ load_agebioind <- function(dir, file_bioind, fgs, verbose = FALSE) {
   out <- truebio %>% dplyr::left_join(.,groupslookup,by = c("code" = "Code")) %>%
     dplyr::rename(species = Name, time=Time) %>%
     dplyr::mutate(agecl=NA,polygon=NA,layer=NA) %>%
-    dplyr::select(species,agecl,polygon,layer,time,atoutput,code,age)
-
-
-  out <- out[order(out$species,out$time,out$age,out$polygon,out$agecl),]
+    dplyr::select(species,agecl,polygon,layer,time,atoutput,code,age) %>%
+    dplyr::arrange(species,time,age,polygon,agecl)
 
   return(out)
 }

@@ -34,10 +34,12 @@ This function loads the Atlantis AgeBiomIndx.txt output file.
   BSSslope, HabitCover) available in the BiomInx.txt file.
 }
 \examples{
+\dontrun{
 d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
-file <- "outputsBiomIndx.txt"
+file <- "outputsAgeBiomIndx.txt"
 fgs <- load_fgs(dir = d, "Functional_groups.csv")
-test <- load_bioind(dir = d, file_bioind = file, fgs = fgs)
+test <- load_agebioind(dir = d, file_bioind = file, fgs = fgs)
+}
 }
 \seealso{
 Other load functions: 
