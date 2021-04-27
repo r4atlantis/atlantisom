@@ -4,15 +4,15 @@
 \alias{load_agebioind}
 \title{Load Atlantis \code{[...]AgeBiomIndx.txt} file}
 \usage{
-load_agebioind(dir, file_bioind, fgs, verbose = FALSE)
+load_agebioind(dir, file_agebioind, fgs, verbose = FALSE)
 }
 \arguments{
 \item{dir}{The directory of the atlantis model output, where the
 default is \code{getwd()}.}
 
-\item{file_bioind}{A character value specifying the name of the text file
-that contains total annual biomass in tonnes output for an Atlantis scenario.
-An example entry would be \code{"outputSETASBiomIndx.txt"}.}
+\item{file_agebioind}{A character value specifying the name of the output text file
+that contains total annual biomass by age (in tonnes) for an Atlantis scenario.
+An example entry would be \code{"outputSETASAgeBiomIndx.txt"}.}
 
 \item{fgs}{A data frame created by \code{\link{load_fgs}} that
 reads in the csv file containing functional group names, usually
@@ -29,9 +29,7 @@ formatted similarly to the outputs of run_truth.
 This function loads the Atlantis AgeBiomIndx.txt output file.
   Biomass (total annual tonnes) is only available for species that are
   turned on in the \code{functionalGroups.csv} file. Function does not
-  load relative biomass for these species. Also loads ecosystem
-  indicators (PelDemRatio, PiscivPlankRatio, DivCount, InfEpiRatio,
-  BSSslope, HabitCover) available in the BiomInx.txt file.
+  load relative biomass for these species.
 }
 \examples{
 \dontrun{

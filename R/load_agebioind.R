@@ -3,11 +3,9 @@
 #' @description This function loads the Atlantis AgeBiomIndx.txt output file.
 #'   Biomass (total annual tonnes) is only available for species that are
 #'   turned on in the \code{functionalGroups.csv} file. Function does not
-#'   load relative biomass for these species. Also loads ecosystem
-#'   indicators (PelDemRatio, PiscivPlankRatio, DivCount, InfEpiRatio,
-#'   BSSslope, HabitCover) available in the BiomInx.txt file.
+#'   load relative biomass for these species.
 #' @template dir
-#' @template file_bioind
+#' @template file_agebioind
 #' @template fgs
 #' @template verbose
 #' @family load functions
@@ -24,8 +22,8 @@
 #' test <- load_agebioind(dir = d, file_bioind = file, fgs = fgs)
 #' }
 
-load_agebioind <- function(dir, file_bioind, fgs, verbose = FALSE) {
-  file.bioind <- file.path(dir, file_bioind)
+load_agebioind <- function(dir, file_agebioind, fgs, verbose = FALSE) {
+  file.bioind <- file.path(dir, file_agebioind)
   truebio <- read.table(file.bioind, header = TRUE)
 
   truebio <- truebio %>%
