@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract the box area from the bgm-file — load_boxarea • atlantisom</title>
+<title>Load Atlantis [...]AgeBiomIndx.txt file — load_agebioind • atlantisom</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="Extract the box area from the bgm-file — load_boxarea" />
-<meta property="og:description" content="This function extracts the box area for each polygon from the atlantis bgm-file." />
+<meta property="og:title" content="Load Atlantis [...]AgeBiomIndx.txt file — load_agebioind" />
+<meta property="og:description" content="This function loads the Atlantis AgeBiomIndx.txt output file.
+  Biomass (total annual tonnes) is only available for species that are
+  turned on in the functionalGroups.csv file. Function does not
+  load relative biomass for these species." />
 
 
 
@@ -121,16 +124,19 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extract the box area from the bgm-file</h1>
+    <h1>Load Atlantis <code>[...]AgeBiomIndx.txt</code> file</h1>
     
-    <div class="hidden name"><code>load_boxarea.Rd</code></div>
+    <div class="hidden name"><code>load_agebioind.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function extracts the box area for each polygon from the atlantis bgm-file.</p>
+    <p>This function loads the Atlantis AgeBiomIndx.txt output file.
+  Biomass (total annual tonnes) is only available for species that are
+  turned on in the <code>functionalGroups.csv</code> file. Function does not
+  load relative biomass for these species.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>load_boxarea</span><span class='op'>(</span>dir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/getwd.html'>getwd</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>file_bgm</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>load_agebioind</span><span class='op'>(</span><span class='va'>dir</span>, <span class='va'>file_agebioind</span>, <span class='va'>fgs</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -141,26 +147,34 @@
 default is <code><a href='https://rdrr.io/r/base/getwd.html'>getwd()</a></code>.</p></td>
     </tr>
     <tr>
-      <th>file_bgm</th>
-      <td><p>A character value specifying the file name of a <code>.bgm</code>
-file, which contains information on box locations for an Atlantis scenario.
-The file should be located in your current working directory or the
-folder you specify in <code>dir</code>.
-The argument can also be specified as the full path name, just as long as
-argument <code>dir</code> is specified as <code>NULL</code>.</p></td>
+      <th>file_agebioind</th>
+      <td><p>A character value specifying the name of the output text file
+that contains total annual biomass by age (in tonnes) for an Atlantis scenario.
+An example entry would be <code>"outputSETASAgeBiomIndx.txt"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>fgs</th>
+      <td><p>A data frame created by <code><a href='load_fgs.html'>load_fgs</a></code> that
+reads in the csv file containing functional group names, usually
+<code>"functionalGroups.csv"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>A logical value specifying if output should be written
+to the screen or not. The default value is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>dataframe with the columns polygon and area.
-  Polygon gives the box id as integer and area is the box size in m^2.</p>
+    <p>A data frame of total biomass outputs from the <code>AgeBiomIndx.txt</code> file,
+formatted similarly to the outputs of run_truth.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other load functions: 
-<code><a href='load_agebioind.html'>load_agebioind</a>()</code>,
 <code><a href='load_bioind.html'>load_bioind</a>()</code>,
 <code><a href='load_biolprm.html'>load_biolprm</a>()</code>,
+<code><a href='load_boxarea.html'>load_boxarea</a>()</code>,
 <code><a href='load_box.html'>load_box</a>()</code>,
 <code><a href='load_bps.html'>load_bps</a>()</code>,
 <code><a href='load_catch.html'>load_catch</a>()</code>,
@@ -173,12 +187,17 @@ argument <code>dir</code> is specified as <code>NULL</code>.</p></td>
 <code><a href='load_nc.html'>load_nc</a>()</code>,
 <code><a href='load_runprm.html'>load_runprm</a>()</code>,
 <code><a href='load_yoy.html'>load_yoy</a>()</code></p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Sarah Gaichas</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"SETAS_Example"</span>, package <span class='op'>=</span> <span class='st'>"atlantisom"</span><span class='op'>)</span>
-<span class='va'>boxarea</span> <span class='op'>&lt;-</span> <span class='fu'>load_boxarea</span><span class='op'>(</span>dir <span class='op'>=</span> <span class='va'>d</span>, file_bgm <span class='op'>=</span> <span class='st'>"Geography.bgm"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/rm.html'>rm</a></span><span class='op'>(</span><span class='st'>"boxarea"</span><span class='op'>)</span>
-
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata"</span>, <span class='st'>"SETAS_Example"</span>, package <span class='op'>=</span> <span class='st'>"atlantisom"</span><span class='op'>)</span>
+<span class='va'>file</span> <span class='op'>&lt;-</span> <span class='st'>"outputsAgeBiomIndx.txt"</span>
+<span class='va'>fgs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='load_fgs.html'>load_fgs</a></span><span class='op'>(</span>dir <span class='op'>=</span> <span class='va'>d</span>, <span class='st'>"Functional_groups.csv"</span><span class='op'>)</span>
+<span class='va'>test</span> <span class='op'>&lt;-</span> <span class='fu'>load_agebioind</span><span class='op'>(</span>dir <span class='op'>=</span> <span class='va'>d</span>, file_bioind <span class='op'>=</span> <span class='va'>file</span>, fgs <span class='op'>=</span> <span class='va'>fgs</span><span class='op'>)</span>
+<span class='op'>}</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
