@@ -31,14 +31,16 @@ load_bioind <- function(dir, file_bioind, fgs, verbose = FALSE) {
   names(truebio)[match(groupslookup$Code,names(truebio))] <- groupslookup$Name
 
   truebio <- truebio %>%
-     tidyr::gather(species, truebio, -Time)
+    tidyr::gather(species, truebio, -Time) %>%
+    dplyr::left_join(.,groupslookup %>% dplyr::select(Name,Code),by = c("species"= "Name"))
 
   out <- data.frame(species = truebio$species,
                     agecl = NA,
                     polygon = NA,
                     layer = NA,
                     time = truebio$Time,
-                    atoutput = truebio$truebio)
+                    atoutput = truebio$truebio,
+                    code = truebio$Code)
 
   out <- out[order(out$species,out$time,out$polygon,out$agecl),]
 
