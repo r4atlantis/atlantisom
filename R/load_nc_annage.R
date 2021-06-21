@@ -168,11 +168,11 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   final_agecl <- maxage$maxage[
     sapply(final_species, function(x) which(x == maxage$name))]
 
-  # Get final fleets for full age structure fishery output
-  if(input_select_variable %in% c("Catch", "Discard")){
-    final_fleet <- fleetnames$Code[sapply(
-      lapply(select_variable, grepl, x = search_clean), any)]
-  }
+  # # Get final fleets for full age structure fishery output--wrong order
+  # if(input_select_variable %in% c("Catch", "Discard")){
+  #   final_fleet <- fleetnames$Code[sapply(
+  #     lapply(select_variable, grepl, x = search_clean), any)]
+  # }
 
   num_layers <- RNetCDF::var.get.nc(ncfile = at_out, variable = "numlayers")[, 1]
   # add sediment layer!
@@ -250,8 +250,9 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
     # lookup of number of fleets per species
     sp_nfleet <- as.data.frame(table(sp_fleet$species)) %>%
       rename(species = Var1, nfleet = Freq)
+    final_fleet <- sp_nfleet[match(final_species, sp_nfleet$species),]
     # for indexing fleets
-    int_ff <- sp_nfleet$nfleet
+    int_ff <- final_fleet$nfleet
   }
 
   if (length(at_data3d) >= 1) {
