@@ -24,9 +24,12 @@ load_catch <- function(dir, file_catch, fgs, verbose = FALSE) {
   catchbio <- catchbio[, -grep("TsAct", colnames(catchbio))]
 
   fgs <- fgs[fgs$IsTurnedOn > 0,]
-  fishedlookup <- fgs[fgs$IsFished > 0,]
 
-  names(catchbio)[match(fishedlookup$Code,names(catchbio))] <- fishedlookup$Name
+  colnames(fgs) <- tolower(colnames(fgs))
+
+  fishedlookup <- fgs[fgs$isfished > 0,]
+
+  names(catchbio)[match(fishedlookup$code,names(catchbio))] <- fishedlookup$name
 
   catchbio <- catchbio %>%
      tidyr::gather(species, catchbio, -Time)
