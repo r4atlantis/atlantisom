@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Read saved survey outputs into R object — read_savedsurvs • atlantisom</title>
+<title>Read saved fishery outputs into R object — read_savedfisheries • atlantisom</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,10 @@
 
 
 
-<meta property="og:title" content="Read saved survey outputs into R object — read_savedsurvs" />
-<meta property="og:description" content="A function to read survey index and composition data saved as .rds into
+<meta property="og:title" content="Read saved fishery outputs into R object — read_savedfisheries" />
+<meta property="og:description" content="A function to read fishery index and composition data saved as .rds into
 an R object with the same structure as the output of om_species or om_comps.
-Users must enter the path where the survey output files are stored and the type of survey
+Users must enter the path where the fishery output files are stored and the type of fishery
 output file to be read in." />
 
 
@@ -124,19 +124,19 @@ output file to be read in." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Read saved survey outputs into R object</h1>
+    <h1>Read saved fishery outputs into R object</h1>
     
-    <div class="hidden name"><code>read_savedsurvs.Rd</code></div>
+    <div class="hidden name"><code>read_savedfisheries.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A function to read survey index and composition data saved as .rds into
+    <p>A function to read fishery index and composition data saved as .rds into
 an R object with the same structure as the output of <code>om_species</code> or <code>om_comps</code>.
-Users must enter the path where the survey output files are stored and the type of survey
+Users must enter the path where the fishery output files are stored and the type of fishery
 output file to be read in.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read_savedsurvs</span><span class='op'>(</span><span class='va'>dir</span>, <span class='va'>type</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>read_savedfisheries</span><span class='op'>(</span><span class='va'>dir</span>, <span class='va'>type</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -162,32 +162,20 @@ of survey output to be read in. Must take one of these values:</p><ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>om_species</code>, <code>om_comps</code>, and <code>om_diet</code> allow for multiple surveys.
-Users must define a survey.name in each survey config file which is used to name the file
-that is output by each survey function, and is then read back in to name list
-output for each survey in the saved .rds file.</p>
+    <p><code>om_species</code>, <code>om_comps</code>, and <code>om_diet</code> will allow for multiple fisheries.
+Users must define a fishery.name in each fishery config file which is used to name the file
+that is output by each fishery function, and is then read back in to name list
+output for each fishery in the saved .rds file.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other read functions: 
-<code><a href='read_savedfisheries.html'>read_savedfisheries</a>()</code></p></div>
+<code><a href='read_savedsurvs.html'>read_savedsurvs</a>()</code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Sarah Gaichas</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># assuming d.name is the path where atlantisom output is stored</span>
-
-<span class='va'>survObsBiom</span> <span class='op'>&lt;-</span> <span class='fu'>read_savedsurvs</span><span class='op'>(</span><span class='va'>d.name</span>, <span class='st'>'survB'</span><span class='op'>)</span> <span class='co'># survey biomass index</span>
-<span class='va'>age_comp_data</span> <span class='op'>&lt;-</span> <span class='fu'>read_savedsurvs</span><span class='op'>(</span><span class='va'>d.name</span>, <span class='st'>'survAge'</span><span class='op'>)</span> <span class='co'># survey age class composition</span>
-<span class='va'>len_comp_data</span> <span class='op'>&lt;-</span> <span class='fu'>read_savedsurvs</span><span class='op'>(</span><span class='va'>d.name</span>, <span class='st'>'survLen'</span><span class='op'>)</span> <span class='co'># survey length composition</span>
-<span class='va'>wtage</span> <span class='op'>&lt;-</span> <span class='fu'>read_savedsurvs</span><span class='op'>(</span><span class='va'>d.name</span>, <span class='st'>'survWtage'</span><span class='op'>)</span> <span class='co'># survey weight at age class</span>
-<span class='va'>annage_comp_data</span> <span class='op'>&lt;-</span> <span class='fu'>read_savedsurvs</span><span class='op'>(</span><span class='va'>d.name</span>, <span class='st'>'survAnnAge'</span><span class='op'>)</span> <span class='co'># survey annual age composition</span>
-<span class='va'>annage_wtage</span> <span class='op'>&lt;-</span> <span class='fu'>read_savedsurvs</span><span class='op'>(</span><span class='va'>d.name</span>, <span class='st'>'survAnnWtage'</span><span class='op'>)</span> <span class='co'># survey weight at annual age</span>
-
-<span class='op'>}</span>
-
-</div></pre>
+    <pre class="examples"></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
