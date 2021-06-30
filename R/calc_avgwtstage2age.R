@@ -30,7 +30,7 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
   multiple_ages <- fgs[fgs$NumAgeClassSize>1, c(1,4,10)]
 
   # match species in wtagecl_data to those species in the fgs file
-  sppwt <- levels(wtagecl$species)
+  sppwt <- levels(as.factor(wtagecl$species))  # add as.factor for R 4+
   multiple_ages <- multiple_ages[multiple_ages$Name %in% sppwt, ]
 
   # make a dataframe the right dimensions for all age classes
@@ -77,13 +77,13 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
       (agecl==1 & trueage<avgage) ~ (1-(avgage-trueage)/avgageinc)*increment,
       (agecl>1 & trueage<avgage) ~
         (1-(avgage-trueage)/avgageinc)*increment +
-        dplyr::lag(atoutput, ceiling(max(NumAgeClassSize)/2)),
+        dplyr::lag(atoutput, as.integer(ceiling(max(NumAgeClassSize))/2)),
       (trueage>avgage) ~
         (trueage-avgage)/dplyr::lead(avgageinc,
-                                     ceiling(max(NumAgeClassSize)/2),
+                                     as.integer(ceiling(max(NumAgeClassSize))/2),
                                      default=last(avgageinc))*
         dplyr::lead(increment,
-                    ceiling(max(NumAgeClassSize)/2),
+                    as.integer(ceiling(max(NumAgeClassSize))/2),
                     default=last(increment)) + atoutput
     ))
 
