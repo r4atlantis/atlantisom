@@ -47,6 +47,10 @@ annage_wtage <- read_savedsurvs(d.name, 'survAnnWtage') # survey weight at annua
 }
 
 }
+\seealso{
+Other read functions: 
+\code{\link{read_savedfisheries}()}
+}
 \author{
 Sarah Gaichas
 }
