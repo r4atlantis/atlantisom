@@ -156,12 +156,26 @@ sample_diet <- function(dat, fgs, unidprey = 0, alphamult = 10000000) {
   # lower multipliers stray further from true diet comp, alpha<1 goes way off
 
   #tidy
-  dat2 <- dat2 %>%
-    dplyr::filter(sampprop>0) %>%
-    dplyr::group_by(species, time.days, agecl) %>%
-    dplyr::do(mutate(., dietSamp = DirichletReg::rdirichlet(1, alphamult * sampprop))) %>%
-    dplyr::ungroup() %>%
-    dplyr::select(-sampprop)
+  if(utils::packageVersion("dplyr") < "0.9.9"){
+    dat2 <- dat2 %>%
+      dplyr::filter(sampprop>0) %>%
+      dplyr::group_by(species, time.days, agecl) %>%
+      dplyr::do(mutate(., dietSamp = DirichletReg::rdirichlet(1, alphamult * sampprop))) %>%
+      dplyr::ungroup() %>%
+      dplyr::select(-sampprop)
+  }
+
+  #works for dplyr 1.0 and up; if-else statements within pipe not working
+  if(utils::packageVersion("dplyr") > "0.9.9"){
+    dat2 <- dat2 %>%
+      dplyr::filter(sampprop>0) %>%
+      dplyr::group_by(species, time.days, agecl) %>%
+      dplyr::group_map(~mutate(., dietSamp = as.vector(t(DirichletReg::rdirichlet(1, alphamult * .$sampprop)))),
+                       .keep = T) %>%
+      dplyr::bind_rows() %>%
+      dplyr::ungroup() %>%
+      dplyr::select(-sampprop)
+  }
 
   # returns diet proportions with observation error: Dirichlet, and bias from unknown id
 
