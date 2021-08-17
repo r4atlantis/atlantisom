@@ -55,7 +55,7 @@ om_diet<- function(config = configfile,
   if(!file.exists(file.path(d.name,
                             paste0(scenario.name, "detaileddiet.rds")))){
     detaileddiet <- load_detailed_diet_comp(dir = d.name,
-                                            file_diet,
+                                            file_diet = file_diet,
                                             fgs = fgs)
 
     if(save){
