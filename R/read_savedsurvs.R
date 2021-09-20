@@ -40,7 +40,7 @@ read_savedsurvs <- function(dir, type){
 
   survs <- list.files(path=dir, pattern = as.character(datlook$pattern[datlook$dattype %in% type]), full.names = TRUE)
 
-  survey.name <-  str_match(survs, paste0(scenario.name,"_\\s*(.*?)\\s",datlook$pattern[datlook$dattype==type]))[,2]
+  survey.name <-  stringr::str_match(survs, paste0(scenario.name,"_\\s*(.*?)\\s",datlook$pattern[datlook$dattype==type]))[,2]
 
   dat <- lapply(survs, readRDS)
 

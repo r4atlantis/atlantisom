@@ -38,7 +38,7 @@ read_savedfisheries <- function(dir, type){
 
   fisheries <- list.files(path=dir, pattern = as.character(datlook$pattern[datlook$dattype %in% type]), full.names = TRUE)
 
-  fishery.name <-  str_match(fisheries, paste0(scenario.name,"_\\s*(.*?)\\s",datlook$pattern[datlook$dattype==type]))[,2]
+  fishery.name <-  stringr::str_match(fisheries, paste0(scenario.name,"_\\s*(.*?)\\s",datlook$pattern[datlook$dattype==type]))[,2]
 
   dat <- lapply(fisheries, readRDS)
 
