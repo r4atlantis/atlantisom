@@ -68,7 +68,7 @@ calc_Z <- function(yoy, nums, fgs, biolprm, toutinc) {
   # mg carbon converted to wet weight in tonnes
   k_wetdry <- biolprm$kgw2d / 1000000000
   # Sum of structural and reserve nitrogen (KWSR_RN + KWSR_SN)
-  nitro <- merge(biolprm$kswr, biolprm$kwrr, by = "1")
+  nitro <- merge(biolprm$kwsr, biolprm$kwrr, by = "1")
   nitro$sum <- apply(nitro[, 2:3], 1, sum)
 
   # legacy: If output is from legacy code there will be an error in the
