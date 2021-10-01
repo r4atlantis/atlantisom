@@ -23,7 +23,7 @@ reformat_compositions <- function(comp_data,
   }
 
   if(comp_type=="agecomp"){
-  unmelt <- dcast(data = comp_proportion,
+  unmelt <- dcast(data = as.data.table(comp_proportion),
                   formula = time ~agecl,
                   value.var = "comp")
   samp_size <- comp_proportion %>%
@@ -32,7 +32,7 @@ reformat_compositions <- function(comp_data,
   }
 
   if(comp_type=="lencomp"){
-    unmelt <- dcast(data = comp_proportion,
+    unmelt <- dcast(data = as.data.table(comp_proportion),
                     formula = time ~lower.bins,
                     value.var = "comp")
     samp_size <- comp_proportion %>%
@@ -41,7 +41,7 @@ reformat_compositions <- function(comp_data,
   }
 
   if(comp_type=="caalcomp"){
-    unmelt <- dcast(data = comp_proportion,
+    unmelt <- dcast(data = as.data.table(comp_proportion),
                     formula = time + lower.bins + upper.bins ~agecl,
                     value.var = "comp")
     samp_size <- comp_proportion %>%
