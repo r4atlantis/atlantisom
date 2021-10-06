@@ -6,7 +6,7 @@
 #' Todo: remove the function and fix \code{\link{load_nc}}
 #' @template dir
 #' @template file_nc
-#' @param physic_variables A character value spefifying which variables
+#' @param physic_variables A character value specifying which variables
 #'   should be loaded. Only one variable can be loaded at a time.
 #'   Currently, only the following variables are allowed:
 #'   "salt", "NO3", "NH3", "Temp", "Oxygen", "Si", "Det_Si", "DON",
