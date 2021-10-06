@@ -260,10 +260,89 @@ for generating data from the scenario</p></td>
       <tr>
         
         <td>
-          <p><code><a href="create_env.html">create_env()</a></code> </p>
+          <p><code><a href="SS_write_EWAA.html">SS_write_EWAA()</a></code> </p>
         </td>
-        <td><p>A function to sample from the environmental truth provided
-by the Atlantis scenario.</p></td>
+        <td><p>Function to write an empirical weight at age SS file (wt_at_age.ss) from Atlantis output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SS_write_biol.html">SS_write_biol()</a></code> </p>
+        </td>
+        <td><p>Writes life history parameters</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SS_write_comps.html">SS_write_comps()</a></code> </p>
+        </td>
+        <td><p>Function to write age and length composition data from <code>atlantisom</code> to Stock Synthesis 3.30. Note: every time this function is called, it overwrites the age and length composition data currently in the <code>ss_data_list</code> object.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="SS_write_ts.html">SS_write_ts()</a></code> </p>
+        </td>
+        <td><p>Function to write the CPUE from an atlantis OM into a
+Stock Synthesis 3.3 estimation model</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="aggregateData.html">aggregateData()</a></code> </p>
+        </td>
+        <td><p>Aggregate and select data from Atlantis output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="aggregateDensityData.html">aggregateDensityData()</a></code> </p>
+        </td>
+        <td><p>Aggregate and select density data from Atlantis output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="aggregate_comps.html">aggregate_comps()</a></code> </p>
+        </td>
+        <td><p>Function to aggregate compositions into a shorter range of bins based on  data availability in each bin</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_Z.html">calc_Z()</a></code> </p>
+        </td>
+        <td><p>Calculate total mortality for age structured groups</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_age2length.html">calc_age2length()</a></code> </p>
+        </td>
+        <td><p>Calculate length from ages</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_avgwtstage2age.html">calc_avgwtstage2age()</a></code> </p>
+        </td>
+        <td><p>Approximating the average weight at true age from stage-specific average weight.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_biomass_age.html">calc_biomass_age()</a></code> </p>
+        </td>
+        <td><p>Calculate biomass in t per age-structured-groups per polygon, time and ageclass.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_pred_diet.html">calc_pred_diet()</a></code> </p>
+        </td>
+        <td><p>Calculate eaten biomass in tonnes for each functional group.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_stage2age.html">calc_stage2age()</a></code> </p>
+        </td>
+        <td><p>Approximating the true numbers at age within each box, functional group and
+time step.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="calc_timestep2time.html">calc_timestep2time()</a></code> </p>
+        </td>
+        <td><p>Converts timestep from Atlantis output to real time</p></td>
       </tr><tr>
         
         <td>
@@ -282,6 +361,236 @@ by the Atlantis scenario.</p></td>
           <p><code><a href="create_survey_diet.html">create_survey_diet()</a></code> </p>
         </td>
         <td><p>Create survey diet observations from Atlantis output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_survey_env.html">create_survey_env()</a></code> </p>
+        </td>
+        <td><p>Create environmental survey data subset from Atlantis output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_boundary.html">get_boundary()</a></code> </p>
+        </td>
+        <td><p>Get boundary boxes from Atlantis box information.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_agebioind.html">load_agebioind()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis <code>[...]AgeBiomIndx.txt</code> file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_bioind.html">load_bioind()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis <code>[...]BiomIndx.txt</code> file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_biolprm.html">load_biolprm()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis <code>_Biol.prm</code> file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_box.html">load_box()</a></code> </p>
+        </td>
+        <td><p>Load the box specification file for an Atlantis scenario</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_boxarea.html">load_boxarea()</a></code> </p>
+        </td>
+        <td><p>Extract the box area from the bgm-file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_bps.html">load_bps()</a></code> </p>
+        </td>
+        <td><p>Extracts the names of the epibenthic biomasspools
+from the initial conditions file.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_catch.html">load_catch()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis <code>[...]catch.txt</code> file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_detailed_diet_comp.html">load_detailed_diet_comp()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis diet composition by box and layer from <code>DetaileDietCheck.txt</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_diet_comp.html">load_diet_comp()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis diet composition data from <code>diet_check.txt</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_fgs.html">load_fgs()</a></code> </p>
+        </td>
+        <td><p>Load the functional group file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_fisheries.html">load_fisheries()</a></code> </p>
+        </td>
+        <td><p>Load the fisheries group file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_meta.html">load_meta()</a></code> </p>
+        </td>
+        <td><p>Open the necessary files to document the atlantis model used
+for generating data from the scenario</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_nc.html">load_nc()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis outputfiles (netcdf)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_nc_annage.html">load_nc_annage()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis annual age outputfiles (netcdf)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_nc_physics.html">load_nc_physics()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis outputfiles (netcdf)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_runprm.html">load_runprm()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis <code>_run.prm</code> file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="load_yoy.html">load_yoy()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis <code>[...]YOY.txt</code> file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="om_comps.html">om_comps()</a></code> </p>
+        </td>
+        <td><p>Generate composition data from atlantisom</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="om_diet.html">om_diet()</a></code> </p>
+        </td>
+        <td><p>Generate diet composition data from atlantisom</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="om_index.html">om_index()</a></code> </p>
+        </td>
+        <td><p>Generate index data from atlantisom</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="om_init.html">om_init()</a></code> </p>
+        </td>
+        <td><p>Initializes atlantisom</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="om_species.html">om_species()</a></code> </p>
+        </td>
+        <td><p>Species-specific atlantisom outputs</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="read_savedfisheries.html">read_savedfisheries()</a></code> </p>
+        </td>
+        <td><p>Read saved fishery outputs into R object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="read_savedsurvs.html">read_savedsurvs()</a></code> </p>
+        </td>
+        <td><p>Read saved survey outputs into R object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="reformat_compositions.html">reformat_compositions()</a></code> </p>
+        </td>
+        <td><p>Reformat compositional data for input in to Stock Synthesis</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="run_stocksynthesis.html">run_stocksynthesis()</a></code> </p>
+        </td>
+        <td><p>Function to execute an SS run</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="run_truth.html">run_truth()</a></code> </p>
+        </td>
+        <td><p>Load Atlantis scenario output</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_ages.html">sample_ages()</a></code> </p>
+        </td>
+        <td><p>Add observation error to numbers-at-age data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_diet.html">sample_diet()</a></code> </p>
+        </td>
+        <td><p>Sample total consumption to create diet composition data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_fish.html">sample_fish()</a></code> </p>
+        </td>
+        <td><p>Sample numbers-at-age to create composition data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_fishery_totcatch.html">sample_fishery_totcatch()</a></code> </p>
+        </td>
+        <td><p>Sample a fishery catch index from an atlantis scenario</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_survey_biomass.html">sample_survey_biomass()</a></code> </p>
+        </td>
+        <td><p>Sample a biomass index of abundance from an atlantis scenario</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="sample_survey_numbers.html">sample_survey_numbers()</a></code> </p>
+        </td>
+        <td><p>Sample a numbers index of abundance from an atlantis scenario</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="write_SS_ctl.html">write_SS_ctl()</a></code> </p>
+        </td>
+        <td><p>write SS control</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="write_SS_dat.html">write_SS_dat()</a></code> </p>
+        </td>
+        <td><p>Read SS dat</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="write_meta.html">write_meta()</a></code> </p>
+        </td>
+        <td><p>Write metadata to the disk.</p></td>
       </tr>
     </tbody><tbody>
       <tr>

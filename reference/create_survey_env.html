@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Load Atlantis outputfiles (netcdf) — load_nc_physics • atlantisom</title>
+<title>Create environmental survey data subset from Atlantis output — create_survey_env • atlantisom</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="Load Atlantis outputfiles (netcdf) — load_nc_physics" />
-<meta property="og:description" content="This function loads Atlantis outputfiles (netcdf) and converts them to a
-data.frame. The function should be replaced by adding additional
-functionality to load_nc, but it works as is for right now.
-Todo: remove the function and fix load_nc" />
+<meta property="og:title" content="Create environmental survey data subset from Atlantis output — create_survey_env" />
+<meta property="og:description" content="Create a subset of the physical environment observations for an Atlantis scenario.
+Uses data provided by an Atlantis scenario and adds
+  observation error and/or bias, along with subsetting, to provide
+  an environmental index for use in subsequent model fitting." />
 
 
 
@@ -121,71 +121,70 @@ Todo: remove the function and fix load_nc" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Load Atlantis outputfiles (netcdf)</h1>
+    <h1>Create environmental survey data subset from Atlantis output</h1>
     
-    <div class="hidden name"><code>load_nc_physics.Rd</code></div>
+    <div class="hidden name"><code>create_survey_env.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function loads Atlantis outputfiles (netcdf) and converts them to a
-<code>data.frame</code>. The function should be replaced by adding additional
-functionality to <code><a href='load_nc.html'>load_nc</a></code>, but it works as is for right now.
-Todo: remove the function and fix <code><a href='load_nc.html'>load_nc</a></code></p>
+    <p>Create a subset of the physical environment observations for an Atlantis scenario.</p>
+<p>Uses data provided by an Atlantis scenario and adds
+  observation error and/or bias, along with subsetting, to provide
+  an environmental index for use in subsequent model fitting.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>load_nc_physics</span><span class='op'>(</span>
-  dir <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/getwd.html'>getwd</a></span><span class='op'>(</span><span class='op'>)</span>,
-  <span class='va'>file_nc</span>,
-  <span class='va'>physic_variables</span>,
-  <span class='va'>aggregate_layers</span>,
-  <span class='va'>bboxes</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>create_survey_env</span><span class='op'>(</span><span class='va'>true_env</span>, <span class='va'>survdepth</span>, <span class='va'>survboxes</span>, <span class='va'>survtimes</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dir</th>
-      <td><p>The directory of the atlantis model output, where the
-default is <code><a href='https://rdrr.io/r/base/getwd.html'>getwd()</a></code>.</p></td>
+      <th>true_env</th>
+      <td><p>A <code>data.frame</code> of true environmental data
+sampled from an Atlantis scenario.</p></td>
     </tr>
     <tr>
-      <th>file_nc</th>
-      <td><p>A character value giving the file name of the netcdf file
-you are trying to read in. The file should be located in your current working
-directory or the folder you specify in <code>dir</code>.
-The argument can also be specified as the full path name, just as long as
-argument <code>dir</code> is specified as <code>NULL</code>.</p></td>
+      <th>time</th>
+      <td><p>The timing of the survey (a vector indicating specific time steps, which are typically associated with years)
+i.e., seq(365,10*3650,365) would be an annual survey for 10 years</p></td>
     </tr>
     <tr>
-      <th>physic_variables</th>
-      <td><p>A character value specifying which variables
-should be loaded. Only one variable can be loaded at a time.
-Currently, only the following variables are allowed:
-"salt", "NO3", "NH3", "Temp", "Oxygen", "Si", "Det_Si", "DON",
- "Chl_a", "Denitrifiction", "Nitrification".</p></td>
+      <th>layer</th>
+      <td><p>Which layer to sample, surface or bottom? or numeric model layer</p></td>
     </tr>
     <tr>
-      <th>aggregate_layers</th>
-      <td><p>A logical specifying if layers shall be aggregated.</p></td>
-    </tr>
-    <tr>
-      <th>bboxes</th>
-      <td><p>A vector of boundary boxes.
-The default value is <code><a href='https://rdrr.io/r/base/c.html'>c(0)</a></code> because all Atlantis
-models must specify box zero as a boundary box.
-The boundary boxes can automatically be determined using
-<code><a href='get_boundary.html'>get_boundary(load_box())</a></code>.</p></td>
+      <th>boxes</th>
+      <td><p>A vector of box numbers</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>data.frame</code> in long format with the following information:
-  variable, timestep, polygon, and value (= "atoutput").</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>The function returns a subsetted matrix with the same columns
+  as the input data, i.e.,:</p><ul>
+<li><p>variable</p></li>
+<li><p>polygon</p></li>
+<li><p>layer</p></li>
+<li><p>time</p></li>
+<li><p>atoutput</p></li>
+</ul>
 
-    <div class='dont-index'><p><code><a href='get_boundary.html'>get_boundary</a></code>, <code><a href='load_box.html'>load_box</a></code></p></div>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The function takes physical data from an Atlantis scenario
+  where the data was read in from Atlantis output using <code><a href='load_nc_physics.html'>load_nc_physics</a></code>.
+  One does not need to use these functions to create <code>dat</code>, rather you must only
+  ensure that the structure of <code>dat</code> is the same.
+  Currently, the function subsets the data by polygon and time, with the user defining
+  a single layer, either "bottom" or "surface", to sample. Possible environmental variables
+  from <code><a href='load_nc_physics.html'>load_nc_physics</a></code> include "salt", "NO3", "NH3", "Temp", "Oxygen", "Si",
+  "Det_Si", "DON", "Chl_a", "Denitrifiction", "Nitrification".
+  Only one variable is loaded with a call to <code><a href='load_nc_physics.html'>load_nc_physics</a></code>, so this
+  function also takes one environmental variable at a time and subsets to specific
+  defined polygons, and specific defined time representing a survey.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Kelli Faye Johnson, Sarah Gaichas</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

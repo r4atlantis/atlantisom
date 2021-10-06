@@ -46,9 +46,6 @@
     <loc>https://r4atlantis.github.io/atlantisom/reference/calc_timestep2time.html</loc>
   </url>
   <url>
-    <loc>https://r4atlantis.github.io/atlantisom/reference/create_env.html</loc>
-  </url>
-  <url>
     <loc>https://r4atlantis.github.io/atlantisom/reference/create_fishery_subset.html</loc>
   </url>
   <url>
@@ -56,6 +53,9 @@
   </url>
   <url>
     <loc>https://r4atlantis.github.io/atlantisom/reference/create_survey_diet.html</loc>
+  </url>
+  <url>
+    <loc>https://r4atlantis.github.io/atlantisom/reference/create_survey_env.html</loc>
   </url>
   <url>
     <loc>https://r4atlantis.github.io/atlantisom/reference/get_boundary.html</loc>
