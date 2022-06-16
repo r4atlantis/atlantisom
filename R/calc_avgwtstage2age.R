@@ -20,9 +20,9 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
   # wtagecl is mean weight at age output of calc_age2length()
   # annages is truenumsage output of run_truth(), needs aggregation:
   annages <- annages %>%
-    group_by(species, time, agecl) %>%
-    rename(trueage = agecl) %>%
-    summarise(truenatage = sum(atoutput))
+    dplyr::group_by(species, time, agecl) %>%
+    dplyr::rename(trueage = agecl) %>%
+    dplyr::summarise(truenatage = sum(atoutput))
 
   # assuming fgs is data object already been read in by load_fgs elsewhere
   # Figure out the groups that have multiple ages classes in each stage (or
@@ -45,8 +45,8 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
     dplyr::mutate(avgage = weighted.mean(trueage, truenatage))
 
   wtage_avgage <- wtage_out %>%
-    select(species, time, agecl, avgage) %>%
-    distinct()
+    dplyr::select(species, time, agecl, avgage) %>%
+    dplyr::distinct()
 
   # find weight increment for a timestep
   # muweight for agecl+1 - muweight for agecl
@@ -54,14 +54,15 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
     dplyr::arrange(species, time, agecl) %>%
     #dplyr::left_join(multiple_ages, by = c("species" = "Name")) %>%
     dplyr::group_by(species, time) %>%
-    dplyr::mutate(increment = case_when(
-      agecl==1 ~ atoutput,
-      agecl>1 ~ atoutput - dplyr::lag(atoutput)
+    dplyr::mutate(minage = min(agecl)) %>% #fishery agecl may not start at 1
+    dplyr::mutate(increment = dplyr::case_when(
+      agecl==minage ~ atoutput,
+      agecl>minage ~ atoutput - dplyr::lag(atoutput)
     )) %>%
     dplyr::left_join(wtage_avgage) %>%
-    dplyr::mutate(avgageinc = case_when(
-      agecl==1 ~ avgage,
-      agecl>1 ~ avgage - dplyr::lag(avgage)
+    dplyr::mutate(avgageinc = dplyr::case_when(
+      agecl==minage ~ avgage,
+      agecl>minage ~ avgage - dplyr::lag(avgage)
     ))
 
   # complex, but works for 2 ages/agecl, need to test more, need to fix oldest
@@ -73,18 +74,18 @@ calc_avgwtstage2age <- function(wtagecl, annages, fgs) {
     dplyr::select(species, time, trueage, NumAgeClassSize, agecl, avgage) %>%
     dplyr::left_join(wtagecl_inc) %>%
     dplyr::group_by(species, time) %>%
-    dplyr::mutate(wtIntage = case_when(
-      (agecl==1 & trueage<avgage) ~ (1-(avgage-trueage)/avgageinc)*increment,
-      (agecl>1 & trueage<avgage) ~
+    dplyr::mutate(wtIntage = dplyr::case_when(
+      (agecl==minage & trueage<avgage) ~ (1-(avgage-trueage)/avgageinc)*increment,
+      (agecl>minage & trueage<avgage) ~
         (1-(avgage-trueage)/avgageinc)*increment +
         dplyr::lag(atoutput, as.integer(ceiling(max(NumAgeClassSize))/2)),
       (trueage>avgage) ~
         (trueage-avgage)/dplyr::lead(avgageinc,
                                      as.integer(ceiling(max(NumAgeClassSize))/2),
-                                     default=last(avgageinc))*
+                                     default=dplyr::last(avgageinc))*
         dplyr::lead(increment,
                     as.integer(ceiling(max(NumAgeClassSize))/2),
-                    default=last(increment)) + atoutput
+                    default=dplyr::last(increment)) + atoutput
     ))
 
   # fix oldest age
