@@ -83,6 +83,8 @@ calc_pred_cons <- function(eat, grazing, vol, biolprm, runprm){
   # the new values need to be checked to see if they give realistic
   # results
   # removed layer 7 in volume which should expand mg N to only water?
+  # total consumption and per capita from this look ok
+  # snapshot so should be daily value?
 
   biomass_eaten$bio_eaten <- with(biomass_eaten,
     atoutput * vol * bio_conv)
