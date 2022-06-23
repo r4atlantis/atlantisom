@@ -48,12 +48,6 @@
 
 sample_survey_consumption <- function(dat,cv) {
 
-	#calculate total biomass estimate and partition to boxes
-	###  otherwise some assumptions about box-specific cv have to be made
-	###  this makes sure that box-specific biomasses add up to total observed biomass
-    ### use create_survey to subset the boxes and time
-
-  #SKG if we want this to work for time-varying wt@age, need to allow that dimension
 
 	#convert numAtAge to BiomassAtAge
 	if("time" %in% colnames(wtAtAge)){
