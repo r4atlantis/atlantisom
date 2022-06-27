@@ -59,6 +59,8 @@ calc_pred_cons <- function(eat, grazing, vol, biolprm, runprm){
 
   # Eat and grazing are per species, agecl, polygon, and time.
   # Therefore, we need to aggregate the vol over layers.
+  # Eat calculated in atecology/atprocess.C
+  # Eat( ) is defined here : \trunk\atlantis\atecology\atprocess.c(644)
 
   # SKG: The main question is the UNITS of eat and grazing.
   # manual says this is either mg/m3/day or mg/day/individ
