@@ -282,9 +282,9 @@ run_truth <- function(scenario, dir = getwd(),
   if(verbose) message("Start calc_functions")
   # catchbio <- calc_biomass_age(nums = catch,
   #   resn = resn, structn = structn, biolprm = biol)
-  # biomass_eaten <- calc_pred_diet(dietcomp = diet,
-  #   eat = eat, grazing = grazing, vol = vol, biolprm = biol,
-  #   runprm = runprm)
+  biomass_eaten <- calc_pred_cons(eat = eat,
+     grazing = grazing, vol = vol, biolprm = biol,
+     runprm = runprm)
   biomass_ages <- calc_biomass_age(nums = nums,
     resn = resn, structn = structn, biolprm = biol)
   # bio_catch <- calc_biomass_age(nums = catch,
@@ -310,8 +310,13 @@ run_truth <- function(scenario, dir = getwd(),
   # files are too big to combine; do separately from run_truth
   # export model-wide true diet comp though
 
+  # SKG June 2022, biomass_eaten is now total consumption
+  # based on the new calc_pred_cons() which gives results
+  # on a more reasonable scale, adding back to output object
+
   if(!annage){
     result <- list("biomass_ages" = biomass_ages,
+                   "biomass_eaten" = biomass_eaten,
                    "catch" = catch,
                    "catch_all" = catch_all,
                    "nums" = nums,
@@ -324,6 +329,7 @@ run_truth <- function(scenario, dir = getwd(),
 
   if(annage){
     result <- list("biomass_ages" = biomass_ages,
+                   "biomass_eaten" = biomass_eaten,
                    "catch" = catch,
                    "catch_all" = catch_all,
                    "nums" = nums,

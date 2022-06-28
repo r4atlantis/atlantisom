@@ -51,7 +51,7 @@ om_consindex <- function(usersurvey = usersurvey_file,
 
     # what form of survey efficiency and selectivity should be applied to consumption?
     # create_survey function expects NatAge input from aggregateData,
-    # which assumes atoutput column needs aggregating, so need to rename input to use this
+    # which assumes atoutput column needs aggregating, so renamed in calc_pred_cons
 
     survey_consB <- atlantisom::create_survey(dat = omlist_ss$truecons_ss, #from calc_pred_cons()
                                               time = survtime,

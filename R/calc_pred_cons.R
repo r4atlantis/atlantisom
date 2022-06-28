@@ -91,5 +91,7 @@ calc_pred_cons <- function(eat, grazing, vol, biolprm, runprm){
   biomass_eaten$bio_eaten <- with(biomass_eaten,
     atoutput * vol * bio_conv)
 
+  biomass_eaten$atoutput <- biomass_eaten$bio_eaten
+
   return(biomass_eaten)
 }

@@ -61,6 +61,7 @@ CC3om_sard_comp <- om_comps(usersurvey = here("config/usersurvey.R"),
 \seealso{
 Other wrapper functions: 
 \code{\link{om_comps}()},
+\code{\link{om_consindex}()},
 \code{\link{om_index}()},
 \code{\link{om_init}()},
 \code{\link{om_species}()}

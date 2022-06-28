@@ -49,22 +49,23 @@
 sample_survey_consumption <- function(dat,cv) {
 
 	#sum over boxes and ages (the sampled boxes were already subset in create functions)
-	totconsB <- aggregate(dat2$biomass,list(dat2$species,dat2$time),sum)
-	names(totconsB) <- c("species","time","constons")
+  totconsB <- aggregate(dat$atoutput,list(dat$species,dat$time),sum)
+  names(totconsB) <- c("species","time","constons")
 
-	#add observation error
-	totconsBobs <- merge(totconsB,cv,by="species",all.x=T)
-	totconsBobs$var <- log(totconsBobs$cv^2+1)
-	totconsBobs$obsConsB <- rlnorm(nrow(totconsBobs), log(totconsBobs$constons)-totconsBobs$var/2, sqrt(totconsBobs$var))
+  #add observation error
+  totconsBobs <- merge(totconsB,cv,by="species",all.x=T)
+  totconsBobs$var <- log(totconsBobs$cv^2+1)
+  totconsBobs$obsConsB <- rlnorm(nrow(totconsBobs), log(totconsBobs$constons)-totconsBobs$var/2, sqrt(totconsBobs$var))
 
 
-	out <- data.frame(species=totconsBobs$species,
-		              agecl = NA,
-		              polygon=NA,
-		              layer=NA, time=totconsBobs$time,
-		              atoutput=totconsBobs$obsConsB)
+  out <- data.frame(species=totconsBobs$species,
+                    agecl = NA,
+                    polygon=NA,
+                    layer=NA, time=totconsBobs$time,
+                    atoutput=totconsBobs$obsConsB)
 
-    return(out)
+  return(out)
+
 }
 
 
