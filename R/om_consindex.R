@@ -49,14 +49,16 @@ om_consindex <- function(usersurvey = usersurvey_file,
   {
     source(s, local = TRUE)
 
-    #biomass based fishery independent survey index
-    # this uses result$biomass_ages to sample biomass directly, no need for wt@age est
+    # what form of survey efficiency and selectivity should be applied to consumption?
+    # create_survey function expects NatAge input from aggregateData,
+    # which assumes atoutput column needs aggregating, so need to rename input to use this
+
     survey_consB <- atlantisom::create_survey(dat = omlist_ss$truecons_ss, #from calc_pred_cons()
-                                          time = survtime,
-                                          species = survspp,
-                                          boxes = survboxes,
-                                          effic = surveffic,
-                                          selex = survselex)
+                                              time = survtime,
+                                              species = survspp,
+                                              boxes = survboxes,
+                                              effic = surveffic,
+                                              selex = survselex)
 
 
     # this is the step to repeat n_reps time if we want different realizations

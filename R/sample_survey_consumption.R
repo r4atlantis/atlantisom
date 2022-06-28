@@ -7,7 +7,7 @@
 #'   \code{dat} is the same.
 #' @details
 #'   This function simply calculates consumption-at-age in t by
-#'   summing total predator consumption consumption over polygons,
+#'   summing total predator consumption over polygons,
 #'   and then applies user defined error to the consumption.
 #'   The result is a coastwide consumption estimate in tons from the survey
 #'   Improvements could be to provide polygon specific consumption,
@@ -48,30 +48,21 @@
 
 sample_survey_consumption <- function(dat,cv) {
 
-
-	#convert numAtAge to BiomassAtAge
-	if("time" %in% colnames(wtAtAge)){
-	  dat2 <- merge(dat,wtAtAge,by=c("species","agecl", "time"),all.x=T)
-	}else{
-	  dat2 <- merge(dat,wtAtAge,by=c("species","agecl"),all.x=T)
-	  }
-	dat2$biomass <- dat2$atoutput * dat2$wtAtAge/1000
-
 	#sum over boxes and ages (the sampled boxes were already subset in create functions)
-	totB <- aggregate(dat2$biomass,list(dat2$species,dat2$time),sum)
-	names(totB) <- c("species","time","biomass")
+	totconsB <- aggregate(dat2$biomass,list(dat2$species,dat2$time),sum)
+	names(totconsB) <- c("species","time","constons")
 
 	#add observation error
-	totBobs <- merge(totB,cv,by="species",all.x=T)
-	totBobs$var <- log(totBobs$cv^2+1)
-	totBobs$obsBiomass <- rlnorm(nrow(totBobs), log(totBobs$biomass)-totBobs$var/2, sqrt(totBobs$var))
+	totconsBobs <- merge(totconsB,cv,by="species",all.x=T)
+	totconsBobs$var <- log(totconsBobs$cv^2+1)
+	totconsBobs$obsConsB <- rlnorm(nrow(totconsBobs), log(totconsBobs$constons)-totconsBobs$var/2, sqrt(totconsBobs$var))
 
 
-	out <- data.frame(species=totBobs$species,
+	out <- data.frame(species=totconsBobs$species,
 		              agecl = NA,
 		              polygon=NA,
-		              layer=NA, time=totBobs$time,
-		              atoutput=totBobs$obsBiomass)
+		              layer=NA, time=totconsBobs$time,
+		              atoutput=totconsBobs$obsConsB)
 
     return(out)
 }
