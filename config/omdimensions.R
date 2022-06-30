@@ -20,10 +20,10 @@ sp_age <- omlist_ss$funct.group_ss[, c("Name", "NumCohorts", "NumAgeClassSize")]
 n_age_classes <- sp_age$NumCohorts
 # changed below for multiple species NOTE survspp alphabetical; NOT in order of fgs!!
 # this gives correct names
-age_classes <- sapply(n_age_classes, seq)
+age_classes <- lapply(n_age_classes, seq)
 names(age_classes)<-sp_age$Name
 
 n_annages <- sp_age$NumCohorts * sp_age$NumAgeClassSize
 # changed below for multiple species
-annages <- sapply(n_annages, seq)
+annages <- lapply(n_annages, seq)
 names(annages)<-sp_age$Name
