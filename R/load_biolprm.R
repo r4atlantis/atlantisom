@@ -129,6 +129,12 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   bilogistic_feed <- as.numeric(as.character(biolprm[grep("UseBiLogisticFeedingWindow", biolprm[, 1]), 2]))
   hump_feed <- as.numeric(as.character(biolprm[grep("UseHumpedFeedingWindow", biolprm[, 1]), 2]))
 
+  kmax <- biolprm[grep("Kmax_coefft_", biolprm[, 1],
+                      ignore.case = TRUE), 1:2]
+  kmax[, 2] <- as.numeric(as.character(kmax[, 2]))
+  kmax[, 1] <- gsub("Kmax_coefft_", "", as.character(kmax[, 1]))
+
+
 
   return(list("wl" = wl, "redfieldcn" = r.cn, "kgw2d" = kgw2d,
     "agespercohort" = agespercohort, "ageofmaturity" = ageofmaturity,
@@ -137,6 +143,7 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
     "BHbeta" = BHbeta, "r.rs" = r.rs, "time_spawn" = time_spawn,
     "recruit_period" = recruit_period, "recruit_time" = recruit_time,
     "klp" = klp, "kup" = kup, "hard_feed" = hard_feed,
-    "bilogistic_feed" = bilogistic_feed, "hump_feed" = hump_feed))
+    "bilogistic_feed" = bilogistic_feed, "hump_feed" = hump_feed,
+    "kmax" = kmax))
 
 }
