@@ -43,7 +43,8 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   maturityogive <- biolprm[grep("FSPB_", biolprm[, 1]), 1:2] #name, dimension
   maturityogive[, 2] <- as.numeric(as.character(maturityogive[, 2]))
   maturityogive[, 1] <- gsub("FSPB_", "", maturityogive[, 1])
-  maturityogive[, 3:12] <- biolprm[grep("FSPB_", biolprm[, 1], value = FALSE)+1, ]
+  maxmat <- max(maturityogive[,2])
+  maturityogive[, 3:(maxmat+2)] <- biolprm[grep("FSPB_", biolprm[, 1], value = FALSE)+1, ]
   names(maturityogive) <- c("code", "nagecl",
                             "agecl1", "agecl2", "agecl3", "agecl4", "agecl5",
                             "agecl6", "agecl7", "agecl8", "agecl9"," agecl10")
@@ -109,11 +110,33 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   recruit_time[, 1] <- gsub("_Recruit_Time", "",
     as.character(recruit_time[, 1]))
 
+  # Get predator gape widths
+  # lower proportion of prey size accessible by predator
+  klp <- biolprm[grep("KLP_", biolprm[, 1],
+                      ignore.case = TRUE), 1:2]
+  klp[, 2] <- as.numeric(as.character(klp[, 2]))
+  klp[, 1] <- gsub("KLP_", "", as.character(klp[, 1]))
+
+  # upper proportion of prey size accessible by predator
+  kup <- biolprm[grep("KUP_", biolprm[, 1],
+                      ignore.case = TRUE), 1:2]
+  kup[, 2] <- as.numeric(as.character(kup[, 2]))
+  kup[, 1] <- gsub("KUP_", "", as.character(kup[, 1]))
+
+
+  # Which formulation is used in the model
+  hard_feed <- as.numeric(as.character(biolprm[grep("UseHardFeedingWindow", biolprm[, 1]), 2]))
+  bilogistic_feed <- as.numeric(as.character(biolprm[grep("UseBiLogisticFeedingWindow", biolprm[, 1]), 2]))
+  hump_feed <- as.numeric(as.character(biolprm[grep("UseHumpedFeedingWindow", biolprm[, 1]), 2]))
+
+
   return(list("wl" = wl, "redfieldcn" = r.cn, "kgw2d" = kgw2d,
     "agespercohort" = agespercohort, "ageofmaturity" = ageofmaturity,
     "maturityogive" = maturityogive, "vertebrates" = vertebrates,
     "kwsr" = kwsr, "kwrr" = kwrr, "fsp" = fsp, "BHalpha" = BHalpha,
     "BHbeta" = BHbeta, "r.rs" = r.rs, "time_spawn" = time_spawn,
-    "recruit_period" = recruit_period, "recruit_time" = recruit_time))
+    "recruit_period" = recruit_period, "recruit_time" = recruit_time,
+    "klp" = klp, "kup" = kup, "hard_feed" = hard_feed,
+    "bilogistic_feed" = bilogistic_feed, "hump_feed" = hump_feed))
 
 }
