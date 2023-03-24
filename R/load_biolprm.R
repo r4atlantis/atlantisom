@@ -50,7 +50,7 @@ load_biolprm <- function(dir = getwd(), file_biolprm) {
   maturityogive[, 1] <- gsub("FSPB_", "", maturityogive[, 1])
   maxmat <- max(maturityogive[,2])
   maturityogive[, 3:(maxmat+2)] <- biolprm[grep("FSPB_", biolprm[, 1], value = FALSE)+1, ]
-  names(maturityogive) <- c("group", "nagecl",
+  names(maturityogive) <- c("code", "nagecl",
                             "agecl1", "agecl2", "agecl3", "agecl4", "agecl5",
                             "agecl6", "agecl7", "agecl8", "agecl9"," agecl10")
 
