@@ -70,6 +70,10 @@ om_species <- function(species = spp, omlist, save = TRUE,
   # catch in numbers at agecl at full resoluation (all polygons, no layer in output)
   truecatchnum_ss <- omlist$truth$catch[omlist$truth$catch$species %in% species_ss,]
 
+  # consumption (biomass_eaten) at agecl at full resolution (all polygons, no layer in output)
+  # based on atlantisom::calc_pred_cons()
+  truecons_ss <- omlist$truth$biomass_eaten[omlist$truth$biomass_eaten$species %in% species_ss,]
+
   # if annage output exists, add in, otherwise fill with NULL
   if("numsage" %in% names(omlist$truth)){
     truenumsage_ss <- omlist$truth$numsage[omlist$truth$numsage$species %in% species_ss,]
@@ -83,9 +87,10 @@ om_species <- function(species = spp, omlist, save = TRUE,
     truediscage_ss <- omlist$truth$discage[omlist$truth$discage$species %in% species_ss,]
   } else {truediscage_ss <- NULL}
 
-  # biomass_eaten is not correct by polygon, and also appears inflated
+  # original biomass_eaten was not correct by polygon, and also appeared inflated
   # a separate set of functions will get true diet by polygon from the
   # DetailedDietCheck.txt file
+  # now biomass_eaten is based on atlantisom::calc_pred_cons() and included above by default
 
   # if(diet){
   #   truebioeaten_ss <- omlist$truth$biomass_eaten[omlist$truth$biomass_eaten$species %in% species_ss,]
@@ -108,6 +113,7 @@ om_species <- function(species = spp, omlist, save = TRUE,
                     "trueresn_ss" = trueresn_ss,
                     "truestructn_ss" = truestructn_ss,
                     "truecatchnum_ss" = truecatchnum_ss,
+                    "truecons_ss" = truecons_ss,
                     "truenumsage_ss" = truenumsage_ss,
                     "truecatchage_ss" = truecatchage_ss,
                     "truediscage_ss" = truediscage_ss,
