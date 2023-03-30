@@ -257,7 +257,7 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
 
   if (length(at_data3d) >= 1) {
     # Remove biomasspools if selected variable is "N"!
-    if (select_variable == "N") {
+    if (input_select_variable == "N") {
       int_fs <- final_species[!is.element(final_species, bps)]
       int_fa <- final_agecl[!is.element(final_species, bps)]
       # Note this only works if age-structured vertebrates have 10 ageclasses
@@ -296,12 +296,12 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
 
   if (length(at_data2d) >= 1) {
     # Only select biomasspools if selected variable is "N"!
-    if (select_variable == "N") {
+    if (input_select_variable == "N") {
       int_fs <- final_species[is.element(final_species, bps)]
       int_fa <- final_agecl[is.element(final_species, bps)]
     }
     # age-structured invert groups are combined in ncdf file!
-    if (select_variable == "Grazing") int_fa <- 1
+    if (input_select_variable == "Grazing") int_fa <- 1
     for (i in seq_along(at_data2d)) {# for loop over all variables!
       if (i == 1) result2d <- list()
       for (j in 1:n_timesteps) {# loop over timesteps
@@ -363,13 +363,13 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   }
 
   # Combine dataframes if necessary!
-  if (all(sapply(lapply(at_data, dim), length) == 3) & select_variable != "N") {
+  if (all(sapply(lapply(at_data, dim), length) == 3) & input_select_variable != "N") {
     result <- result3d
   }
-  if (all(sapply(lapply(at_data, dim), length) == 2) & select_variable != "N") {
+  if (all(sapply(lapply(at_data, dim), length) == 2) & input_select_variable != "N") {
     result <- result2d
   }
-  if (select_variable == "N") {
+  if (input_select_variable == "N") {
     if (length(at_data2d) >= 1 & length(at_data3d) == 0) result <- result2d
     if (length(at_data2d) == 0 & length(at_data3d) >= 1) result <- result3d
     if (length(at_data2d) >= 1 & length(at_data3d) >= 1) {
@@ -402,7 +402,7 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
 
   # Sum up N for invert cohorts if invert cohorts are present!
   # NOTE: invert cohorts of size 10 are not considered!
-  if (select_variable == "N" & any(final_agecl != 10 & final_agecl > 1)) {
+  if (input_select_variable == "N" & any(final_agecl != 10 & final_agecl > 1)) {
     result <- result %>%
       dplyr::group_by(polygon, layer, species, time) %>%
       dplyr::summarise(atoutput = sum(atoutput))
