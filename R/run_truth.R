@@ -170,7 +170,7 @@ run_truth <- function(scenario, dir = getwd(),
                                  bps = bps,
                                  fgs = fgs,
                                  select_groups = select_groups,
-                                 select_variable = "Discards",
+                                 select_variable = "Discard",
                                  check_acronyms = TRUE,
                                  bboxes = boxes
   )
