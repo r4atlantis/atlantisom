@@ -150,7 +150,19 @@ run_truth <- function(scenario, dir = getwd(),
                  select_variable = "Catch",
                  check_acronyms = TRUE,
                  bboxes = boxes)
-  if(verbose) message("Catch read in.")
+  if(verbose) message("Catch in numbers at agecl read in.")
+
+  catchtons <- load_nc_catchtons(dir = dir,
+                                 file_nc = nc_catch,
+                                 file_fish = file_fish,
+                                 bps = bps,
+                                 fgs = fgs,
+                                 select_groups = select_groups,
+                                 select_variable = "Catch",
+                                 check_acronyms = TRUE,
+                                 bboxes = boxes
+  )
+  if(verbose) message("Catch tons by fleet read in.")
 
   if(annage){
     numsage <- load_nc_annage(dir = dir,
@@ -190,7 +202,7 @@ run_truth <- function(scenario, dir = getwd(),
                               check_acronyms = TRUE,
                               bboxes = boxes,
                               verbose = TRUE)
-    if(verbose) message("Catch read in from ANNAGECATCH.")
+    if(verbose) message("Catch in numbers at true age read in from ANNAGECATCH.")
 
     discage <- load_nc_annage(dir = dir,
                                file_nc = nc_annagecatch,
@@ -318,7 +330,7 @@ run_truth <- function(scenario, dir = getwd(),
     result <- list("biomass_ages" = biomass_ages,
                    "biomass_eaten" = biomass_eaten,
                    "catch" = catch,
-                   "catch_all" = catch_all,
+                   "catchtons" = catchtons,
                    "nums" = nums,
                    "resn" = resn,
                    "structn" = structn,
@@ -331,7 +343,7 @@ run_truth <- function(scenario, dir = getwd(),
     result <- list("biomass_ages" = biomass_ages,
                    "biomass_eaten" = biomass_eaten,
                    "catch" = catch,
-                   "catch_all" = catch_all,
+                   "catchtons" = catchtons,
                    "nums" = nums,
                    "numsage" = numsage,
                    "catchage" = catchage,
