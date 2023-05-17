@@ -152,6 +152,18 @@ run_truth <- function(scenario, dir = getwd(),
                  bboxes = boxes)
   if(verbose) message("Catch read in.")
 
+  catchtons <- load_nc_catchtons(dir = dir,
+                                 file_nc = nc_catch,
+                                 file_fish = file_fish,
+                                 bps = bps,
+                                 fgs = fgs,
+                                 select_groups = select_groups,
+                                 select_variable = "Catch",
+                                 check_acronyms = TRUE,
+                                 bboxes = boxes
+  )
+  if(verbose) message("Catch tons by fleet read in.")
+
   if(annage){
     numsage <- load_nc_annage(dir = dir,
                               file_nc = nc_annagebio,
@@ -318,7 +330,7 @@ run_truth <- function(scenario, dir = getwd(),
     result <- list("biomass_ages" = biomass_ages,
                    "biomass_eaten" = biomass_eaten,
                    "catch" = catch,
-                   "catch_all" = catch_all,
+                   "catchtons" = catchtons,
                    "nums" = nums,
                    "resn" = resn,
                    "structn" = structn,
@@ -331,7 +343,7 @@ run_truth <- function(scenario, dir = getwd(),
     result <- list("biomass_ages" = biomass_ages,
                    "biomass_eaten" = biomass_eaten,
                    "catch" = catch,
-                   "catch_all" = catch_all,
+                   "catchtons" = catchtons,
                    "nums" = nums,
                    "numsage" = numsage,
                    "catchage" = catchage,
