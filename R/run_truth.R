@@ -164,6 +164,18 @@ run_truth <- function(scenario, dir = getwd(),
   )
   if(verbose) message("Catch tons by fleet read in.")
 
+  catchtons <- load_nc_catchtons(dir = dir,
+                                 file_nc = nc_catch,
+                                 file_fish = file_fish,
+                                 bps = bps,
+                                 fgs = fgs,
+                                 select_groups = select_groups,
+                                 select_variable = "Catch",
+                                 check_acronyms = TRUE,
+                                 bboxes = boxes
+  )
+  if(verbose) message("Catch tons by fleet read in.")
+
   if(annage){
     numsage <- load_nc_annage(dir = dir,
                               file_nc = nc_annagebio,
