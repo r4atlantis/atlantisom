@@ -164,18 +164,6 @@ run_truth <- function(scenario, dir = getwd(),
   )
   if(verbose) message("Catch tons by fleet read in.")
 
-  catchtons <- load_nc_catchtons(dir = dir,
-                                 file_nc = nc_catch,
-                                 file_fish = file_fish,
-                                 bps = bps,
-                                 fgs = fgs,
-                                 select_groups = select_groups,
-                                 select_variable = "Catch",
-                                 check_acronyms = TRUE,
-                                 bboxes = boxes
-  )
-  if(verbose) message("Catch tons by fleet read in.")
-
   disctons <- load_nc_catchtons(dir = dir,
                                  file_nc = nc_catch,
                                  file_fish = file_fish,
@@ -282,32 +270,36 @@ run_truth <- function(scenario, dir = getwd(),
     warning(strwrap(prefix = " ", initial = "",
                     "log.txt file not found; catch in numbers correction not done. For Atlantis SVN dates prior to December 2015, CATCH.nc output units were incorrect. Correction requires presence of log.txt file in the directory."))
   }
-  catchfish <- read.table(file_catchfish, header = TRUE)
-  over <- colnames(catchfish)[-(1:2)]
-  catchfish <- reshape(catchfish, direction = "long",
-    varying = over, v.names = "catch",
-    timevar = "species", times = over)
-  rownames(catchfish) <- 1:NROW(catchfish)
-  catchfish <- catchfish[catchfish$catch > 0,
-    -which(colnames(catchfish) == "id")]
-  catchfish$species <- fgs$Name[match(catchfish$species, fgs$Code)]
-  colnames(catchfish) <- tolower(colnames(catchfish))
-  catchfish$time <- catchfish$time / runprm$toutfinc
-  if(verbose) message("Catch per fishery read in.")
 
-  # Get catch from txt. Sum per species and compare with values from nc-file!
-  catch_all <- load_catch(dir = dir, file = file_catch, fgs = fgs)
-  # over <- colnames(catch_all)[(colnames(catch_all) %in% fgs$Code)]
-  # catch_all <- reshape(catch_all[, c("Time", over)], direction = "long",
+  # May 2023 not using catch per fishery and can get this from catchtons above
+  # also not using catch.txt output here, read in at om_init stage so drop here
+
+  # catchfish <- read.table(file_catchfish, header = TRUE)
+  # over <- colnames(catchfish)[-(1:2)]
+  # catchfish <- reshape(catchfish, direction = "long",
   #   varying = over, v.names = "catch",
   #   timevar = "species", times = over)
-  # rownames(catch_all) <- 1:NROW(catch_all)
-  # catch_all <- catch_all[catch_all$catch > 0,
-  #   -which(colnames(catch_all) == "id")]
-  # catch_all$species <- fgs$Name[match(catch_all$species, fgs$Code)]
-  # colnames(catch_all) <- tolower(colnames(catch_all))
-  catch_all$time <- catch_all$time / runprm$toutfinc
-  if(verbose) message("Catch for all fisheries in biomass read in.")
+  # rownames(catchfish) <- 1:NROW(catchfish)
+  # catchfish <- catchfish[catchfish$catch > 0,
+  #   -which(colnames(catchfish) == "id")]
+  # catchfish$species <- fgs$Name[match(catchfish$species, fgs$Code)]
+  # colnames(catchfish) <- tolower(colnames(catchfish))
+  # catchfish$time <- catchfish$time / runprm$toutfinc
+  # if(verbose) message("Catch per fishery read in.")
+
+  # # Get catch from txt. Sum per species and compare with values from nc-file!
+  # catch_all <- load_catch(dir = dir, file = file_catch, fgs = fgs)
+  # # over <- colnames(catch_all)[(colnames(catch_all) %in% fgs$Code)]
+  # # catch_all <- reshape(catch_all[, c("Time", over)], direction = "long",
+  # #   varying = over, v.names = "catch",
+  # #   timevar = "species", times = over)
+  # # rownames(catch_all) <- 1:NROW(catch_all)
+  # # catch_all <- catch_all[catch_all$catch > 0,
+  # #   -which(colnames(catch_all) == "id")]
+  # # catch_all$species <- fgs$Name[match(catch_all$species, fgs$Code)]
+  # # colnames(catch_all) <- tolower(colnames(catch_all))
+  # catch_all$time <- catch_all$time / runprm$toutfinc
+  # if(verbose) message("Catch for all fisheries in biomass read in.")
 
   diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs)
   diet <- diet[diet$atoutput>0,]
@@ -340,6 +332,11 @@ run_truth <- function(scenario, dir = getwd(),
   # SKG May 2019, no export of catch in biomass for now
   # does not match catch.txt output file
   # read that in separately instead
+
+  # SKG May 2023, catch in biomass now from CATCH.nc
+  # catchtons shown to match Catch.txt file
+  # this is catch by fleet, polygon, time, aggregated over all ages
+  # if discards are included they will also be output
 
   # SKG Sept 2020, no export of biomass_eaten
   # does not match DetailedDietCheck.txt output
