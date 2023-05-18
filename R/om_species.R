@@ -77,10 +77,10 @@ om_species <- function(species = spp, omlist, save = TRUE,
   truecatchnum_ss <- omlist$truth$catch[omlist$truth$catch$species %in% species_ss,]
 
   # catch in tons at full resolution by fleet (all polygons, no layer or agecl)
-  truecatchtons_ss <- omlist$truth$catchtons[omlist$truth$catchtons$species %in% species_ss,]
+  truecatchtons_ss <- omlist$truth$catchtons[omlist$truth$catchtons$species %in% code_ss,]
 
   # discard in tons at full resolution by fleet (all polygons, no layer or agecl)
-  truedisctons_ss <- omlist$truth$disctons[omlist$truth$disctons$species %in% species_ss,]
+  truedisctons_ss <- omlist$truth$disctons[omlist$truth$disctons$species %in% code_ss,]
 
   # consumption (biomass_eaten) at agecl at full resolution (all polygons, no layer in output)
   # based on atlantisom::calc_pred_cons()
