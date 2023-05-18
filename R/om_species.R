@@ -16,6 +16,12 @@
 #'  \item{trueresn_ss, reserve nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truestructn_ss, structural nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truecatchnum_ss, fishery catch at age output of \code{run_truth}, species_ss only}
+#'  \item{truecons_ss, total consumption output of \code{run_truth}, species_ss only}
+#'  \item{truecatchtons_ss, fishery catch by fleet output of \code{run_truth}, species_ss only}
+#'  \item{truedisctons_ss, fishery discard by fleet output of \code{run_truth}, species_ss only}
+#'  \item{truenumsage_ss, true numbers at annual age output of \code{run_truth}, species_ss only}
+#'  \item{truecatchage_ss, fishery catch at annual age output of \code{run_truth}, species_ss only}
+#'  \item{truediscage_ss, fishery discard at annual age output of \code{run_truth}, species_ss only}
 #'  \item{funct.groups_ss, dataframe of species characteristics, species_ss only}
 #'  \item{biol, list of biological parameters passed from input omlist}
 #'  \item{boxpars, dataframe of spatial parameters}
@@ -70,6 +76,12 @@ om_species <- function(species = spp, omlist, save = TRUE,
   # catch in numbers at agecl at full resoluation (all polygons, no layer in output)
   truecatchnum_ss <- omlist$truth$catch[omlist$truth$catch$species %in% species_ss,]
 
+  # catch in tons at full resolution by fleet (all polygons, no layer or agecl)
+  truecatchtons_ss <- omlist$truth$catchtons[omlist$truth$catchtons$species %in% species_ss,]
+
+  # discard in tons at full resolution by fleet (all polygons, no layer or agecl)
+  truedisctons_ss <- omlist$truth$disctons[omlist$truth$disctons$species %in% species_ss,]
+
   # consumption (biomass_eaten) at agecl at full resolution (all polygons, no layer in output)
   # based on atlantisom::calc_pred_cons()
   truecons_ss <- omlist$truth$biomass_eaten[omlist$truth$biomass_eaten$species %in% species_ss,]
@@ -114,6 +126,8 @@ om_species <- function(species = spp, omlist, save = TRUE,
                     "truestructn_ss" = truestructn_ss,
                     "truecatchnum_ss" = truecatchnum_ss,
                     "truecons_ss" = truecons_ss,
+                    "truecatchtons_ss" = truecatchtons_ss,
+                    "truedisctons_ss" = truedisctons_ss,
                     "truenumsage_ss" = truenumsage_ss,
                     "truecatchage_ss" = truecatchage_ss,
                     "truediscage_ss" = truediscage_ss,
