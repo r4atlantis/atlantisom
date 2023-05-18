@@ -10,15 +10,15 @@
 #'  \item{code_ss, species code from funct.groups}
 #'  \item{truetotbio_ss, dataframe output of \code{load_bioind}, species_ss only}
 #'  \item{truecatchbio_ss, dataframe output of \code{load_catch}, species_ss only}
-#'  \item{YOY_ss, dataframe young of year output, species_ss only}
+#'  \item{YOY_ss, dataframe young of year output, code_ss only}
 #'  \item{truenums_ss, numbers at age output of \code{run_truth}, species_ss only}
 #'  \item{truebio_ss, biomass at age output of \code{run_truth}, species_ss only}
 #'  \item{trueresn_ss, reserve nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truestructn_ss, structural nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truecatchnum_ss, fishery catch at age output of \code{run_truth}, species_ss only}
 #'  \item{truecons_ss, total consumption output of \code{run_truth}, species_ss only}
-#'  \item{truecatchtons_ss, fishery catch by fleet output of \code{run_truth}, species_ss only}
-#'  \item{truedisctons_ss, fishery discard by fleet output of \code{run_truth}, species_ss only}
+#'  \item{truecatchtons_ss, fishery catch by fleet output of \code{run_truth}, code_ss only}
+#'  \item{truedisctons_ss, fishery discard by fleet output of \code{run_truth}, code_ss only}
 #'  \item{truenumsage_ss, true numbers at annual age output of \code{run_truth}, species_ss only}
 #'  \item{truecatchage_ss, fishery catch at annual age output of \code{run_truth}, species_ss only}
 #'  \item{truediscage_ss, fishery discard at annual age output of \code{run_truth}, species_ss only}
