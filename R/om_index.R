@@ -86,24 +86,43 @@ om_index <- function(usersurvey = usersurvey_file,
   #fishery configuration can specify only area and time of observation
   #fishery species inherited from omlist_ss
   #this is total catch not by fleet, so only one "fishery"
-  source(userfishery, local = TRUE)
 
-  #we are not currently subsetting fishery catch because we cannot correct catch.nc
-  #  instead the catch in biomass from catch.txt is read in for the index
-  #  we do not apply any cv to this, but we could this way (default cv=0)
+  # 2023 update, can now get fleet specific catch by polygon
+  # user options for fishery--default is a census in all areas for all fleets
+  # allows multiple fisheries
+  fishObsCatchBs <- list()
 
-  fishObsCatchB <- list()
-  for(i in 1:n_reps){
-    fishObsCatchB[[i]] <- atlantisom::sample_fishery_totcatch(omlist_ss$truecatchbio_ss, fish_cv)
-  }
+  for(f in userfishery){
 
-  if(save){
-    saveRDS(fishObsCatchB, file.path(d.name, paste0(scenario.name, "_",
-                                                    fishery.name, "fishCatch.rds")))
+    source(f, local = TRUE)
+
+    # 2023 update: we can now subset fishery catch from CATCH.nc using fleet output
+    # create_fishery_subset as currently written aggregates across fleets and polygons
+    # change so that fleets to be aggregated together are specified in the userfishery file
+
+    fishery_C <- atlantisom::create_fishery_subset(dat = omlist_ss$truecatchtons_ss,
+                                                   time = fishtime,
+                                                   fleets = fishfleets,
+                                                   species = fishspp,
+                                                   boxes = fishboxes)
+
+
+    fishObsCatchB <- list()
+    for(i in 1:n_reps){
+      fishObsCatchB[[i]] <- atlantisom::sample_fishery_totcatch(fishery_C, fish_cv)
+    }
+
+    if(save){
+      saveRDS(fishObsCatchB, file.path(d.name, paste0(scenario.name, "_",
+                                                      fishery.name, "fishCatch.rds")))
+    }
+
+    fishObsCatchBs[[fishery.name]] <- fishObsCatchB
+
   }
 
   indices <- list("survObsBiomB" = survObsBiomBs,
-                  "fishObsCatchB" = fishObsCatchB)
+                  "fishObsCatchB" = fishObsCatchBs)
 
   return(indices)
 }

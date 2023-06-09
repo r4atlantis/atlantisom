@@ -7,10 +7,10 @@
 #'   within \code{\link{run_truth}}. One does not need to use these functions
 #'   to create \code{dat}, rather you must only ensure that the structure of
 #'   \code{dat} is the same.
-#'   Currently, the function subsets the data by polygon and time (there are not layers
-#'   in fishery outputs).  The input is fishery observations (either catch nums
-#'   or catch bio outputs of run_truth), so nothing else needs to be done. Atlantis
-#'   already applies a fishery efficiency and selectivity internally.
+#'   Currently, the function subsets the data by fleet, polygon and time (there
+#'   are not layers in fishery outputs).  The input is fishery observations (either
+#'   catch nums or catch bio outputs of run_truth), so nothing else needs to be done.
+#'   Atlantis already applies a fishery efficiency and selectivity internally.
 #'   This function works for specific defined species, specific defined polygons,
 #'   and specific defined time.
 
@@ -36,11 +36,15 @@
 #' This function is for a vector of defined species
 #' Returns only boxes where fishery was sampled
 
-create_fishery_subset <- function(dat, time, species, boxes) {
+create_fishery_subset <- function(dat, time, fleets, species, boxes) {
 
 	#Do some vector length tests (species=effic, column names, )
 
-	#first select the appropriate rows (time and box)
+	#first select the appropriate rows (fleets) if non-NULL fleets specified
+  if(!is.null(fleets)){
+    dat <- dat[dat$fleet %in% fleets,]
+  }
+
 	#first select the appropriate rows and
 	aggData <- aggregateData(dat, time, species, boxes, keepColumns=c("species","agecl","polygon","time"))
 
