@@ -32,10 +32,20 @@
 sample_fishery_totcatch <- function(dat,cv) {
 
   #dat is the output of load_catch
+
+  # if dat is output of load_nc_catchtons
+  # it needs to be aggregated over fleet and polygon
+  if(!is.na(sum(dat$polygon))){
+    #sum over boxes and ages (the sampled boxes and fleets were already subset
+    #in create functions)
+    dat <- aggregate(dat$atoutput,list(dat$species,dat$time),sum)
+    names(dat) <- c("species","time","catchtons")
+  }
+
 	#add observation error
   totCobs <- merge(dat,cv,by="species",all.x=T)
   totCobs$var <- log(totCobs$cv^2+1)
-  totCobs$obsCatch <- rlnorm(nrow(totCobs), log(totCobs$atoutput)-totCobs$var/2, sqrt(totCobs$var))
+  totCobs$obsCatch <- rlnorm(nrow(totCobs), log(totCobs$catchtons)-totCobs$var/2, sqrt(totCobs$var))
 
 	out <- data.frame(species=totCobs$species,
 		              agecl = NA,

@@ -20,10 +20,11 @@
 #' @template      dat
 #' @param time    The timing of the survey (a vector indicating specific time steps, which are typically associated with years)
 #'                    i.e., seq(365,10*3650,365) would be an annual survey for 10 years
+#' @param fleets  which fleet indices to aggregate in the output (NULL aggregates all fleets)
 #' @param species The species to sample in the survey (a vector)
 #' @param boxes   A vector of box numbers
 
-#' @return The function returns a subsetted matrix with the same columns
+#' @return The function returns a subsetted matrix aggregated over fleets with the columns
 #'   as the input data, i.e.,:
 #'   \itemize{
 #'     \item{species}
