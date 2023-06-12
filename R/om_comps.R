@@ -137,7 +137,7 @@ om_comps <- function(usersurvey = usersurvey_file,
   # 2023 update, can now get fleet specific catch by polygon
   # user options for fishery--default is a census in all areas for all fleets
   # allows multiple fisheries
-  fishery_lenwts <- list()
+  catch_age_comps <- list()
   fishObsLenComps <- list()
   fishObsWtAtAges <- list()
 
@@ -155,7 +155,7 @@ om_comps <- function(usersurvey = usersurvey_file,
     # With current setup, if user specifies multiple fishery files, they will get
     # catch index by fleet
     # true age by fleet
-    # but the length comps will have all fleet info for the specified fleet times and boxes
+    # but the length comps will have all fleet lengths for the specified fleet times and boxes
 
     #fishery catch at age each observed timestep summed over observed polygons
     # catch at age by area and timestep
@@ -222,6 +222,12 @@ om_comps <- function(usersurvey = usersurvey_file,
       saveRDS(fishObsWtAtAge, file.path(d.name, paste0(scenario.name, "_",
                                                        fishery.name, "fishObsWtAtAge.rds")))
     }
+
+    # add each survey to master list objects for survey data
+    catch_age_comps[[fishery.name]] <- catch_age_comp
+    fishObsLenComps[[fishery.name]] <- fishObsLenComp
+    fishObsWtAtAges[[fishery.name]] <- fishObsWtAtAge
+
   }
 
   if(!is.null(omlist_ss$truenumsage_ss)){
@@ -261,28 +267,38 @@ om_comps <- function(usersurvey = usersurvey_file,
     #fishery catch at age each observed timestep summed over observed polygons
     # there is a fleet variable in this dataset so can get catch at age by fleet
     # catch at age by area and timestep
-    catch_annagenumbers <-  atlantisom::create_fishery_subset(dat = omlist_ss$truecatchage_ss,
-                                                        time = fishtime,
-                                                        fleets = fishfleets,
-                                                        species = survspp,
-                                                        boxes = fishboxes)
+    #allows for mulitple fisheries
+    catch_annage_comps <- list()
 
-    # if we want replicates for obs error this sample function will generate them
-    # WARNING THIS AGGREGATES ACROSS FLEETS
-    # TODO: need to change sample_fish to fix
-    # SKG June 2023, with fleets defined in the input, the output aggregates only
-    # selected fleets so I think this is ok to get age comp by user defined fleet
-    catch_annage_comp <- list()
-    for(i in 1:n_reps){
-      catch_annage_comp[[i]] <- atlantisom::sample_fish(catch_annagenumbers, fisheffN)
+    for (f in userfishery)
+    {
+      source(f, local = TRUE)
+
+      catch_annagenumbers <-  atlantisom::create_fishery_subset(dat = omlist_ss$truecatchage_ss,
+                                                                time = fishtime,
+                                                                fleets = fishfleets,
+                                                                species = survspp,
+                                                                boxes = fishboxes)
+
+      # if we want replicates for obs error this sample function will generate them
+      # WARNING THIS AGGREGATES ACROSS FLEETS
+      # TODO: need to change sample_fish to fix
+      # SKG June 2023, with fleets defined in the input, the output aggregates only
+      # selected fleets so I think this is ok to get annual age comp by user defined fleet
+      catch_annage_comp <- list()
+      for(i in 1:n_reps){
+        catch_annage_comp[[i]] <- atlantisom::sample_fish(catch_annagenumbers, fisheffN)
+      }
+
+      # save fishery annual age comps
+      if(save){
+        saveRDS(catch_annage_comp, file.path(d.name, paste0(scenario.name,"_",
+                                                            fishery.name, "fishObsFullAgeComp.rds")))
+      }
+      catch_annage_comps[[fishery.name]] <- catch_annage_comp
     }
 
-    # save fishery annual age comps
-    if(save){
-    saveRDS(catch_annage_comp, file.path(d.name, paste0(scenario.name,"_",
-                                                        fishery.name, "fishObsFullAgeComp.rds")))
-    }
-  }else{catch_annage_comp <- NULL}
+  }else{catch_annage_comps <- NULL}
 
   # call interpolate weight at age function to get survObsFullWtAtAge
   if(!is.null(omlist_ss$truenumsage_ss)){
@@ -308,16 +324,26 @@ om_comps <- function(usersurvey = usersurvey_file,
   # do we want fishery average weight at true age too? why not
   # call interpolate weight at age function to get fishObsFullWtAtAge
   # WARNING currently aggregates out fleet info, but no fleets in aggregate wtage
+  # June 2023
+  # This will produce separate output files with fleets defined in separate fishery
+  # config files areas and times but with problem notes above for lengths
   if(!is.null(omlist_ss$truecatchage_ss)){
-    interp_fishWtAtAge <- list()
-    for(i in 1:n_reps){
-      interp_fishWtAtAge[[i]] <- calc_avgwtstage2age(wtagecl = fishObsWtAtAge[[i]],
-                                                     annages = omlist_ss$truecatchage_ss,
-                                                     fgs = omlist_ss$funct.group_ss)
-    }
-    if(save){
-      saveRDS(interp_fishWtAtAge, file.path(d.name, paste0(scenario.name,"_",
-                                                           fishery.name, "fishObsFullWtAtAge.rds")))
+    interp_fishWtAtAges <- list()
+    for (f in userfishery)
+    {
+      source(f, local = TRUE)
+
+      interp_fishWtAtAge <- list()
+      for(i in 1:n_reps){
+        interp_fishWtAtAge[[i]] <- calc_avgwtstage2age(wtagecl = fishObsWtAtAge[[i]],
+                                                       annages = omlist_ss$truecatchage_ss,
+                                                       fgs = omlist_ss$funct.group_ss)
+      }
+      if(save){
+        saveRDS(interp_fishWtAtAge, file.path(d.name, paste0(scenario.name,"_",
+                                                             fishery.name, "fishObsFullWtAtAge.rds")))
+      }
+      interp_fishWtAtAges[[fishery.name]] <- interp_fishWtAtAge
     }
   }else{interp_fishWtAtAge <- NULL}
 
@@ -326,13 +352,13 @@ om_comps <- function(usersurvey = usersurvey_file,
   comps <- list("survObsAgeComp" = age_comp_datas,
                 "survObsLenComp" = survObsLenComps,
                 "survObsWtAtAge" = survObsWtAtAges,
-                "fishObsAgeComp" = catch_age_comp,
-                "fishObsLenComp" = fishObsLenComp,
-                "fishObsWtAtAge" = fishObsWtAtAge,
+                "fishObsAgeComp" = catch_age_comps,
+                "fishObsLenComp" = fishObsLenComps,
+                "fishObsWtAtAge" = fishObsWtAtAges,
                 "survObsFullAgeComp" = annage_comp_datas,
-                "fishObsFullAgeComp" = catch_annage_comp,
+                "fishObsFullAgeComp" = catch_annage_comps,
                 "survObsFullWtAtAge" = interp_survWtAtAges,
-                "fishObsFullWtAtAge" = interp_fishWtAtAge
+                "fishObsFullWtAtAge" = interp_fishWtAtAges
                 )
 
   return(comps)
