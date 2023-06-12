@@ -38,11 +38,11 @@
 
 sample_fishery_totcatch <- function(dat,cv) {
 
-  #dat is the output of load_catch, polygons are NA
+  #dat is the output of load_catch, polygons are all NA
 
   # if dat is output of load_nc_catchtons
   # it needs to be aggregated over fleet and polygon
-  if(!is.na(sum(dat$polygon))){
+  if(!all(is.na(dat$polygon))){
     #sum over boxes and ages (the sampled boxes and fleets were already subset
     #in create functions)
     dat <- aggregate(dat$atoutput,list(dat$species,dat$time),sum)
