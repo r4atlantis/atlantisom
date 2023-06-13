@@ -58,7 +58,7 @@ om_species <- function(species = spp, omlist, save = TRUE,
   code_ss <- omlist$funct.groups$Code[which(omlist$funct.groups$Name %in% species_ss)]
   # cut to a single species in YOY file
   YOY_ss <- omlist$YOY %>%
-    select(Time, paste0(code_ss, ".0"))
+    select(any_of(c("Time", paste0(code_ss, ".0"))))
   # reformat to be like all the other objects
 
   # numbers at agecl at full resolution (all polygons and layers)
