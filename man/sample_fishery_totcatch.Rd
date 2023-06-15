@@ -28,14 +28,21 @@ The standard dataframe as specified used in \code{dat}.
 \description{
 The function takes total catch data from an Atlantis scenario
   where the data was read in from Atlantis output using \code{\link{load_catch}}
-  function. One does not need to use these functions
+  function or from the \code{\link{load_nc_catchtons}} function.
+  One does not need to use these functions
   to create \code{dat}, rather you must only ensure that the structure of
   \code{dat} is the same.
 }
 \details{
-This function simply creates an observed total catch time series from
+If a total catch time series is input from \code{\link{load_catch}},
+  this function simply creates an observed total catch time series from
   total catch input using by applying a user-specified cv.
-  The result is a coastwide catch (tons) estimate in tons from the fishery.
+  If catch by polygon and timestep is input from \code{\link{load_nc_catchtons}}
+  followed by \code{\link{create_fishery_subset}}, then catches are aggregated
+  over polygons and the subannual timesteps are retained. Fleet specific catch
+  can be created by selecting a subset of fleets as input to
+  \code{\link{create_fishery_subset}}. Either way, the result is a coastwide
+  catch (tons) estimate in tons from the fishery.
 }
 \examples{
 d <- system.file("extdata", "SETAS_Example", package = "atlantisom")
