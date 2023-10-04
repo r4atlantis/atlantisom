@@ -77,6 +77,8 @@ calc_biomass_pool <- function(pooln, vol, area, fgs, biolprm){
 
     names(vol)[names(vol) == "atoutput"] <- "vol"
 
+    sedlayer <- max(vol$layer)
+
     pooln <- merge(pooln, vol,
                    by = c("time", "polygon", "layer"))
 
@@ -91,7 +93,7 @@ calc_biomass_pool <- function(pooln, vol, area, fgs, biolprm){
     pooln <- pooln |>
       dplyr::mutate(atoutput = dplyr::case_when(pooltype == "nonbenth" ~ vol * atoutput * bio_conv,
                                                 pooltype == "benthos" ~
-                                                  ifelse(layer==7, area * atoutput * bio_conv, 0)))
+                                                  ifelse(layer==sedlayer, area * atoutput * bio_conv, 0)))
 
     # Sum over layers
     biomass_pools <- aggregate(atoutput ~ species + agecl + time + polygon,
