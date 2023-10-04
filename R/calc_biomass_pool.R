@@ -66,10 +66,11 @@ calc_biomass_pool <- function(pooln, vol, area, fgs, biolprm){
                                                                 "sed_bact",
                                                                 "sed_ep_ff",
                                                                 "sed_ep_other",
-                                                                "mobile_ep_other",
+                                                                "mob_ep_other",
                                                                 "coral",
                                                                 "sponge")) ~ "benthos",
-                                              TRUE ~ "nonbenth"))
+                                              (grouptype %in% c("lg_phy")) ~ "lg_phy",
+                                              TRUE ~ "alllayers"))
 
   data_names <- c("species", "agecl", "polygon", "layer", "time", "atoutput")
 
@@ -91,7 +92,9 @@ calc_biomass_pool <- function(pooln, vol, area, fgs, biolprm){
     #pooln$atoutput <- with(pooln, vol * atoutput * bio_conv)
 
     pooln <- pooln |>
-      dplyr::mutate(atoutput = dplyr::case_when(pooltype == "nonbenth" ~ vol * atoutput * bio_conv,
+      dplyr::mutate(atoutput = dplyr::case_when(pooltype == "alllayers" ~ vol * atoutput * bio_conv,
+                                                pooltype == "lg_phy" ~
+                                                  ifelse(layer!=sedlayer, vol * atoutput * bio_conv, 0),
                                                 pooltype == "benthos" ~
                                                   ifelse(layer==sedlayer, area * atoutput * bio_conv, 0)))
 
