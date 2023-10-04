@@ -81,6 +81,11 @@ run_truth <- function(scenario, dir = getwd(),
   allboxes <- load_box(dir = dir, file_bgm = file_bgm)
   boxes <- get_boundary(allboxes)
 
+  # Get box area for benthic biomass pool calc
+  area <- load_boxarea(dir = dir,
+                       file_bgm = file_bgm)
+
+
   #Extract from NetCDF files
   # Need: dir, file_nc, bps, fgs, select_groups, select_variable,
   # check_acronyms, bboxes
@@ -141,6 +146,16 @@ run_truth <- function(scenario, dir = getwd(),
                          aggregate_layers = FALSE,
                          bboxes = boxes)
   if(verbose) message("Volume read in.")
+
+  # biomass pools added 2023 for Rpath testing
+  pooln <- load_nc(dir = dir,
+                   file_nc = nc_out,
+                   bps = bps,
+                   fgs = fgs,
+                   select_groups = select_groups,
+                   select_variable = "N",
+                   check_acronyms = TRUE,
+                   bboxes = boxes)
 
   catch <- load_nc(dir = dir,
                  file_nc = nc_catch,
@@ -311,11 +326,21 @@ run_truth <- function(scenario, dir = getwd(),
   if(verbose) message("Start calc_functions")
   # catchbio <- calc_biomass_age(nums = catch,
   #   resn = resn, structn = structn, biolprm = biol)
+
   biomass_eaten <- calc_pred_cons(eat = eat,
      grazing = grazing, vol = vol, biolprm = biol,
      runprm = runprm)
+
   biomass_ages <- calc_biomass_age(nums = nums,
     resn = resn, structn = structn, biolprm = biol)
+
+  # added 2023 for Rpath testing
+  biomass_pools <- calc_biomass_pool(pooln = pooln,
+                                     vol = vol,
+                                     area = area,
+                                     fgs = fgs,
+                                     biolprm = biol)
+
   # bio_catch <- calc_biomass_age(nums = catch,
   #   resn = resn, structn = structn, biolprm = biol)
   #
@@ -351,6 +376,7 @@ run_truth <- function(scenario, dir = getwd(),
   if(!annage){
     result <- list("biomass_ages" = biomass_ages,
                    "biomass_eaten" = biomass_eaten,
+                   "biomass_pools" = biomass_pools,
                    "catch" = catch,
                    "catchtons" = catchtons,
                    "disctons" = disctons,
@@ -365,6 +391,7 @@ run_truth <- function(scenario, dir = getwd(),
   if(annage){
     result <- list("biomass_ages" = biomass_ages,
                    "biomass_eaten" = biomass_eaten,
+                   "biomass_pools" = biomass_pools,
                    "catch" = catch,
                    "catchtons" = catchtons,
                    "disctons" = disctons,

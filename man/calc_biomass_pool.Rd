@@ -4,7 +4,7 @@
 \alias{calc_biomass_pool}
 \title{Calculate biomass in t per non-age-structured groups (biomass pools) per polygon and time.}
 \usage{
-calc_biomass_pool(pooln, vol, biolprm)
+calc_biomass_pool(pooln, vol, area, fgs, biolprm)
 }
 \arguments{
 \item{pooln}{A \code{data.frame} containing the Nitrogen per functional-group
@@ -17,6 +17,14 @@ each time, polygon, and layer.
 The \code{data.frame} must originate from \code{\link{load_nc_physics}}
 using \code{physic_variables = "volume"}.}
 
+\item{area}{A \code{data.frame} containing the area for
+each polygon.
+The \code{data.frame} must originate from \code{\link{load_boxarea}}.}
+
+\item{fgs}{A data frame created by \code{\link{load_fgs}} that
+reads in the csv file containing functional group names, usually
+\code{"functionalGroups.csv"}.}
+
 \item{biolprm}{A list of biological parameters available from the
 \code{[...]_Biol.prm} file, as read in by \code{\link{load_biolprm}}.}
 }
@@ -24,7 +32,7 @@ using \code{physic_variables = "volume"}.}
 A \code{data.frame} in tidy format with the following columns:
   species, agecl=1, time, polygon and atoutput.
   Atoutput is the total biomass in t.
-  At this point biomass was aggregated (sum) per layer!
+  At this point biomass was aggregated (sum) per layer or area for benthos!
 }
 \description{
 Calculate biomass in t per non-age-structured groups (biomass pools) per polygon and time.
