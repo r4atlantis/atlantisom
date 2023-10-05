@@ -148,14 +148,22 @@ run_truth <- function(scenario, dir = getwd(),
   if(verbose) message("Volume read in.")
 
   # biomass pools added 2023 for Rpath testing
+  pools <- fgs %>%
+    dplyr::filter(NumCohorts == 1,
+                  IsTurnedOn == 1) %>%
+    dplyr::select(Name) %>%
+    .$Name
+
   pooln <- load_nc(dir = dir,
                    file_nc = nc_out,
                    bps = bps,
                    fgs = fgs,
-                   select_groups = select_groups,
+                   select_groups = pools,
                    select_variable = "N",
                    check_acronyms = TRUE,
                    bboxes = boxes)
+  if(verbose) message("Biomass pools N read in.")
+
 
   catch <- load_nc(dir = dir,
                  file_nc = nc_catch,
