@@ -13,6 +13,7 @@
 #'  \item{YOY_ss, dataframe young of year output, code_ss only}
 #'  \item{truenums_ss, numbers at age output of \code{run_truth}, species_ss only}
 #'  \item{truebio_ss, biomass at age output of \code{run_truth}, species_ss only}
+#'  \item{truebiopool_ss, biomass pool groups output of \code{run_truth}, species_ss only}
 #'  \item{trueresn_ss, reserve nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truestructn_ss, structural nitrogen output of \code{run_truth}, species_ss only}
 #'  \item{truecatchnum_ss, fishery catch at age output of \code{run_truth}, species_ss only}
@@ -67,6 +68,9 @@ om_species <- function(species = spp, omlist, save = TRUE,
   # biomass at agecl at full resolution (all polygons and layers)
   truebio_ss <- omlist$truth$biomass_ages[omlist$truth$biomass_ages$species %in% species_ss,]
 
+  # biomass pool groups at full resolution (all polygons and layers)
+  truebiopool_ss <- omlist$truth$biomass_pools[omlist$truth$biomass_pools$species %in% species_ss,]
+
   # reserve nitrogen at agecl at full resolution
   trueresn_ss <- omlist$truth$resn[omlist$truth$resn$species %in% species_ss,]
 
@@ -118,6 +122,7 @@ om_species <- function(species = spp, omlist, save = TRUE,
   omlist_ss <- list("species_ss" = species_ss,
                     "code_ss" = code_ss,
                     "truetotbio_ss" = truetotbio_ss,
+                    "truebiopool_ss" = truebiopool_ss,
                     "truecatchbio_ss" = truecatchbio_ss,
                     "YOY_ss" = YOY_ss,
                     "truenums_ss" = truenums_ss,
