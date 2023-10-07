@@ -49,9 +49,16 @@ om_index <- function(usersurvey = usersurvey_file,
   {
     source(s, local = TRUE)
 
+    # add in biomass pools if they exist
+    if("truebiopool_ss" %in% names(omlist_ss)){
+      truebio_ss <- rbind(omlist_ss$truebio_ss, omlist_ss$truebiopool_ss)
+    }else{
+      truebio_ss <- omlist_ss$truebio_ss
+    }
+
     #biomass based fishery independent survey index
     # this uses result$biomass_ages to sample biomass directly, no need for wt@age est
-    survey_B <- atlantisom::create_survey(dat = omlist_ss$truebio_ss,
+    survey_B <- atlantisom::create_survey(dat = truebio_ss,
                                           time = survtime,
                                           species = survspp,
                                           boxes = survboxes,
