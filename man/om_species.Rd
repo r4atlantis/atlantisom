@@ -21,6 +21,7 @@ Returns an omlist_ss list object containing dataframes and lists:
  \item{YOY_ss, dataframe young of year output, code_ss only}
  \item{truenums_ss, numbers at age output of \code{run_truth}, species_ss only}
  \item{truebio_ss, biomass at age output of \code{run_truth}, species_ss only}
+ \item{truebiopool_ss, biomass pool groups output of \code{run_truth}, species_ss only}
  \item{trueresn_ss, reserve nitrogen output of \code{run_truth}, species_ss only}
  \item{truestructn_ss, structural nitrogen output of \code{run_truth}, species_ss only}
  \item{truecatchnum_ss, fishery catch at age output of \code{run_truth}, species_ss only}
