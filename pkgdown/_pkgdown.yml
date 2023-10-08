@@ -52,6 +52,7 @@ reference:
   - calc_age2length
   - calc_avgwtstage2age
   - calc_biomass_age
+  - calc_biomass_pool
   - calc_pred_diet
   - calc_stage2age
   - calc_timestep2time
