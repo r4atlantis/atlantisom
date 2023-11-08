@@ -76,6 +76,7 @@ Other calc functions:
 \code{\link{calc_age2length}()},
 \code{\link{calc_avgwtstage2age}()},
 \code{\link{calc_biomass_age}()},
+\code{\link{calc_biomass_pool}()},
 \code{\link{calc_pred_cons}()},
 \code{\link{calc_pred_diet}()},
 \code{\link{calc_stage2age}()},

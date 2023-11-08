@@ -1,6 +1,6 @@
-#' Load Atlantis annual age outputfiles (netcdf)
+#' Load Atlantis catch tons by fleet and polygon outputfiles (netcdf)
 #'
-#' This function loads Atlantis ANNAGEBIO and ANNAGECATCH outputfiles (netcdf) and
+#' This function loads Atlantis CATCH outputfile (netcdf) and
 #' converts them to a \code{data.frame}.
 #' @template dir
 #' @template file_nc
@@ -8,9 +8,9 @@
 #' @template fgs
 #' @template biolprm
 #' @template select_groups
-#' @param select_variable A character value spefifying which variable to return.
+#' @param select_variable A character value specifying which variable to return.
 #'   loaded. Only one variable of the options available (i.e., \code{c(
-#'   "Nums", "Weight")
+#'   "Catch", "Discard")
 #'   }) can be loaded at a time.
 #' @param check_acronyms A logical, specifying if selected groups are active
 #'   in the model run. This is used in automated runs.
@@ -31,9 +31,9 @@
 #' @importFrom magrittr %>%
 #' @export
 
-load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm, select_groups,
+load_nc_catchtons <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm, select_groups,
   select_variable =
-  c("Nums", "Weight", "Catch", "Discard"),
+  c("Catch", "Discard"),
   check_acronyms = TRUE, bboxes = c(0), verbose = FALSE) {
   # NOTE: The extraction procedure may look a bit complex...
   # A different approach would be to
@@ -57,6 +57,9 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
 
   # select_variable gets renamed for fishery data, save input
   input_select_variable <- select_variable
+
+  # select_groups get renamed to code, save input
+  select_groups_name <- select_groups
 
   # Check input structure!
   if (check_acronyms) {
@@ -101,17 +104,22 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   # Create vector of available species at the end using search_clean
   # This is needed to create species-names later on
 
-  # CHANGED hardcoded cohort number to reflect true ages from biolprm
-  # ADDED fleets to select_variable for fishery output
+  # To get what I hope is catch output in tons,
+  # keep variable names with CODES instead of species names
+
+  # get code matching species name and use as select groups
+  select_groups <- fgs$Code[which(fgs$Name %in% select_groups_name)]
+
+  # and _FC with a number corresponding to the fishery in the Fisheries.csv
 
   if(select_variable %in% c("Catch", "Discard")){
     #input_select_variable <- select_variable
     #read in fleet names
-    fleetnames <- load_fisheries(dir = dir, file_fish = file_fish)
+    fleetnames <- atlantisom::load_fisheries(dir = dir, file_fish = file_fish)
     #select_variable <- concatenate select_variable "_" each fleet name
     svfish <- c()
     for(i in select_variable){
-      sv <-paste0(i, "_", fleetnames$Code)
+      sv <-paste0(i, "_FC", fleetnames$Index)
       svfish <- c(svfish, sv)
     }
     select_variable <- svfish
@@ -122,37 +130,13 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   # Only combinations present in the ncdf are used later on
   # Loop over select_groups to use the same ordering
 
-  names(biolprm$agespercohort) <- c("code", "ageperagecl")
-
-  maxage <- merge(biolprm$maturityogive, biolprm$agespercohort, all.x = T) %>%
-    dplyr::select(code, nagecl, ageperagecl) %>%
-    dplyr::mutate(maxage = nagecl * ageperagecl) %>%
-    dplyr::mutate(name = fgs$Name[match(code, fgs$Code)]) %>%
-    dplyr::filter(!is.na(maxage))
-
-  #limit to groups that have ages
-  select_groups <- select_groups[select_groups %in% maxage$name]
-
   search <- list()
   for (i in seq_along(select_groups)) {
-    select_group_ages <- 1:maxage$maxage[match(select_groups[i], maxage$name)]
     search[[i]] <- c(
-      unlist(lapply(paste0(select_groups[i], select_group_ages),
-                    paste0, select_variable)),           # GroupCohortVariable
-      unlist(lapply(paste0(select_groups[i], select_variable),
-                    paste0, select_group_ages)),                   # GroupVariableCohort
-      unlist(lapply(paste0(select_groups[i], select_group_ages),
-                    paste, select_variable, sep = "_")), # GroupCohort_Variable
-      unlist(lapply(paste(select_groups[i], select_variable, sep = "_"),
-                    paste0, select_group_ages)),                   # Group_VariableCohort
-      unlist(lapply(paste(select_groups[i], select_group_ages, sep = "_"),
-                    paste, select_variable, sep = "_")), # Group_Cohort_Variable
-      unlist(lapply(paste(select_groups[i], select_variable, sep = "_"),
-                    paste, select_group_ages, sep = "_")),         # Group_Variable_Cohort
-      unlist(paste0(select_groups[i], select_variable)),                                                      # GroupVariable
+      unlist(paste0(select_groups[i], select_variable)),  # GroupVariable
       unlist(paste(select_groups[i], select_variable,
                    sep = "_"))                           # Group_Variable
-      )
+    )
     search[[i]] <- search[[i]][is.element(search[[i]], var_names_ncdf)]
     search[[i]] <- unique(search[[i]])
   }
@@ -165,8 +149,6 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   # Get final species and number of ageclasses per species
   final_species <- select_groups[sapply(
     lapply(select_groups, grepl, x = search_clean), any)]
-  final_agecl <- maxage$maxage[
-    sapply(final_species, function(x) which(x == maxage$name))]
 
   # # Get final fleets for full age structure fishery output--wrong order
   # if(input_select_variable %in% c("Catch", "Discard")){
@@ -237,71 +219,73 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   at_data2d <- at_data[which(sapply(at_data, function(x) length(dim(x))) == 2)]
 
   int_fs <- final_species
-  int_fa <- final_agecl
+  int_fa <- rep(1, length(final_species))
 
   if(input_select_variable %in% c("Catch", "Discard")){
     # how many unique fleets per select_group in search_clean?
     # lookup of species and fleet names
     splitfleets <- search_clean %>%
-      str_replace(paste0("\\d+_*",input_select_variable,"_"), "-")
+      stringr::str_replace(paste0("_",input_select_variable,"_FC"), "-")
     sp_fleet <- as.data.frame(unique(splitfleets)) %>%
-      rename(spfleet = "unique(splitfleets)") %>%
-      separate(spfleet, c("species", "fleet"), sep = "-")
+      dplyr::rename(spfleet = "unique(splitfleets)") %>%
+      tidyr::separate(spfleet, c("species", "fleet"), sep = "-")
     # lookup of number of fleets per species
     sp_nfleet <- as.data.frame(table(sp_fleet$species)) %>%
-      rename(species = Var1, nfleet = Freq)
+      dplyr::rename(species = Var1, nfleet = Freq)
     final_fleet <- sp_nfleet[match(final_species, sp_nfleet$species),]
     # for indexing fleets
     int_ff <- final_fleet$nfleet
   }
 
-  if (length(at_data3d) >= 1) {
-    # Remove biomasspools if selected variable is "N"!
-    if (input_select_variable == "N") {
-      int_fs <- final_species[!is.element(final_species, bps)]
-      int_fa <- final_agecl[!is.element(final_species, bps)]
-      # Note this only works if age-structured vertebrates have 10 ageclasses
-      # there is no "N" output in annage files so has no impact
-      int_fa[int_fa == 10] <- 1
-    }
-    for (i in seq_along(at_data3d)) {# for loop over all variables
-      if (i == 1) result3d <- list()
-      for (j in 1:n_timesteps) {# loop over timesteps
-        if (j == 1) values <- array(dim = c(length(layers), n_timesteps))
-        values[, j] <- at_data3d[[i]][,, j][layerid == 1]
-      }
-      result3d[[i]] <- as.vector(values)
-    }
-    result3d <- data.frame(
-      species = unlist(sapply(
-        X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = FALSE,
-        USE.NAMES = FALSE),
-        FUN = rep, each = length(layers) * n_timesteps, simplify = FALSE)),
-      agecl = unlist(sapply(
-        X = sapply(X = int_fa, FUN = seq, from = 1, by = 1, simplify = FALSE,
-        USE.NAMES = FALSE),
-        FUN = rep, each = length(layers) * n_timesteps, simplify = FALSE)),
-      polygon = unlist(sapply(
-        X = n_timesteps * int_fa, FUN = rep, x = polygons, simplify = F,
-        USE.NAMES = FALSE)),
-      layer = unlist(sapply(
-        X = n_timesteps * int_fa, FUN = rep, x = layers, simplify = FALSE,
-        USE.NAMES = FALSE)),
-      time = unlist(sapply(
-        X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1), each = length(layers)),
-        simplify = FALSE, USE.NAMES = FALSE)),
-      atoutput = do.call(c, result3d),
-      stringsAsFactors = FALSE)
-  }
+  # 3d should not apply here
+  # if (length(at_data3d) >= 1) {
+  #   # Remove biomasspools if selected variable is "N"!
+  #   if (input_select_variable == "N") {
+  #     int_fs <- final_species[!is.element(final_species, bps)]
+  #     int_fa <- final_agecl[!is.element(final_species, bps)]
+  #     # Note this only works if age-structured vertebrates have 10 ageclasses
+  #     # there is no "N" output in annage files so has no impact
+  #     int_fa[int_fa == 10] <- 1
+  #   }
+  #   for (i in seq_along(at_data3d)) {# for loop over all variables
+  #     if (i == 1) result3d <- list()
+  #     for (j in 1:n_timesteps) {# loop over timesteps
+  #       if (j == 1) values <- array(dim = c(length(layers), n_timesteps))
+  #       values[, j] <- at_data3d[[i]][,, j][layerid == 1]
+  #     }
+  #     result3d[[i]] <- as.vector(values)
+  #   }
+  #   result3d <- data.frame(
+  #     species = unlist(sapply(
+  #       X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = FALSE,
+  #       USE.NAMES = FALSE),
+  #       FUN = rep, each = length(layers) * n_timesteps, simplify = FALSE)),
+  #     agecl = unlist(sapply(
+  #       X = sapply(X = int_fa, FUN = seq, from = 1, by = 1, simplify = FALSE,
+  #       USE.NAMES = FALSE),
+  #       FUN = rep, each = length(layers) * n_timesteps, simplify = FALSE)),
+  #     polygon = unlist(sapply(
+  #       X = n_timesteps * int_fa, FUN = rep, x = polygons, simplify = F,
+  #       USE.NAMES = FALSE)),
+  #     layer = unlist(sapply(
+  #       X = n_timesteps * int_fa, FUN = rep, x = layers, simplify = FALSE,
+  #       USE.NAMES = FALSE)),
+  #     time = unlist(sapply(
+  #       X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1), each = length(layers)),
+  #       simplify = FALSE, USE.NAMES = FALSE)),
+  #     atoutput = do.call(c, result3d),
+  #     stringsAsFactors = FALSE)
+  # }
 
   if (length(at_data2d) >= 1) {
-    # Only select biomasspools if selected variable is "N"!
-    if (input_select_variable == "N") {
-      int_fs <- final_species[is.element(final_species, bps)]
-      int_fa <- final_agecl[is.element(final_species, bps)]
-    }
-    # age-structured invert groups are combined in ncdf file!
-    if (input_select_variable == "Grazing") int_fa <- 1
+    # # Only select biomasspools if selected variable is "N"!
+    # if (input_select_variable == "N") {
+    #   int_fs <- final_species[is.element(final_species, bps)]
+    #   int_fa <- final_agecl[is.element(final_species, bps)]
+    # }
+    # # age-structured invert groups are combined in ncdf file!
+    # if (input_select_variable == "Grazing") int_fa <- 1
+
     for (i in seq_along(at_data2d)) {# for loop over all variables!
       if (i == 1) result2d <- list()
       for (j in 1:n_timesteps) {# loop over timesteps
@@ -322,23 +306,23 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
     #                 (num ages per species)
     # 5. fleet    -->
 
-    if(input_select_variable %in% c("Nums", "Weight")){
-
-    result2d <- data.frame(species = unlist(sapply(
-      X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = FALSE,
-                 USE.NAMES = FALSE),
-      FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
-      agecl = unlist(sapply(X = sapply(X = int_fa, FUN = seq, from = 1,
-                                       by = 1, simplify = FALSE, USE.NAMES = FALSE),
-                            FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
-      polygon = unlist(sapply(X = n_timesteps * int_fa,
-                              FUN = rep, x = boxes, simplify = FALSE, USE.NAMES = FALSE)),
-      time = unlist(sapply(X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1),
-                                                          each = length(boxes)), simplify = FALSE, USE.NAMES = FALSE)),
-      atoutput = do.call(c, result2d),
-      stringsAsFactors = F)
-      if (select_variable == "N") result2d$layer <- n_layers - 1
-    }
+    # if(input_select_variable %in% c("Nums", "Weight")){
+    #
+    # result2d <- data.frame(species = unlist(sapply(
+    #   X = mapply(FUN = rep, x = int_fs, each = int_fa, SIMPLIFY = FALSE,
+    #              USE.NAMES = FALSE),
+    #   FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+    #   agecl = unlist(sapply(X = sapply(X = int_fa, FUN = seq, from = 1,
+    #                                    by = 1, simplify = FALSE, USE.NAMES = FALSE),
+    #                         FUN = rep, each = length(boxes) * n_timesteps, simplify = FALSE)),
+    #   polygon = unlist(sapply(X = n_timesteps * int_fa,
+    #                           FUN = rep, x = boxes, simplify = FALSE, USE.NAMES = FALSE)),
+    #   time = unlist(sapply(X = int_fa, FUN = rep, x = rep(0:(n_timesteps - 1),
+    #                                                       each = length(boxes)), simplify = FALSE, USE.NAMES = FALSE)),
+    #   atoutput = do.call(c, result2d),
+    #   stringsAsFactors = F)
+    #   if (select_variable == "N") result2d$layer <- n_layers - 1
+    # }
 
     #should now work properly for multiple fleets
     if(input_select_variable %in% c("Catch", "Discard")){
@@ -363,9 +347,9 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
   }
 
   # Combine dataframes if necessary!
-  if (all(sapply(lapply(at_data, dim), length) == 3) & input_select_variable != "N") {
-    result <- result3d
-  }
+  # if (all(sapply(lapply(at_data, dim), length) == 3) & input_select_variable != "N") {
+  #   result <- result3d
+  # }
   if (all(sapply(lapply(at_data, dim), length) == 2) & input_select_variable != "N") {
     result <- result2d
   }
@@ -377,19 +361,19 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
     }
   }
 
-  # Remove min_pools if existent (well, there always are min pools... ;)).
-  min_pools <- is.element(result$atoutput, c(0, 1e-08, 1e-16))
-  if (length(min_pools) > 0) {
-    # exclude 1st timestep and sediment layer from calculation
-    print_min_pools <- sum(min_pools) -
-      length(result[min_pools & result$time == 1, 1]) -
-      length(result[min_pools & result$time > 1 & result$layer == 7, 1])
-    if (print_min_pools > 0 & verbose) {
-      warning(paste0(round(print_min_pools/dim(result)[1] * 100),
-        "% of ", select_variable, " are true min-pools (0, 1e-08, 1e-16)"))
-    }
-    result <- result[!min_pools, ]
-  }
+  # # Remove min_pools if existent (well, there always are min pools... ;)).
+  # min_pools <- is.element(result$atoutput, c(0, 1e-08, 1e-16))
+  # if (length(min_pools) > 0) {
+  #   # exclude 1st timestep and sediment layer from calculation
+  #   print_min_pools <- sum(min_pools) -
+  #     length(result[min_pools & result$time == 1, 1]) -
+  #     length(result[min_pools & result$time > 1 & result$layer == 7, 1])
+  #   if (print_min_pools > 0 & verbose) {
+  #     warning(paste0(round(print_min_pools/dim(result)[1] * 100),
+  #       "% of ", select_variable, " are true min-pools (0, 1e-08, 1e-16)"))
+  #   }
+  #   result <- result[!min_pools, ]
+  # }
 
   # Remove non-existent layers.
   # WARNING: Biomass is build up (very few) in sediment layer for
@@ -402,11 +386,11 @@ load_nc_annage <- function(dir = getwd(), file_nc, file_fish, bps, fgs, biolprm,
 
   # Sum up N for invert cohorts if invert cohorts are present!
   # NOTE: invert cohorts of size 10 are not considered!
-  if (input_select_variable == "N" & any(final_agecl != 10 & final_agecl > 1)) {
-    result <- result %>%
-      dplyr::group_by(polygon, layer, species, time) %>%
-      dplyr::summarise(atoutput = sum(atoutput))
-  }
+  # if (input_select_variable == "N" & any(final_agecl != 10 & final_agecl > 1)) {
+  #   result <- result %>%
+  #     dplyr::group_by(polygon, layer, species, time) %>%
+  #     dplyr::summarise(atoutput = sum(atoutput))
+  # }
 
   return(result)
 }

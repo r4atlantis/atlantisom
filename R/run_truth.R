@@ -81,6 +81,11 @@ run_truth <- function(scenario, dir = getwd(),
   allboxes <- load_box(dir = dir, file_bgm = file_bgm)
   boxes <- get_boundary(allboxes)
 
+  # Get box area for benthic biomass pool calc
+  area <- load_boxarea(dir = dir,
+                       file_bgm = file_bgm)
+
+
   #Extract from NetCDF files
   # Need: dir, file_nc, bps, fgs, select_groups, select_variable,
   # check_acronyms, bboxes
@@ -142,6 +147,24 @@ run_truth <- function(scenario, dir = getwd(),
                          bboxes = boxes)
   if(verbose) message("Volume read in.")
 
+  # biomass pools added 2023 for Rpath testing
+  pools <- fgs %>%
+    dplyr::filter(NumCohorts == 1,
+                  IsTurnedOn == 1) %>%
+    dplyr::select(Name) %>%
+    .$Name
+
+  pooln <- load_nc(dir = dir,
+                   file_nc = nc_out,
+                   bps = bps,
+                   fgs = fgs,
+                   select_groups = pools,
+                   select_variable = "N",
+                   check_acronyms = TRUE,
+                   bboxes = boxes)
+  if(verbose) message("Biomass pools N read in.")
+
+
   catch <- load_nc(dir = dir,
                  file_nc = nc_catch,
                  bps = bps,
@@ -150,7 +173,32 @@ run_truth <- function(scenario, dir = getwd(),
                  select_variable = "Catch",
                  check_acronyms = TRUE,
                  bboxes = boxes)
-  if(verbose) message("Catch read in.")
+  if(verbose) message("Catch in numbers at agecl read in.")
+
+  catchtons <- load_nc_catchtons(dir = dir,
+                                 file_nc = nc_catch,
+                                 file_fish = file_fish,
+                                 bps = bps,
+                                 fgs = fgs,
+                                 select_groups = select_groups,
+                                 select_variable = "Catch",
+                                 check_acronyms = TRUE,
+                                 bboxes = boxes
+  )
+  if(verbose) message("Catch tons by fleet read in.")
+
+  disctons <- load_nc_catchtons(dir = dir,
+                                 file_nc = nc_catch,
+                                 file_fish = file_fish,
+                                 bps = bps,
+                                 fgs = fgs,
+                                 select_groups = select_groups,
+                                 select_variable = "Discard",
+                                 check_acronyms = TRUE,
+                                 bboxes = boxes
+  )
+  if(verbose) message("Discard tons by fleet read in.")
+
 
   if(annage){
     numsage <- load_nc_annage(dir = dir,
@@ -190,7 +238,7 @@ run_truth <- function(scenario, dir = getwd(),
                               check_acronyms = TRUE,
                               bboxes = boxes,
                               verbose = TRUE)
-    if(verbose) message("Catch read in from ANNAGECATCH.")
+    if(verbose) message("Catch in numbers at true age read in from ANNAGECATCH.")
 
     discage <- load_nc_annage(dir = dir,
                                file_nc = nc_annagecatch,
@@ -245,32 +293,36 @@ run_truth <- function(scenario, dir = getwd(),
     warning(strwrap(prefix = " ", initial = "",
                     "log.txt file not found; catch in numbers correction not done. For Atlantis SVN dates prior to December 2015, CATCH.nc output units were incorrect. Correction requires presence of log.txt file in the directory."))
   }
-  catchfish <- read.table(file_catchfish, header = TRUE)
-  over <- colnames(catchfish)[-(1:2)]
-  catchfish <- reshape(catchfish, direction = "long",
-    varying = over, v.names = "catch",
-    timevar = "species", times = over)
-  rownames(catchfish) <- 1:NROW(catchfish)
-  catchfish <- catchfish[catchfish$catch > 0,
-    -which(colnames(catchfish) == "id")]
-  catchfish$species <- fgs$Name[match(catchfish$species, fgs$Code)]
-  colnames(catchfish) <- tolower(colnames(catchfish))
-  catchfish$time <- catchfish$time / runprm$toutfinc
-  if(verbose) message("Catch per fishery read in.")
 
-  # Get catch from txt. Sum per species and compare with values from nc-file!
-  catch_all <- load_catch(dir = dir, file = file_catch, fgs = fgs)
-  # over <- colnames(catch_all)[(colnames(catch_all) %in% fgs$Code)]
-  # catch_all <- reshape(catch_all[, c("Time", over)], direction = "long",
+  # May 2023 not using catch per fishery and can get this from catchtons above
+  # also not using catch.txt output here, read in at om_init stage so drop here
+
+  # catchfish <- read.table(file_catchfish, header = TRUE)
+  # over <- colnames(catchfish)[-(1:2)]
+  # catchfish <- reshape(catchfish, direction = "long",
   #   varying = over, v.names = "catch",
   #   timevar = "species", times = over)
-  # rownames(catch_all) <- 1:NROW(catch_all)
-  # catch_all <- catch_all[catch_all$catch > 0,
-  #   -which(colnames(catch_all) == "id")]
-  # catch_all$species <- fgs$Name[match(catch_all$species, fgs$Code)]
-  # colnames(catch_all) <- tolower(colnames(catch_all))
-  catch_all$time <- catch_all$time / runprm$toutfinc
-  if(verbose) message("Catch for all fisheries in biomass read in.")
+  # rownames(catchfish) <- 1:NROW(catchfish)
+  # catchfish <- catchfish[catchfish$catch > 0,
+  #   -which(colnames(catchfish) == "id")]
+  # catchfish$species <- fgs$Name[match(catchfish$species, fgs$Code)]
+  # colnames(catchfish) <- tolower(colnames(catchfish))
+  # catchfish$time <- catchfish$time / runprm$toutfinc
+  # if(verbose) message("Catch per fishery read in.")
+
+  # # Get catch from txt. Sum per species and compare with values from nc-file!
+  # catch_all <- load_catch(dir = dir, file = file_catch, fgs = fgs)
+  # # over <- colnames(catch_all)[(colnames(catch_all) %in% fgs$Code)]
+  # # catch_all <- reshape(catch_all[, c("Time", over)], direction = "long",
+  # #   varying = over, v.names = "catch",
+  # #   timevar = "species", times = over)
+  # # rownames(catch_all) <- 1:NROW(catch_all)
+  # # catch_all <- catch_all[catch_all$catch > 0,
+  # #   -which(colnames(catch_all) == "id")]
+  # # catch_all$species <- fgs$Name[match(catch_all$species, fgs$Code)]
+  # # colnames(catch_all) <- tolower(colnames(catch_all))
+  # catch_all$time <- catch_all$time / runprm$toutfinc
+  # if(verbose) message("Catch for all fisheries in biomass read in.")
 
   diet <- load_diet_comp(dir = dir, file_diet = dietcheck, fgs = fgs)
   diet <- diet[diet$atoutput>0,]
@@ -282,11 +334,21 @@ run_truth <- function(scenario, dir = getwd(),
   if(verbose) message("Start calc_functions")
   # catchbio <- calc_biomass_age(nums = catch,
   #   resn = resn, structn = structn, biolprm = biol)
+
   biomass_eaten <- calc_pred_cons(eat = eat,
      grazing = grazing, vol = vol, biolprm = biol,
      runprm = runprm)
+
   biomass_ages <- calc_biomass_age(nums = nums,
     resn = resn, structn = structn, biolprm = biol)
+
+  # added 2023 for Rpath testing
+  biomass_pools <- calc_biomass_pool(pooln = pooln,
+                                     vol = vol,
+                                     area = area,
+                                     fgs = fgs,
+                                     biolprm = biol)
+
   # bio_catch <- calc_biomass_age(nums = catch,
   #   resn = resn, structn = structn, biolprm = biol)
   #
@@ -304,6 +366,11 @@ run_truth <- function(scenario, dir = getwd(),
   # does not match catch.txt output file
   # read that in separately instead
 
+  # SKG May 2023, catch in biomass now from CATCH.nc
+  # catchtons shown to match Catch.txt file
+  # this is catch by fleet, polygon, time, aggregated over all ages
+  # if discards are included they will also be output
+
   # SKG Sept 2020, no export of biomass_eaten
   # does not match DetailedDietCheck.txt output
   # polygon-specific consumption will be from DetailedDietCheck
@@ -317,8 +384,10 @@ run_truth <- function(scenario, dir = getwd(),
   if(!annage){
     result <- list("biomass_ages" = biomass_ages,
                    "biomass_eaten" = biomass_eaten,
+                   "biomass_pools" = biomass_pools,
                    "catch" = catch,
-                   "catch_all" = catch_all,
+                   "catchtons" = catchtons,
+                   "disctons" = disctons,
                    "nums" = nums,
                    "resn" = resn,
                    "structn" = structn,
@@ -330,8 +399,10 @@ run_truth <- function(scenario, dir = getwd(),
   if(annage){
     result <- list("biomass_ages" = biomass_ages,
                    "biomass_eaten" = biomass_eaten,
+                   "biomass_pools" = biomass_pools,
                    "catch" = catch,
-                   "catch_all" = catch_all,
+                   "catchtons" = catchtons,
+                   "disctons" = disctons,
                    "nums" = nums,
                    "numsage" = numsage,
                    "catchage" = catchage,
