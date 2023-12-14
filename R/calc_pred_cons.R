@@ -52,7 +52,7 @@
 #'   vol = vol, biolprm = biolprm, runprm = runprm)
 #' rm(calcs)
 #'
-calc_pred_cons <- function(eat, grazing, vol, biolprm, runprm){
+calc_pred_cons <- function(eat, grazing, vol, fgs, biolprm, runprm){
 
   # Conversion factor from mg N to tonnes wet-weight
   bio_conv <- biolprm$redfieldcn * biolprm$kgw2d / 1000000000
@@ -66,12 +66,46 @@ calc_pred_cons <- function(eat, grazing, vol, biolprm, runprm){
   # manual says this is either mg/m3/day or mg/day/individ
   # calculations here assume mg/m3/day so multiplying by box vol
   # is this m3 assuming the entire box volume or only where groups feed?
-  # do we need to match species to layers to get sppropriate volume?
+  # do we need to match species to layers to get appropriate volume?
   # VERTnight_XXX and VERTday_XXX in biol.prm
+
+  # biomass pool groups may get need volume expansion while
+  # age structured are per capita by age group?
 
   # all layers? even sediment? try filtering out layer > 7 to remove sediment volume
   # WARNING: ensure that layer 7 (processed via atlantisom) isn't unique to NOBA
-  vol <- dplyr::filter(vol, layer<7)
+  # layer 7 is unique to NOBA, use max of layers as sediment layer
+  # however, unclear this is necessary, try without
+
+  colnames(fgs) <- tolower(colnames(fgs))
+
+  # check for GroupType or InvertType
+  if (!("grouptype" %in% colnames(fgs) | "inverttype"%in% colnames(fgs))) {
+    stop(paste("The columns GroupType or InvertType ars not in your functional\n",
+               "groups file."))
+  }
+
+  # change inverttype to grouptype, contents should be the same
+  if("inverttype" %in% names(fgs)) names(fgs)[names(fgs) == 'inverttype'] <- 'grouptype'
+
+  fgs$grouptype <- tolower(fgs$grouptype)
+
+  # is there a different calculation for benthos? don't expand to volume?
+  # not using this yet
+  pooltype <- fgs |>
+    dplyr::select(species=name, grouptype) |>
+    dplyr::mutate(pooltype = dplyr::case_when((grouptype %in% c("lg_inf",
+                                                                "sm_inf",
+                                                                "sed_bact",
+                                                                "sed_ep_ff",
+                                                                "sed_ep_other",
+                                                                "mob_ep_other",
+                                                                "coral",
+                                                                "sponge")) ~ "benthos",
+                                              (grouptype %in% c("lg_phy")) ~ "lg_phy",
+                                              TRUE ~ "alllayers"))
+  # not using this either
+  sedlayer <- max(vol$layer)
 
   vol <- aggregate(atoutput ~ polygon + time, data = vol, sum)
   colnames(vol)[colnames(vol) == "atoutput"] <- "vol"
